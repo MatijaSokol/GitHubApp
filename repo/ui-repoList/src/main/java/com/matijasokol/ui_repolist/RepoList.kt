@@ -1,19 +1,27 @@
 package com.matijasokol.ui_repolist
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import coil.ImageLoader
+import com.matijasokol.repo_domain.Repo
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RepoList(
-    repos: List<String>
+    repos: List<Repo>,
+    imageLoader: ImageLoader,
+    onItemClick: (Repo) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(repos) {
-            Text(text = it)
+    LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
+        items(repos) { repo ->
+            RepoListItem(
+                repo = repo,
+                imageLoader = imageLoader,
+                onItemClick = onItemClick
+            )
         }
     }
 }
