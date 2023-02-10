@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -46,6 +48,8 @@ android {
 }
 
 dependencies {
+    implementation(project(Modules.repoDataSource))
+    implementation(project(Modules.repoDomain))
     implementation(project(Modules.ui_repoList))
     implementation(project(Modules.ui_repoDetail))
 
@@ -62,4 +66,13 @@ dependencies {
     implementation(Compose.navigation)
 
     implementation(Google.material)
+
+    implementation(Hilt.android)
+    kapt(Hilt.compiler)
+
+    implementation(Ktor.core)
+    implementation(Ktor.clientSerialization)
+    implementation(Ktor.android)
+    implementation(Ktor.contentNegotiation)
+    implementation(Ktor.json)
 }
