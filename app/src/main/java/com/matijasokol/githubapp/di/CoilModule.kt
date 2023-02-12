@@ -1,4 +1,4 @@
-package com.matijasokol.githubapp
+package com.matijasokol.githubapp.di
 
 import android.app.Application
 import coil.ImageLoader

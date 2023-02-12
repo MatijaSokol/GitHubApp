@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.ImageLoader
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
-import com.matijasokol.repo_domain.Repo
+import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repolist.RepoList
 import com.matijasokol.ui_repolist.RepoListViewModel
 import dagger.hilt.android.AndroidEntryPoint

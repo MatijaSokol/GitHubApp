@@ -1,7 +1,8 @@
 package com.matijasokol.repo_datasource
 
-import com.matijasokol.repo_domain.Author
-import com.matijasokol.repo_domain.Repo
+import com.matijasokol.repo_datasource.model.FetchReposResponse
+import com.matijasokol.repo_domain.model.Author
+import com.matijasokol.repo_domain.model.Repo
 
 fun FetchReposResponse.toRepos() = this.repos.map {
     Repo(

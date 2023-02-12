@@ -1,4 +1,7 @@
-package com.matijasokol.repo_domain
+package com.matijasokol.repo_domain.usecase
+
+import com.matijasokol.repo_domain.RepoService
+import com.matijasokol.repo_domain.model.Repo
 
 class FetchReposUseCase(
     private val repoService: RepoService

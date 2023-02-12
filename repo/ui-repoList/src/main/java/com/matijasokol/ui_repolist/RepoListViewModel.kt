@@ -2,8 +2,8 @@ package com.matijasokol.ui_repolist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.matijasokol.repo_domain.FetchReposUseCase
-import com.matijasokol.repo_domain.Repo
+import com.matijasokol.repo_domain.usecase.FetchReposUseCase
+import com.matijasokol.repo_domain.model.Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

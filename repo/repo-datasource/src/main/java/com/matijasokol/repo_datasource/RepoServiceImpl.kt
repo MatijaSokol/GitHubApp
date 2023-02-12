@@ -1,6 +1,7 @@
 package com.matijasokol.repo_datasource
 
-import com.matijasokol.repo_domain.Repo
+import com.matijasokol.repo_datasource.model.FetchReposResponse
+import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.repo_domain.RepoService
 import io.ktor.client.HttpClient
 import io.ktor.client.call.*

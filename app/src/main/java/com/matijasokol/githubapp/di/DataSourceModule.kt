@@ -1,7 +1,7 @@
-package com.matijasokol.githubapp
+package com.matijasokol.githubapp.di
 
 import com.matijasokol.repo_datasource.RepoServiceImpl
-import com.matijasokol.repo_domain.FetchReposUseCase
+import com.matijasokol.repo_domain.usecase.FetchReposUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

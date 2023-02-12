@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.Composable
 import coil.ImageLoader
-import com.matijasokol.repo_domain.Repo
+import com.matijasokol.repo_domain.model.Repo
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

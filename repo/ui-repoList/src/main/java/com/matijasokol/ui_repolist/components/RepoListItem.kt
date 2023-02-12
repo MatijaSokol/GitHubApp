@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import com.matijasokol.components.RoundedImage
-import com.matijasokol.repo_domain.Repo
+import com.matijasokol.repo_domain.model.Repo
 
 @Composable
 fun RepoListItem(

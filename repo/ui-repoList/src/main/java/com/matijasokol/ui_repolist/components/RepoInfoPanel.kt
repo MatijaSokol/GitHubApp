@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.matijasokol.components.TextWithIcon
-import com.matijasokol.repo_domain.Repo
+import com.matijasokol.repo_domain.model.Repo
 
 @Composable
 fun RepoInfoPanel(

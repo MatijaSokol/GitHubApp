@@ -1,4 +1,6 @@
-package com.matijasokol.repo_domain
+package com.matijasokol.repo_domain.model
+
+import com.matijasokol.repo_domain.model.Author
 
 data class Repo(
     val id: Int,
