@@ -1,7 +1,6 @@
 package com.matijasokol.githubapp
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,12 +9,12 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.ImageLoader
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
-import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repolist.RepoList
+import com.matijasokol.ui_repolist.RepoListEvent
+import com.matijasokol.ui_repolist.RepoListState
 import com.matijasokol.ui_repolist.RepoListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -36,8 +35,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val viewModel: RepoListViewModel = viewModel()
-                    val state = viewModel.repos.collectAsState()
-                    Screen(state.value, imageLoader)
+                    val state = viewModel.state.collectAsState()
+                    Screen(
+                        state = state.value,
+                        imageLoader = imageLoader,
+                        onEvent = viewModel::onEvent
+                    )
                 }
             }
         }
@@ -46,11 +49,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Screen(
-    repos: List<Repo>,
-    imageLoader: ImageLoader
+    state: RepoListState,
+    imageLoader: ImageLoader,
+    onEvent: (RepoListEvent) -> Unit
 ) {
-    val context = LocalContext.current
-    RepoList(repos = repos, imageLoader = imageLoader) {
-        Toast.makeText(context, it.name, Toast.LENGTH_SHORT).show()
-    }
+    RepoList(
+        state = state,
+        imageLoader = imageLoader,
+        onEvent = onEvent
+    )
 }

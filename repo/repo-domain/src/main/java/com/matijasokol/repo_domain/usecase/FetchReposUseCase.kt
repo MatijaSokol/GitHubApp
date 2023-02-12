@@ -7,7 +7,7 @@ class FetchReposUseCase(
     private val repoService: RepoService
 ) {
 
-    suspend fun execute(): List<Repo> {
-        return repoService.fetchRepos("")
+    suspend fun execute(query: String, perPage: Int, page: Int): List<Repo> {
+        return repoService.fetchRepos(query = query, perPage = perPage, page = page)
     }
 }

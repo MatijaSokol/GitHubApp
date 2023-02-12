@@ -4,5 +4,5 @@ import com.matijasokol.repo_domain.model.Repo
 
 interface RepoService {
 
-    suspend fun fetchRepos(query: String): List<Repo>
+    suspend fun fetchRepos(query: String, perPage: Int, page: Int): List<Repo>
 }
