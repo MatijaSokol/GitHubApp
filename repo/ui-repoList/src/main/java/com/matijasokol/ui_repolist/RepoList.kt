@@ -2,12 +2,22 @@ package com.matijasokol.ui_repolist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -17,6 +27,10 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -29,12 +43,13 @@ fun RepoList(
     val lazyColumnListState = rememberLazyStaggeredGridState()
     val shouldStartPaginate = remember {
         derivedStateOf {
-            (lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -9) >= (lazyColumnListState.layoutInfo.totalItemsCount - 6)
+            (lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                ?: -9) >= (lazyColumnListState.layoutInfo.totalItemsCount - 6)
         }
     }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isLoading,
-        onRefresh = {}
+        onRefresh = { onEvent(RepoListEvent.PullToRefreshTriggered) }
     )
 
     LaunchedEffect(key1 = shouldStartPaginate.value) {
@@ -46,25 +61,47 @@ fun RepoList(
     Box(
         modifier = Modifier.pullRefresh(pullRefreshState)
     ) {
-        if (state.items.isEmpty() && !state.isLoading) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = "No matches for query"
+        Column {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                value = state.query,
+                onValueChange = {
+                    onEvent(RepoListEvent.OnQueryChanged(it))
+                },
+                label = { Text(text = "Search") },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done,
+                ),
+                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search Icon") },
+                textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
+                colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.surface)
             )
-        } else {
-            LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Fixed(2),
-                state = lazyColumnListState
-            ) {
-                items(
-                    state.items,
-                    key = { it.id }
-                ) { repo ->
-                    RepoListItem(
-                        repo = repo,
-                        imageLoader = imageLoader,
-                        onItemClick = { onEvent(RepoListEvent.NavigateToRepoDetails(it)) }
-                    )
+
+            if (state.items.isEmpty() && !state.isLoading) {
+                Text(
+                    modifier = with(this@Box) {
+                        Modifier.align(Alignment.Center)
+                    },
+                    text = "No matches for query"
+                )
+            } else {
+                LazyVerticalStaggeredGrid(
+                    columns = StaggeredGridCells.Fixed(2),
+                    state = lazyColumnListState
+                ) {
+                    items(
+                        state.items,
+                        key = { it.id }
+                    ) { repo ->
+                        RepoListItem(
+                            repo = repo,
+                            imageLoader = imageLoader,
+                            onItemClick = { onEvent(RepoListEvent.NavigateToRepoDetails(it)) }
+                        )
+                    }
                 }
             }
         }
@@ -72,7 +109,8 @@ fun RepoList(
         PullRefreshIndicator(
             refreshing = state.isLoading,
             state = pullRefreshState,
-            Modifier.align(Alignment.TopCenter)
+            modifier = Modifier
+                .align(Alignment.TopCenter)
         )
     }
 }

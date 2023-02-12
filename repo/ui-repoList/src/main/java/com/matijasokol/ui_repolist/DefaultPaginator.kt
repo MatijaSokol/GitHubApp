@@ -29,8 +29,8 @@ class DefaultPaginator<Key, Item>(
         }
 
         currentKey = getNextKey(items)
-        onSuccess(items, currentKey)
         onLoadUpdated(false)
+        onSuccess(items, currentKey)
     }
 
     override fun reset() {
