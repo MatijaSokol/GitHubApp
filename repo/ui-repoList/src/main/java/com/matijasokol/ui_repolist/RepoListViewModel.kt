@@ -126,9 +126,7 @@ class RepoListViewModel @Inject constructor(
             else -> 0
         }
 
-        return runCatching {
-            fetchRepos.execute(query, 30, pageToLoad)
-        }
+        return fetchRepos.execute(query, 30, pageToLoad)
     }
 
     private fun updateState(
@@ -158,21 +156,15 @@ class RepoListViewModel @Inject constructor(
                 endReached = when (refreshTrigger) {
                     RefreshTrigger.NextPage -> itemsOrNull == null
                     else -> state.value.endReached
+                },
+                scrollToTop = when (refreshTrigger) {
+                    RefreshTrigger.Query -> true
+                    else -> false
                 }
             )
         }
 
         return containsAll
-    }
-
-    suspend fun updateInfo(refreshTrigger: RefreshTrigger?, query: String?) {
-        val current = _refreshTrigger.replayCache.firstOrNull() ?: return
-        _refreshTrigger.emit(
-            current.copy(
-                refreshTrigger = refreshTrigger ?: current.refreshTrigger,
-                query = query ?: current.query
-            )
-        )
     }
 }
 

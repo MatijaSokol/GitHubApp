@@ -8,5 +8,6 @@ data class RepoListState(
     val query: String = "",
     val error: String? = null,
     val endReached: Boolean = false,
-    val page: Int = 0
+    val page: Int = 0,
+    val scrollToTop: Boolean = false
 )

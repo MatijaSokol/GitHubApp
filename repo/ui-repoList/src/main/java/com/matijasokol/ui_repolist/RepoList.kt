@@ -18,6 +18,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.pullrefresh.PullRefreshDefaults
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -40,21 +41,28 @@ fun RepoList(
     imageLoader: ImageLoader,
     onEvent: (RepoListEvent) -> Unit
 ) {
-    val lazyColumnListState = rememberLazyStaggeredGridState()
+    val lazyStaggeredGridState = rememberLazyStaggeredGridState()
     val shouldStartPaginate = remember {
         derivedStateOf {
-            (lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                ?: -9) >= (lazyColumnListState.layoutInfo.totalItemsCount - 6)
+            (lazyStaggeredGridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                ?: -9) >= (lazyStaggeredGridState.layoutInfo.totalItemsCount - 6)
         }
     }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isLoading,
-        onRefresh = { onEvent(RepoListEvent.PullToRefreshTriggered) }
+        onRefresh = { onEvent(RepoListEvent.PullToRefreshTriggered) },
+        refreshingOffset = PullRefreshDefaults.RefreshingOffset + PullRefreshDefaults.RefreshingOffset
     )
 
     LaunchedEffect(key1 = shouldStartPaginate.value) {
         if (shouldStartPaginate.value) {
             onEvent(RepoListEvent.LoadMore)
+        }
+    }
+
+    LaunchedEffect(key1 = state.scrollToTop) {
+        if (state.scrollToTop) {
+            lazyStaggeredGridState.animateScrollToItem(0)
         }
     }
 
@@ -80,30 +88,34 @@ fun RepoList(
                 colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.surface)
             )
 
-            if (state.items.isEmpty() && !state.isLoading) {
-                Text(
-                    modifier = with(this@Box) {
-                        Modifier.align(Alignment.Center)
-                    },
-                    text = "No matches for query"
-                )
-            } else {
-                LazyVerticalStaggeredGrid(
-                    columns = StaggeredGridCells.Fixed(2),
-                    state = lazyColumnListState
-                ) {
-                    items(
-                        state.items,
-                        key = { it.id }
-                    ) { repo ->
-                        RepoListItem(
-                            repo = repo,
-                            imageLoader = imageLoader,
-                            onItemClick = { onEvent(RepoListEvent.NavigateToRepoDetails(it)) }
-                        )
+            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                if (state.items.isNotEmpty()) {
+                    LazyVerticalStaggeredGrid(
+                        columns = StaggeredGridCells.Fixed(2),
+                        state = lazyStaggeredGridState
+                    ) {
+                        items(
+                            state.items,
+                            key = { it.id }
+                        ) { repo ->
+                            RepoListItem(
+                                repo = repo,
+                                imageLoader = imageLoader,
+                                onItemClick = { onEvent(RepoListEvent.NavigateToRepoDetails(it)) }
+                            )
+                        }
                     }
                 }
             }
+        }
+
+        if (state.items.isEmpty() && !state.isLoading) {
+            Text(
+                modifier = with(this@Box) {
+                    Modifier.align(Alignment.Center)
+                },
+                text = "No matches for query"
+            )
         }
 
         PullRefreshIndicator(
