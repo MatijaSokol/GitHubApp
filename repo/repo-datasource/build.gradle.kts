@@ -9,6 +9,7 @@ plugins {
 
 dependencies {
     "implementation"(project(Modules.repoDomain))
+    "implementation"(project(Modules.core))
 
     "implementation"(Ktor.core)
     "implementation"(Ktor.clientSerialization)

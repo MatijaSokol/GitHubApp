@@ -1,15 +1,10 @@
 package com.matijasokol.repo_domain.usecase
 
-import com.matijasokol.repo_domain.RepoService
-import com.matijasokol.repo_domain.model.Repo
+import com.matijasokol.repo_domain.Paginator
 
 class FetchReposUseCase(
-    private val repoService: RepoService
+    private val paginator: Paginator
 ) {
 
-    suspend fun execute(query: String, perPage: Int, page: Int): Result<List<Repo>> {
-        return runCatching {
-            repoService.fetchRepos(query = query, perPage = perPage, page = page)
-        }
-    }
+    fun execute(query: String, shouldReset: Boolean) = paginator.loadNext(query, shouldReset)
 }

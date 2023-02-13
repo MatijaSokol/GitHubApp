@@ -3,20 +3,27 @@ package com.matijasokol.ui_repolist
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.matijasokol.core.Resource
+import com.matijasokol.repo_domain.ParseException
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.repo_domain.usecase.FetchReposUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+const val DEFAULT_QUERY = "android"
 
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
@@ -24,12 +31,10 @@ class RepoListViewModel @Inject constructor(
     private val context: Application
 ) : ViewModel() {
 
-    private val defaultQuery = "kotlin"
-
-    private val _state = MutableStateFlow(RepoListState().copy(query = defaultQuery))
+    private val _state = MutableStateFlow(RepoListState().copy(query = DEFAULT_QUERY))
     val state = _state.asStateFlow()
 
-    private val _refreshTrigger = MutableStateFlow(Info())
+    private val _refreshTrigger = MutableStateFlow(RefreshTriggerInfo())
     private val refreshTrigger = _refreshTrigger
         .debounce { (refreshTrigger, _) ->
             when (refreshTrigger) {
@@ -44,10 +49,18 @@ class RepoListViewModel @Inject constructor(
                 else -> false
             }
         }
-        .mapLatest { refreshList(it.query, it.refreshTrigger) }
-        .onEach { shouldFetchNextPage ->
-            if (shouldFetchNextPage) onEvent(RepoListEvent.LoadMore)
+        .filter { !state.value.isLoading }
+        .flatMapLatest { info ->
+            fetchRepos.execute(
+                query = info.query,
+                shouldReset = listOf(RefreshTrigger.PullToRefresh, RefreshTrigger.Query).contains(info.refreshTrigger)
+            ).onEach { repos -> updateStateNew(info, repos) }
         }
+        .flowOn(Dispatchers.IO)
+//        .mapLatest { refreshList(it.query, it.refreshTrigger) }
+//        .onEach { shouldFetchNextPage ->
+//            if (shouldFetchNextPage) onEvent(RepoListEvent.LoadMore)
+//        }
 
     init {
         refreshTrigger.launchIn(viewModelScope)
@@ -78,86 +91,38 @@ class RepoListViewModel @Inject constructor(
         }
     }
 
-    private suspend fun refreshList(query: String, refreshTrigger: RefreshTrigger): Boolean {
-        _state.update { it.copy(isLoading = true) }
-        val result = fetchData(query, refreshTrigger)
-        return updateState(query, refreshTrigger, result)
-    }
-
-    private suspend fun fetchData(query: String, refreshTrigger: RefreshTrigger): Result<List<Repo>> {
-        val pageToLoad = when (refreshTrigger) {
-            RefreshTrigger.NextPage -> state.value.page + 1
-            else -> 0
-        }
-
-        return fetchRepos.execute(query, 30, pageToLoad)
-    }
-
-    private fun updateState(
-        query: String,
-        refreshTrigger: RefreshTrigger,
-        result: Result<List<Repo>>
-    ): Boolean {
-        val itemsOrNull = result.getOrNull()
-
-        val shouldFetchNextPage = when {
-            itemsOrNull == null -> false
-            state.value.items.containsAll(itemsOrNull)
-                    && refreshTrigger is RefreshTrigger.NextPage -> true
-            else -> false
-        }
-
-        val allItems = when (refreshTrigger) {
-            RefreshTrigger.NextPage -> (state.value.items + itemsOrNull.orEmpty()).distinctBy { it.id }
-            else -> itemsOrNull.orEmpty()
-        }
-
-        _state.update {
-            it.copy(
-                items = allItems,
-                isLoading = false,
-                query = query,
-                page = when (refreshTrigger) {
-                    RefreshTrigger.NextPage -> state.value.page + 1
-                    else -> 0
-                },
-                endReached = when (refreshTrigger) {
-                    RefreshTrigger.NextPage -> itemsOrNull == null
-                    else -> state.value.endReached
-                },
-                scrollToTop = when (refreshTrigger) {
-                    RefreshTrigger.Query -> true
-                    else -> false
-                },
-                removeQueryEnabled = query.isNotEmpty(),
-                infoMessage = when {
-                    allItems.isEmpty() && itemsOrNull == null -> context.getString(R.string.repo_list_message_error)
-                    allItems.isEmpty() -> context.getString(R.string.repo_list_message_empty)
-                    else -> ""
+    private fun updateStateNew(
+        info: RefreshTriggerInfo,
+        resource: Resource<List<Repo>>
+    ) {
+        when (resource) {
+            is Resource.Error -> _state.update {
+                when (resource.ex) {
+                    is ParseException -> it.copy(
+                        infoMessage = when (info.refreshTrigger) {
+                            RefreshTrigger.NextPage -> "" //todo toast
+                            else -> context.getString(R.string.repo_list_message_error)
+                        },
+                        items = when (info.refreshTrigger) {
+                            RefreshTrigger.NextPage -> state.value.items
+                            else -> emptyList()
+                        }
+                    )
+                    else -> it
                 }
-            )
+            }
+            is Resource.Loading -> _state.update { it.copy(
+                isLoading = resource.isLoading,
+                infoMessage = if (resource.isLoading) "" else it.infoMessage
+            ) }
+            is Resource.Success -> _state.update { it.copy(
+                items = when (info.refreshTrigger) {
+                    RefreshTrigger.NextPage -> (state.value.items + resource.data).distinctBy { it.id }
+                    else -> resource.data
+                },
+                endReached = resource.data.isEmpty(),
+                infoMessage = ""
+            ) }
         }
-
-        return shouldFetchNextPage
     }
-}
-
-class Info(
-    val refreshTrigger: RefreshTrigger = RefreshTrigger.Initial,
-    val query: String = "kotlin"
-) {
-
-    fun copy(
-        refreshTrigger: RefreshTrigger = this.refreshTrigger,
-        query: String = this.query
-    ): Info {
-        return Info(
-            refreshTrigger = refreshTrigger,
-            query = query
-        )
-    }
-
-    operator fun component1() = this.refreshTrigger
-
-    operator fun component2() = this.query
 }

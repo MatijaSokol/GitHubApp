@@ -1,7 +1,7 @@
 package com.matijasokol.githubapp.di
 
-import com.matijasokol.repo_datasource.RepoServiceImpl
-import com.matijasokol.repo_domain.RepoService
+import com.matijasokol.repo_datasource.BasicPaginator
+import com.matijasokol.repo_domain.Paginator
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -10,9 +10,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataSourceModule {
+abstract class ViewModelModule {
 
     @Binds
     @Singleton
-    abstract fun bindRepoService(repoServiceImpl: RepoServiceImpl): RepoService
+    abstract fun provideBasicPaginator(basicPaginator: BasicPaginator): Paginator
 }

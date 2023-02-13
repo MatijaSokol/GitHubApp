@@ -19,8 +19,6 @@ object CoilModule {
         app: Application
     ): ImageLoader {
         return ImageLoader.Builder(app)
-           // .error(R.drawable.error_image)
-            //.placeholder(R.drawable.white_background)
             .memoryCache(MemoryCache.Builder(app).maxSizePercent(0.25).build())
             .crossfade(true)
             .build()

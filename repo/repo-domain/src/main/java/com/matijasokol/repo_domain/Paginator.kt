@@ -1,8 +1,12 @@
 package com.matijasokol.repo_domain
 
-interface Paginator<Item> {
+import com.matijasokol.core.Resource
+import com.matijasokol.repo_domain.model.Repo
+import kotlinx.coroutines.flow.Flow
 
-    suspend fun loadNext(query: String)
+interface Paginator {
+
+    fun loadNext(query: String, shouldReset: Boolean): Flow<Resource<List<Repo>>>
 
     fun reset()
 }
