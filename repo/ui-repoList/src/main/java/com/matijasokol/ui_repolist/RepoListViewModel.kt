@@ -1,5 +1,6 @@
 package com.matijasokol.ui_repolist
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matijasokol.repo_domain.model.Repo
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
-    private val fetchRepos: FetchReposUseCase
+    private val fetchRepos: FetchReposUseCase,
+    private val context: Application
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RepoListState())
@@ -134,18 +136,22 @@ class RepoListViewModel @Inject constructor(
         result: Result<List<Repo>>
     ): Boolean {
         val itemsOrNull = result.getOrNull()
-        val containsAll = if (itemsOrNull == null) {
-            false
-        } else {
+
+        val shouldFetchNextPage = when {
+            itemsOrNull == null -> false
             state.value.items.containsAll(itemsOrNull)
+                    && refreshTrigger is RefreshTrigger.NextPage -> true
+            else -> false
+        }
+
+        val allItems = when (refreshTrigger) {
+            RefreshTrigger.NextPage -> (state.value.items + itemsOrNull.orEmpty()).distinctBy { it.id }
+            else -> itemsOrNull.orEmpty()
         }
 
         _state.update {
             it.copy(
-                items = when (refreshTrigger) {
-                    RefreshTrigger.NextPage -> (it.items + itemsOrNull.orEmpty()).distinctBy { it.id }
-                    else -> itemsOrNull.orEmpty()
-                },
+                items = allItems,
                 isLoading = false,
                 query = query,
                 page = when (refreshTrigger) {
@@ -160,11 +166,16 @@ class RepoListViewModel @Inject constructor(
                     RefreshTrigger.Query -> true
                     else -> false
                 },
-                removeQueryEnabled = query.isNotEmpty()
+                removeQueryEnabled = query.isNotEmpty(),
+                infoMessage = when {
+                    allItems.isEmpty() && itemsOrNull == null -> context.getString(R.string.repo_list_message_error)
+                    allItems.isEmpty() -> context.getString(R.string.repo_list_message_empty)
+                    else -> ""
+                }
             )
         }
 
-        return containsAll
+        return shouldFetchNextPage
     }
 }
 

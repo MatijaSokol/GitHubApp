@@ -122,12 +122,12 @@ fun RepoList(
             }
         }
 
-        if (state.items.isEmpty() && !state.isLoading) {
+        if (state.infoMessage.isNotEmpty() && !state.isLoading) {
             Text(
                 modifier = with(this@Box) {
                     Modifier.align(Alignment.Center)
                 },
-                text = "No matches for query"
+                text = state.infoMessage
             )
         }
 

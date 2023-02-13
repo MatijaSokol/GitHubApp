@@ -6,7 +6,7 @@ data class RepoListState(
     val isLoading: Boolean = false,
     val items: List<Repo> = emptyList(),
     val query: String = "",
-    val error: String? = null,
+    val infoMessage: String = "",
     val endReached: Boolean = false,
     val page: Int = 0,
     val scrollToTop: Boolean = false,
