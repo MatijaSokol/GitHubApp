@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -107,7 +108,10 @@ fun RepoList(
                 colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.surface)
             )
 
-            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+            Box(modifier = Modifier
+                .pullRefresh(pullRefreshState)
+                .fillMaxSize()
+            ) {
                 if (state.items.isNotEmpty()) {
                     LazyVerticalStaggeredGrid(
                         columns = StaggeredGridCells.Fixed(2),
@@ -126,17 +130,17 @@ fun RepoList(
                         }
                     }
                 }
-            }
-        }
 
-        if (state.infoMessage.isNotEmpty() && !state.isLoading) {
-            Text(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(16.dp),
-                text = state.infoMessage,
-                textAlign = TextAlign.Center
-            )
+                if (state.infoMessage.isNotEmpty() && !state.isLoading) {
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(16.dp),
+                        text = state.infoMessage,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
         }
 
         PullRefreshIndicator(
