@@ -26,10 +26,6 @@ class RepoListViewModel @Inject constructor(
     private val _state = MutableStateFlow(RepoListState())
     val state = _state.asStateFlow()
 
-    val a = MutableSharedFlow<Int>(replay = 1).apply {
-        this.replayCache
-    }
-
     private val _refreshTrigger = MutableStateFlow(Info())
     private val refreshTrigger = _refreshTrigger
         .debounce { (refreshTrigger, _) ->
@@ -99,7 +95,10 @@ class RepoListViewModel @Inject constructor(
             is RepoListEvent.NavigateToRepoDetails -> {}
             is RepoListEvent.OnQueryChanged -> {
                 val updatedState = _state.updateAndGet {
-                    it.copy(query = event.query)
+                    it.copy(
+                        query = event.query,
+                        removeQueryEnabled = event.query.isNotEmpty()
+                    )
                 }
                 viewModelScope.launch {
                     _refreshTrigger.update { it.copy(
@@ -160,7 +159,8 @@ class RepoListViewModel @Inject constructor(
                 scrollToTop = when (refreshTrigger) {
                     RefreshTrigger.Query -> true
                     else -> false
-                }
+                },
+                removeQueryEnabled = query.isNotEmpty()
             )
         }
 

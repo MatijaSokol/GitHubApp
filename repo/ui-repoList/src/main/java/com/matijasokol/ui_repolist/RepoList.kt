@@ -1,6 +1,7 @@
 package com.matijasokol.ui_repolist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshDefaults
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -84,6 +86,17 @@ fun RepoList(
                     imeAction = ImeAction.Done,
                 ),
                 leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search Icon") },
+                trailingIcon = {
+                    if (state.query.isNotEmpty()) {
+                        Icon(
+                            imageVector = Icons.Filled.Clear,
+                            contentDescription = "Clear",
+                            modifier = Modifier.clickable {
+                                onEvent(RepoListEvent.OnQueryChanged(""))
+                            }
+                        )
+                    }
+                },
                 textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
                 colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.surface)
             )
