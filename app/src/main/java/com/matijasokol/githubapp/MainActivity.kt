@@ -1,6 +1,7 @@
 package com.matijasokol.githubapp
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -19,7 +22,6 @@ import com.matijasokol.githubapp.navigation.Screen
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
 import com.matijasokol.ui_repodetail.RepoDetail
 import com.matijasokol.ui_repolist.RepoList
-import com.matijasokol.ui_repolist.RepoListEvent
 import com.matijasokol.ui_repolist.RepoListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -69,17 +71,25 @@ fun NavGraphBuilder.addRepoList(
         val viewModel: RepoListViewModel = hiltViewModel()
         val state = viewModel.state.collectAsState()
 
+        val context = LocalContext.current
+        val uriHandler = LocalUriHandler.current
+
         RepoList(
             state = state.value,
             imageLoader = imageLoader,
-            onEvent = {
-                when (it) {
-                    is RepoListEvent.NavigateToRepoDetails -> navController.navigate(
-                        route = "${Screen.RepoDetail.route}/${it.repo.id}"
-                    )
-                    else -> viewModel.onEvent(it)
+            onItemClick = { repo ->
+                navController.navigate(
+                    route = "${Screen.RepoDetail.route}/${repo.id}"
+                )
+            },
+            onImageClick = {
+                try {
+                    uriHandler.openUri(it.profileUrl)
+                } catch (e: Exception) {
+                    Toast.makeText(context, context.getString(com.matijasokol.ui_repolist.R.string.repo_list_message_browser_error), Toast.LENGTH_SHORT).show()
                 }
-            }
+            },
+            onEvent = { viewModel.onEvent(it) }
         )
     }
 }

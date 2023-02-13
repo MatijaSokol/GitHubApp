@@ -36,6 +36,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
+import com.matijasokol.repo_domain.model.Author
+import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repolist.components.RepoListItem
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -43,6 +45,8 @@ import com.matijasokol.ui_repolist.components.RepoListItem
 fun RepoList(
     state: RepoListState,
     imageLoader: ImageLoader,
+    onItemClick: (Repo) -> Unit,
+    onImageClick: (Author) -> Unit,
     onEvent: (RepoListEvent) -> Unit
 ) {
     val lazyStaggeredGridState = rememberLazyStaggeredGridState()
@@ -116,7 +120,8 @@ fun RepoList(
                             RepoListItem(
                                 repo = repo,
                                 imageLoader = imageLoader,
-                                onItemClick = { onEvent(RepoListEvent.NavigateToRepoDetails(it)) }
+                                onItemClick = onItemClick,
+                                onImageClick = onImageClick
                             )
                         }
                     }

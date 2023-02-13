@@ -58,7 +58,6 @@ class RepoListViewModel @Inject constructor(
             RepoListEvent.LoadMore -> viewModelScope.launch {
                 _refreshTrigger.update { it.copy(refreshTrigger = RefreshTrigger.NextPage) }
             }
-            is RepoListEvent.NavigateToRepoDetails -> {}
             is RepoListEvent.OnQueryChanged -> {
                 val updatedState = _state.updateAndGet {
                     it.copy(

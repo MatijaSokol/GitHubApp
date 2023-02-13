@@ -21,6 +21,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import com.matijasokol.components.RoundedImage
+import com.matijasokol.repo_domain.model.Author
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repolist.RepoInfoPanel
 
@@ -28,7 +29,8 @@ import com.matijasokol.ui_repolist.RepoInfoPanel
 fun RepoListItem(
     repo: Repo,
     imageLoader: ImageLoader,
-    onItemClick: (Repo) -> Unit
+    onItemClick: (Repo) -> Unit,
+    onImageClick: (Author) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -54,7 +56,8 @@ fun RepoListItem(
                 RoundedImage(
                     imageUrl = repo.author.image,
                     contentDescription = repo.author.name,
-                    imageLoader = imageLoader
+                    imageLoader = imageLoader,
+                    onClick = { onImageClick(repo.author) }
                 )
 
                 Column(

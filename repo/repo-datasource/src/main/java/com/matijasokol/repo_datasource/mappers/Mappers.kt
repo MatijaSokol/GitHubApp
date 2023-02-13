@@ -1,4 +1,4 @@
-package com.matijasokol.repo_datasource
+package com.matijasokol.repo_datasource.mappers
 
 import com.matijasokol.repo_datasource.model.FetchReposResponse
 import com.matijasokol.repo_domain.model.Author
@@ -12,7 +12,8 @@ fun FetchReposResponse.toRepos() = this.repos.map {
             Author(
                 id = id,
                 name = name,
-                image = imageUrl
+                image = imageUrl,
+                profileUrl = profileUrl
             )
         },
         watchersCount = it.watchers,

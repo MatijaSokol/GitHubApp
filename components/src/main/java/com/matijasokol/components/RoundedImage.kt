@@ -2,6 +2,7 @@ package com.matijasokol.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -23,7 +24,8 @@ fun RoundedImage(
     size: Dp = 64.dp,
     imageLoader: ImageLoader,
     borderColor: Color? = Color.Black,
-    borderWidth: Dp? = 2.dp
+    borderWidth: Dp? = 2.dp,
+    onClick: () -> Unit
 ) {
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
@@ -43,7 +45,8 @@ fun RoundedImage(
                         shape = CircleShape
                     )
                 }
-            },
+            }
+            .clickable { onClick() },
         painter = painter,
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
