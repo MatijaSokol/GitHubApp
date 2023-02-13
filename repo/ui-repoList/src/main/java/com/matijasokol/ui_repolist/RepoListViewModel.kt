@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
@@ -25,7 +25,9 @@ class RepoListViewModel @Inject constructor(
     private val context: Application
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(RepoListState())
+    private val defaultQuery = "kotlin"
+
+    private val _state = MutableStateFlow(RepoListState().copy(query = defaultQuery))
     val state = _state.asStateFlow()
 
     private val _refreshTrigger = MutableStateFlow(Info())
@@ -43,7 +45,7 @@ class RepoListViewModel @Inject constructor(
                 else -> false
             }
         }
-        .map { refreshList(it.query, it.refreshTrigger) }
+        .mapLatest { refreshList(it.query, it.refreshTrigger) }
         .onEach { shouldFetchNextPage ->
             if (shouldFetchNextPage) onEvent(RepoListEvent.LoadMore)
         }
