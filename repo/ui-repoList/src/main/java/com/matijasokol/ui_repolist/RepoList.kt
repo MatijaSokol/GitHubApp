@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 
@@ -124,10 +125,11 @@ fun RepoList(
 
         if (state.infoMessage.isNotEmpty() && !state.isLoading) {
             Text(
-                modifier = with(this@Box) {
-                    Modifier.align(Alignment.Center)
-                },
-                text = state.infoMessage
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(16.dp),
+                text = state.infoMessage,
+                textAlign = TextAlign.Center
             )
         }
 
