@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.repo_domain.usecase.FetchReposUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -53,43 +52,6 @@ class RepoListViewModel @Inject constructor(
     init {
         refreshTrigger.launchIn(viewModelScope)
     }
-
-//    private val paginator = DefaultPaginator(
-//        initialKey = state.value.page,
-//        onLoadUpdated = { isLoading ->
-//            _state.update { it.copy(isLoading = isLoading) }
-//        },
-//        onRequest = { nextPage ->
-//            runCatching {
-//                fetchRepos.execute(
-//                    query = state.value.query,
-//                    perPage = 30,
-//                    page = state.value.page
-//                )
-//            }
-//        },
-//        getNextKey = { state.value.page + 1 },
-//        onError = { ex ->
-//            _state.update {
-//                it.copy(
-//                    error = ex?.localizedMessage
-//                )
-//            }
-//        },
-//        onSuccess = { items, newKey ->
-//            val containsAll = state.value.items.containsAll(items)
-//
-//            _state.update {
-//                it.copy(
-//                    items = (state.value.items + items).distinctBy { repo -> repo.id },
-//                    page = newKey,
-//                    endReached = items.isEmpty()
-//                )
-//            }
-//
-//            if (containsAll) loadNextItems()
-//        }
-//    )
 
     fun onEvent(event: RepoListEvent) {
         when (event) {

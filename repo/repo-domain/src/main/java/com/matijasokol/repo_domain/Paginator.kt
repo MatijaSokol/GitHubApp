@@ -1,8 +1,8 @@
 package com.matijasokol.repo_domain
 
-interface Paginator<Key, Item> {
+interface Paginator<Item> {
 
-    suspend fun loadNextItems()
+    suspend fun loadNext(query: String)
 
     fun reset()
 }
