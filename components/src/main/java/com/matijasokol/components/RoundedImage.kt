@@ -33,7 +33,7 @@ fun RoundedImage(
     )
     Image(
         modifier = Modifier
-            .size(64.dp)
+            .size(size)
             .clip(CircleShape)
             .apply {
                 if (borderColor != null && borderWidth != null) {
