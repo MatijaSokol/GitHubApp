@@ -1,5 +1,6 @@
 package com.matijasokol.ui_repolist
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
@@ -41,6 +43,8 @@ fun RepoList(
     onImageClick: (Author) -> Unit,
     onEvent: (RepoListEvent) -> Unit
 ) {
+    val context = LocalContext.current
+
     val lazyStaggeredGridState = rememberLazyStaggeredGridState()
     val shouldStartPaginate = remember {
         derivedStateOf {
@@ -64,6 +68,13 @@ fun RepoList(
         if (state.scrollToTop) {
             lazyStaggeredGridState.scrollToItem(0)
             onEvent(RepoListEvent.ScrollToTopExecuted)
+        }
+    }
+
+    LaunchedEffect(key1 = state.uiMessages) {
+        if (state.uiMessages.isNotEmpty()) {
+            Toast.makeText(context, context.getString(R.string.repo_list_message_error), Toast.LENGTH_SHORT).show()
+            onEvent(RepoListEvent.UIMessageShown)
         }
     }
 

@@ -56,13 +56,9 @@ class RepoListViewModel @Inject constructor(
             fetchRepos.execute(
                 query = info.query,
                 shouldReset = listOf(RefreshTrigger.PullToRefresh, RefreshTrigger.Query).contains(info.refreshTrigger)
-            ).onEach { repos -> updateStateNew(info, repos) }
+            ).onEach { repos -> updateState(info, repos) }
         }
         .flowOn(Dispatchers.IO)
-//        .mapLatest { refreshList(it.query, it.refreshTrigger) }
-//        .onEach { shouldFetchNextPage ->
-//            if (shouldFetchNextPage) onEvent(RepoListEvent.LoadMore)
-//        }
 
     init {
         refreshTrigger.launchIn(viewModelScope)
@@ -108,10 +104,13 @@ class RepoListViewModel @Inject constructor(
             RepoListEvent.ToggleSortMenuOptionsVisibility -> _state.update {
                 it.copy(sortMenuVisible = !it.sortMenuVisible)
             }
+            RepoListEvent.UIMessageShown -> _state.update {
+                it.copy(uiMessages = it.uiMessages.drop(1))
+            }
         }
     }
 
-    private fun updateStateNew(
+    private fun updateState(
         info: RefreshTriggerInfo,
         resource: Resource<List<Repo>>
     ) {
@@ -120,8 +119,13 @@ class RepoListViewModel @Inject constructor(
                 when (resource.ex) {
                     is ParseException -> it.copy(
                         infoMessage = when (info.refreshTrigger) {
-                            RefreshTrigger.NextPage -> "" //todo toast
+                            RefreshTrigger.NextPage -> ""
+                            RefreshTrigger.PullToRefresh -> if (it.items.isEmpty()) context.getString(R.string.repo_list_message_error) else ""
                             else -> context.getString(R.string.repo_list_message_error)
+                        },
+                        uiMessages = when (info.refreshTrigger) {
+                            RefreshTrigger.NextPage, RefreshTrigger.PullToRefresh -> it.uiMessages + context.getString(R.string.repo_list_message_error)
+                            else -> it.uiMessages
                         },
                         items = when (info.refreshTrigger) {
                             RefreshTrigger.NextPage -> state.value.items

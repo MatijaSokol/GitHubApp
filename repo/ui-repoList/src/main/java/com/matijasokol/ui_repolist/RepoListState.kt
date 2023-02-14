@@ -9,9 +9,9 @@ data class RepoListState(
     val query: String = "",
     val infoMessage: String = "",
     val endReached: Boolean = false,
-    val page: Int = 0,
     val scrollToTop: Boolean = false,
     val removeQueryEnabled: Boolean = false,
     val sortMenuVisible: Boolean = false,
-    val repoSortType: RepoSortType = RepoSortType.Unknown()
+    val repoSortType: RepoSortType = RepoSortType.Unknown(),
+    val uiMessages: List<String> = emptyList()
 )

@@ -21,4 +21,6 @@ sealed interface RepoListEvent {
     object ToggleSortMenuOptionsVisibility : RepoListEvent
 
     object SortMenuOptionsDismissed : RepoListEvent
+
+    object UIMessageShown : RepoListEvent
 }
