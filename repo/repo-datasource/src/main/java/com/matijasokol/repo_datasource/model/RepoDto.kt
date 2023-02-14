@@ -1,6 +1,5 @@
 package com.matijasokol.repo_datasource.model
 
-import com.matijasokol.repo_datasource.model.AuthorDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -22,7 +21,13 @@ data class RepoDto(
     val watchers: Int,
 
     @SerialName("open_issues")
-    val openIssues: Int
+    val openIssues: Int,
+
+    @SerialName("updated_at")
+    val updatedAt: String,
+
+    @SerialName("stargazers_count")
+    val stars: Int
 )
 
 

@@ -3,10 +3,11 @@ package com.matijasokol.ui_repolist
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.matijasokol.core.Resource
+import com.matijasokol.core.domain.Resource
 import com.matijasokol.repo_domain.ParseException
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.repo_domain.usecase.FetchReposUseCase
+import com.matijasokol.repo_domain.usecase.SortReposUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ const val DEFAULT_QUERY = "android"
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
     private val fetchRepos: FetchReposUseCase,
+    private val sortRepos: SortReposUseCase,
     private val context: Application
 ) : ViewModel() {
 
@@ -88,6 +90,21 @@ class RepoListViewModel @Inject constructor(
             RepoListEvent.PullToRefreshTriggered -> viewModelScope.launch {
                 _refreshTrigger.update { it.copy(refreshTrigger = RefreshTrigger.PullToRefresh) }
             }
+            is RepoListEvent.UpdateSortType -> viewModelScope.launch {
+                _state.update {
+                    it.copy(
+                        repoSortType = event.repoSortType,
+                        items = sortRepos.execute(it.items, event.repoSortType),
+                        scrollToTop = true
+                    )
+                }
+            }
+            is RepoListEvent.UpdateSortDialogVisibility -> _state.update {
+                it.copy(sortDialogVisible = event.isVisible)
+            }
+            RepoListEvent.ScrollToTopExecuted -> _state.update {
+                it.copy(scrollToTop = false)
+            }
         }
     }
 
@@ -121,7 +138,11 @@ class RepoListViewModel @Inject constructor(
                     else -> resource.data
                 },
                 endReached = resource.data.isEmpty(),
-                infoMessage = ""
+                infoMessage = "",
+                scrollToTop = when (info.refreshTrigger) {
+                    RefreshTrigger.Query -> true
+                    else -> state.value.scrollToTop
+                }
             ) }
         }
     }

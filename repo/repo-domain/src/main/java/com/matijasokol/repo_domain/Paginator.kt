@@ -1,6 +1,6 @@
 package com.matijasokol.repo_domain
 
-import com.matijasokol.core.Resource
+import com.matijasokol.core.domain.Resource
 import com.matijasokol.repo_domain.model.Repo
 import kotlinx.coroutines.flow.Flow
 

@@ -1,6 +1,6 @@
 package com.matijasokol.repo_datasource
 
-import com.matijasokol.core.Resource
+import com.matijasokol.core.domain.Resource
 import com.matijasokol.repo_domain.Paginator
 import com.matijasokol.repo_domain.ParseException
 import com.matijasokol.repo_domain.RepoService

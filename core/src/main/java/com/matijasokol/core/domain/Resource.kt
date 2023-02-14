@@ -1,4 +1,4 @@
-package com.matijasokol.core
+package com.matijasokol.core.domain
 
 sealed interface Resource<T> {
 

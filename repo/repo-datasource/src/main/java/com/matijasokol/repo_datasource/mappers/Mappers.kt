@@ -1,6 +1,7 @@
 package com.matijasokol.repo_datasource.mappers
 
 import com.matijasokol.repo_datasource.model.FetchReposResponse
+import com.matijasokol.repo_domain.DateUtils
 import com.matijasokol.repo_domain.model.Author
 import com.matijasokol.repo_domain.model.Repo
 
@@ -18,6 +19,8 @@ fun FetchReposResponse.toRepos() = this.repos.map {
         },
         watchersCount = it.watchers,
         forksCount = it.forks,
-        issuesCount = it.openIssues
+        issuesCount = it.openIssues,
+        lastUpdated = DateUtils.fromStringToDate(it.updatedAt),
+        starsCount = it.stars
     )
 }
