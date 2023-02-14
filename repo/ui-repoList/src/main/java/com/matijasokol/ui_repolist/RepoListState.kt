@@ -12,6 +12,6 @@ data class RepoListState(
     val page: Int = 0,
     val scrollToTop: Boolean = false,
     val removeQueryEnabled: Boolean = false,
-    val sortDialogVisible: Boolean = false,
+    val sortMenuVisible: Boolean = false,
     val repoSortType: RepoSortType = RepoSortType.Unknown()
 )

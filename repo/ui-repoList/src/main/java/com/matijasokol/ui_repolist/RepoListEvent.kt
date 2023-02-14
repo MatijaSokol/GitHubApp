@@ -16,9 +16,9 @@ sealed interface RepoListEvent {
         val repoSortType: RepoSortType
     ) : RepoListEvent
 
-    data class UpdateSortDialogVisibility(
-        val isVisible: Boolean
-    ) : RepoListEvent
-
     object ScrollToTopExecuted : RepoListEvent
+
+    object ToggleSortMenuOptionsVisibility : RepoListEvent
+
+    object SortMenuOptionsDismissed : RepoListEvent
 }

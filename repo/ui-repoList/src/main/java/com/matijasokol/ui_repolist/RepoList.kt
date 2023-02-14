@@ -1,13 +1,9 @@
 package com.matijasokol.ui_repolist
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -25,20 +21,17 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import com.matijasokol.repo_domain.model.Author
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repolist.components.RepoListItem
-import com.matijasokol.ui_repolist.components.RepoListOrder
 import com.matijasokol.ui_repolist.components.RepoListToolbar
 
 @OptIn(
     ExperimentalFoundationApi::class,
-    ExperimentalMaterialApi::class,
-    ExperimentalAnimationApi::class
+    ExperimentalMaterialApi::class
 )
 @Composable
 fun RepoList(
@@ -69,7 +62,7 @@ fun RepoList(
 
     LaunchedEffect(key1 = state.scrollToTop) {
         if (state.scrollToTop) {
-            lazyStaggeredGridState.animateScrollToItem(0)
+            lazyStaggeredGridState.scrollToItem(0)
             onEvent(RepoListEvent.ScrollToTopExecuted)
         }
     }
@@ -80,9 +73,13 @@ fun RepoList(
         Column {
             RepoListToolbar(
                 queryValue = state.query,
+                sortMenuVisible = state.sortMenuVisible,
+                appliedSortType = state.repoSortType,
                 onQueryChanged = { query -> onEvent(RepoListEvent.OnQueryChanged(query)) },
                 onClearClicked = { onEvent(RepoListEvent.OnQueryChanged("")) },
-                onSortClicked = { onEvent(RepoListEvent.UpdateSortDialogVisibility(true)) }
+                onSortMenuClicked = { onEvent(RepoListEvent.ToggleSortMenuOptionsVisibility) },
+                onSortTypeClicked = { onEvent(RepoListEvent.UpdateSortType(it)) },
+                onSortMenuDismissed = { onEvent(RepoListEvent.SortMenuOptionsDismissed) }
             )
 
             Box(
@@ -124,25 +121,7 @@ fun RepoList(
         PullRefreshIndicator(
             refreshing = state.isLoading,
             state = pullRefreshState,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
+            modifier = Modifier.align(Alignment.TopCenter)
         )
-
-        if (state.sortDialogVisible) {
-            RepoListOrder(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .background(Color.Cyan)
-                    .fillMaxWidth(0.9f)
-                    .fillMaxHeight(0.8f),
-                repoSortType = state.repoSortType,
-                onUpdateRepoSortType = {
-                    onEvent(RepoListEvent.UpdateSortType(it))
-                },
-                onCloseDialog = {
-                    onEvent(RepoListEvent.UpdateSortDialogVisibility(false))
-                }
-            )
-        }
     }
 }

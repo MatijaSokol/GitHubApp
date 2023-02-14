@@ -99,11 +99,14 @@ class RepoListViewModel @Inject constructor(
                     )
                 }
             }
-            is RepoListEvent.UpdateSortDialogVisibility -> _state.update {
-                it.copy(sortDialogVisible = event.isVisible)
-            }
             RepoListEvent.ScrollToTopExecuted -> _state.update {
                 it.copy(scrollToTop = false)
+            }
+            RepoListEvent.SortMenuOptionsDismissed -> _state.update {
+                it.copy(sortMenuVisible = false)
+            }
+            RepoListEvent.ToggleSortMenuOptionsVisibility -> _state.update {
+                it.copy(sortMenuVisible = !it.sortMenuVisible)
             }
         }
     }
