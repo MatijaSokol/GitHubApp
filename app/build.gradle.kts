@@ -21,6 +21,32 @@ android {
         }
     }
 
+    flavorDimensions += listOf("mode")
+
+    productFlavors {
+        create("free") {
+            dimension = "mode"
+            resValue("string", "app_name", "GitHub App Free")
+            applicationIdSuffix = ".free"
+        }
+        create("paid") {
+            dimension = "mode"
+            resValue("string", "app_name", "GitHub App")
+        }
+    }
+
+    sourceSets.getByName("free") {
+        java {
+            srcDirs("src/free/java")
+        }
+    }
+
+    sourceSets.getByName("paid") {
+        java {
+            srcDirs("src/paid/java")
+        }
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false

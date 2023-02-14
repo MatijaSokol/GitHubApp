@@ -78,9 +78,13 @@ fun NavGraphBuilder.addRepoList(
             state = state.value,
             imageLoader = imageLoader,
             onItemClick = { repo ->
-                navController.navigate(
-                    route = "${Screen.RepoDetail.route}/${repo.id}"
-                )
+                if (ModeChecker.CAN_NAVIGATE_TO_DETAILS) {
+                    navController.navigate(
+                        route = "${Screen.RepoDetail.route}/${repo.id}"
+                    )
+                } else {
+                    Toast.makeText(context, context.getString(R.string.mode_checker_navigation_disabled_message), Toast.LENGTH_SHORT).show()
+                }
             },
             onImageClick = {
                 try {
