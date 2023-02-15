@@ -1,7 +1,9 @@
 package com.matijasokol.githubapp.di
 
 import com.matijasokol.repo_domain.Paginator
+import com.matijasokol.repo_domain.RepoCache
 import com.matijasokol.repo_domain.usecase.FetchReposUseCase
+import com.matijasokol.repo_domain.usecase.GetRepoFromCache
 import com.matijasokol.repo_domain.usecase.SortReposUseCase
 import dagger.Module
 import dagger.Provides
@@ -23,5 +25,11 @@ object UseCaseModule {
     @Singleton
     fun provideSortReposUseCase(): SortReposUseCase {
         return SortReposUseCase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetRepoFromCacheUseCase(repoCache: RepoCache): GetRepoFromCache {
+        return GetRepoFromCache(repoCache)
     }
 }

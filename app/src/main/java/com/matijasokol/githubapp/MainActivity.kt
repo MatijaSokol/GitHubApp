@@ -21,6 +21,7 @@ import coil.ImageLoader
 import com.matijasokol.githubapp.navigation.Screen
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
 import com.matijasokol.ui_repodetail.RepoDetail
+import com.matijasokol.ui_repodetail.RepoDetailViewModel
 import com.matijasokol.ui_repolist.RepoList
 import com.matijasokol.ui_repolist.RepoListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -105,7 +106,11 @@ fun NavGraphBuilder.addRepoDetail(
         route = Screen.RepoDetail.route + "/{repoId}",
         arguments = Screen.RepoDetail.arguments
     ) {
+        val viewModel: RepoDetailViewModel = hiltViewModel()
+        val state = viewModel.state.collectAsState()
+
         RepoDetail(
+            state = state.value,
             imageLoader = imageLoader
         )
     }
