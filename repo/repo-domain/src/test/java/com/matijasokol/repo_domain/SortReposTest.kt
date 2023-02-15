@@ -11,7 +11,7 @@ class SortReposTest {
 
     private lateinit var sortRepos: SortReposUseCase
 
-    private val repoList = serializeRepoListData(ClassLoader.getSystemResource("test.json").readText())
+    private val repoList = serializeRepoListData(ClassLoader.getSystemResource("repo_list_valid.json").readText())
 
     @Before
     fun setUp() {
