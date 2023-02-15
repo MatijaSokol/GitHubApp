@@ -5,6 +5,7 @@ apply {
 plugins {
     kotlin(KotlinPlugins.serialization) version Kotlin.version
     kotlin("kapt")
+    id(SqlDelight.plugin)
 }
 
 dependencies {
@@ -18,5 +19,14 @@ dependencies {
     "implementation"(Ktor.json)
     "implementation"(Ktor.logging)
 
+    "implementation"(SqlDelight.runtime)
+
     "implementation"(Javax.inject)
+}
+
+sqldelight {
+    database("RepoDatabase") {
+        packageName = "com.matijasokol.repo_datasource.cache"
+        sourceFolders = listOf("sqldelight")
+    }
 }

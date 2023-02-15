@@ -7,5 +7,7 @@ dependencies {
     "implementation"(project(Modules.components))
     "implementation"(project(Modules.repoDomain))
 
+    "implementation"(SqlDelight.androidDriver)
+
     "implementation"(Coil.coil)
 }

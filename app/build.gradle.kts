@@ -97,6 +97,8 @@ dependencies {
     implementation(Hilt.android)
     kapt(Hilt.compiler)
 
+    implementation(SqlDelight.androidDriver)
+
     implementation(Ktor.core)
     implementation(Ktor.clientSerialization)
     implementation(Ktor.android)

@@ -1,0 +1,52 @@
+CREATE TABLE repoEntity(
+    id INTEGER NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    forks INTEGER NOT NULL,
+    watchers INTEGER NOT NULL,
+    open_issues INTEGER NOT NULL,
+    stars INTEGER NOT NULL,
+    updated_at TEXT NOT NULL,
+    author_id INTEGER NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES authorEntity(id)
+    ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
+CREATE TABLE authorEntity(
+    id INTEGER NOT NULL PRIMARY KEY,
+    image_url TEXT NOT NULL,
+    name TEXT NOT NULL,
+    profile_url TEXT NOT NULL
+);
+
+insertRepo:
+INSERT OR REPLACE
+INTO repoEntity (
+    id,
+    name,
+    forks,
+    watchers,
+    open_issues,
+    stars,
+    updated_at,
+    author_id
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+insertAuthor:
+INSERT OR REPLACE
+INTO authorEntity(
+    id,
+    image_url,
+    name,
+    profile_url
+) VALUES (?, ?, ?, ?);
+
+getRepo:
+SELECT * FROM repoEntity
+WHERE id = :id;
+
+getAuthor:
+SELECT * FROM authorEntity
+WHERE id = :id;
+
+removeAllAuthors:
+DELETE FROM authorEntity;
