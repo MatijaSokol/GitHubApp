@@ -38,7 +38,9 @@ class BasicPaginator @Inject constructor(
                 repoCache.insertRepos(result)
             }
 
-            emit(Resource.Success(result))
+            val cachedRepos = result.map { repoCache.getRepo(it.id) }
+
+            emit(Resource.Success(cachedRepos))
         } catch (e: JsonConvertException) {
             e.printStackTrace()
             emit(Resource.Error(ParseException()))
