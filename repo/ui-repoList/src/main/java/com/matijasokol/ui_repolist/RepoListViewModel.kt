@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
@@ -56,7 +57,10 @@ class RepoListViewModel @Inject constructor(
             fetchRepos.execute(
                 query = info.query,
                 shouldReset = listOf(RefreshTrigger.PullToRefresh, RefreshTrigger.Query).contains(info.refreshTrigger)
-            ).onEach { repos -> updateState(info, repos) }
+            ).map { repos -> updateState(info, repos) }
+                .onEach { shouldFetchNewPage -> if (shouldFetchNewPage) _refreshTrigger.update { it.copy(
+                    refreshTrigger = RefreshTrigger.NextPage
+                ) } }
         }
         .flowOn(Dispatchers.IO)
 
@@ -113,7 +117,14 @@ class RepoListViewModel @Inject constructor(
     private fun updateState(
         info: RefreshTriggerInfo,
         resource: Resource<List<Repo>>
-    ) {
+    ): Boolean {
+        // Sometimes new page returns data which is already contained in previous page.
+        // In that case automatically start fetching new page.
+        val forceFetchNextPage = (resource as? Resource.Success)?.data
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { state.value.items.containsAll(it) }
+            ?: false
+
         when (resource) {
             is Resource.Error -> _state.update {
                 when (resource.ex) {
@@ -152,5 +163,7 @@ class RepoListViewModel @Inject constructor(
                 }
             ) }
         }
+
+        return forceFetchNextPage
     }
 }
