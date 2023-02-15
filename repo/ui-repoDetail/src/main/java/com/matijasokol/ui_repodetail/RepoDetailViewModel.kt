@@ -37,9 +37,9 @@ class RepoDetailViewModel @Inject constructor(
     private fun getRepoFromCache(repoId: Int) {
         getRepoFromCache.execute(repoId).onEach { resource ->
             when (resource) {
-                is Resource.Error -> _state.update { it.copy(message = "error") }
+                is Resource.Error -> _state.update { it }
                 is Resource.Loading -> _state.update { it }
-                is Resource.Success -> _state.update { it.copy(message = resource.data.name) }
+                is Resource.Success -> _state.update { it.copy(repo = resource.data) }
             }
         }.launchIn(viewModelScope)
     }

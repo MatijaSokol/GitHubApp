@@ -85,6 +85,8 @@ dependencies {
 
     implementation(Coil.coil)
 
+    implementation(Accompanist.animations)
+
     implementation(Compose.activity)
     implementation(Compose.ui)
     implementation(Compose.material)
