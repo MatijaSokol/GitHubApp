@@ -1,8 +1,7 @@
-package com.matijasokol.repo_datasource
+package com.matijasokol.repo_datasource.network
 
-import com.matijasokol.repo_datasource.constants.NetworkConstants
-import com.matijasokol.repo_datasource.mappers.toRepos
-import com.matijasokol.repo_datasource.model.FetchReposResponse
+import com.matijasokol.repo_datasource.mappers.toRepo
+import com.matijasokol.repo_datasource.network.model.FetchReposResponse
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.repo_domain.RepoService
 import io.ktor.client.HttpClient
@@ -27,6 +26,6 @@ class RepoServiceImpl @Inject constructor(
             parameter(NetworkConstants.PARAM_PAGE, page)
         }
 
-        return result.body<FetchReposResponse>().toRepos()
+        return result.body<FetchReposResponse>().repos.map { it.toRepo() }
     }
 }

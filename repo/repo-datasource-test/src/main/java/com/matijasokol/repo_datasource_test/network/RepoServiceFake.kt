@@ -1,7 +1,7 @@
 package com.matijasokol.repo_datasource_test.network
 
-import com.matijasokol.repo_datasource.RepoServiceImpl
-import com.matijasokol.repo_datasource.constants.NetworkConstants
+import com.matijasokol.repo_datasource.network.RepoServiceImpl
+import com.matijasokol.repo_datasource.network.NetworkConstants
 import com.matijasokol.repo_domain.RepoService
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine

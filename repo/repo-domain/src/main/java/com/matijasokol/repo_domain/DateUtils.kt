@@ -10,4 +10,8 @@ object DateUtils {
     fun fromStringToDate(date: String): Date {
         return dateFormatter.parse(date)
     }
+
+    fun fromDateToString(date: Date): String {
+        return dateFormatter.format(date)
+    }
 }

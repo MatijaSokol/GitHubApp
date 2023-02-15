@@ -1,4 +1,4 @@
-package com.matijasokol.repo_datasource.constants
+package com.matijasokol.repo_datasource.network
 
 object NetworkConstants {
 
