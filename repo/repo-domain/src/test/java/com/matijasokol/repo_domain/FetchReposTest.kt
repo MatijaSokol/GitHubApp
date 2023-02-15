@@ -1,6 +1,8 @@
 package com.matijasokol.repo_domain
 
 import com.matijasokol.core.domain.Resource
+import com.matijasokol.repo_datasource_test.cache.RepoCacheFake
+import com.matijasokol.repo_datasource_test.cache.RepoDatabaseFake
 import com.matijasokol.repo_datasource_test.network.FakePaginator
 import com.matijasokol.repo_datasource_test.network.RepoServiceFake
 import com.matijasokol.repo_datasource_test.network.RepoServiceResponseType
@@ -20,6 +22,9 @@ class FetchReposTest {
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     type = RepoServiceResponseType.GoodData
+                ),
+                repoCache = RepoCacheFake(
+                    RepoDatabaseFake()
                 )
             )
         )
@@ -40,6 +45,9 @@ class FetchReposTest {
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     type = RepoServiceResponseType.EmptyList
+                ),
+                repoCache = RepoCacheFake(
+                    RepoDatabaseFake()
                 )
             )
         )
@@ -60,6 +68,9 @@ class FetchReposTest {
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     type = RepoServiceResponseType.MalformedData
+                ),
+                repoCache = RepoCacheFake(
+                    RepoDatabaseFake()
                 )
             )
         )
@@ -80,6 +91,9 @@ class FetchReposTest {
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     type = RepoServiceResponseType.Http404
+                ),
+                repoCache = RepoCacheFake(
+                    RepoDatabaseFake()
                 )
             )
         )

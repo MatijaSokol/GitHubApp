@@ -1,6 +1,6 @@
 package com.matijasokol.repo_datasource_test.network
 
-import com.matijasokol.repo_datasource.mappers.toRepos
+import com.matijasokol.repo_datasource.mappers.toRepo
 import com.matijasokol.repo_datasource.network.model.FetchReposResponse
 import com.matijasokol.repo_domain.model.Repo
 import kotlinx.serialization.decodeFromString
@@ -11,5 +11,5 @@ val json = Json {
 }
 
 fun serializeRepoListData(jsonData: String): List<Repo> {
-    return json.decodeFromString<FetchReposResponse>(jsonData).toRepos()
+    return json.decodeFromString<FetchReposResponse>(jsonData).repos.map { it.toRepo() }
 }
