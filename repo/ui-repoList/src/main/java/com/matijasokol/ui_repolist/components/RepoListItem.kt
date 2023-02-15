@@ -23,7 +23,6 @@ import coil.ImageLoader
 import com.matijasokol.components.RoundedImage
 import com.matijasokol.repo_domain.model.Author
 import com.matijasokol.repo_domain.model.Repo
-import com.matijasokol.ui_repolist.RepoInfoPanel
 
 @Composable
 fun RepoListItem(

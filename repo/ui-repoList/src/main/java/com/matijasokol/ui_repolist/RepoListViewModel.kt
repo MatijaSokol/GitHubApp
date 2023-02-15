@@ -141,7 +141,7 @@ class RepoListViewModel @Inject constructor(
             ) }
             is Resource.Success -> _state.update { it.copy(
                 items = when (info.refreshTrigger) {
-                    RefreshTrigger.NextPage -> (state.value.items + resource.data).distinctBy { it.id }
+                    RefreshTrigger.NextPage -> (state.value.items + resource.data).distinctBy { repo -> repo.id }
                     else -> resource.data
                 },
                 endReached = resource.data.isEmpty(),

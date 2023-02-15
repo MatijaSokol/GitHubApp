@@ -1,4 +1,4 @@
-package com.matijasokol.ui_repolist
+package com.matijasokol.ui_repolist.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -13,6 +13,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.matijasokol.components.TextWithIcon
 import com.matijasokol.repo_domain.model.Repo
+import com.matijasokol.ui_repolist.R
 
 @Composable
 fun RepoInfoPanel(
