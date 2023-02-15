@@ -10,5 +10,9 @@ data class Repo(
     val forksCount: Int,
     val issuesCount: Int,
     val lastUpdated: Date,
-    val starsCount: Int
+    val starsCount: Int,
+    val topics: List<String>,
+    val language: String?,
+    val url: String,
+    val description: String?
 )

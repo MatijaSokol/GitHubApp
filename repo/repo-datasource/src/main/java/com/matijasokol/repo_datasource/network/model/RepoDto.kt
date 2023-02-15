@@ -27,7 +27,19 @@ data class RepoDto(
     val updatedAt: String,
 
     @SerialName("stargazers_count")
-    val stars: Int
+    val stars: Int,
+
+    @SerialName("topics")
+    val topics: List<String>,
+
+    @SerialName("language")
+    val language: String?,
+
+    @SerialName("html_url")
+    val url: String,
+
+    @SerialName("description")
+    val description: String?
 )
 
 

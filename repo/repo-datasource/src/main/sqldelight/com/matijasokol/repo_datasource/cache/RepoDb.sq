@@ -6,6 +6,10 @@ CREATE TABLE repoEntity(
     open_issues INTEGER NOT NULL,
     stars INTEGER NOT NULL,
     updated_at TEXT NOT NULL,
+    topics TEXT NOT NULL,
+    language TEXT,
+    url TEXT NOT NULL,
+    description TEXT,
     author_id INTEGER NOT NULL,
     FOREIGN KEY (author_id) REFERENCES authorEntity(id)
     ON UPDATE NO ACTION ON DELETE CASCADE
@@ -28,8 +32,12 @@ INTO repoEntity (
     open_issues,
     stars,
     updated_at,
+    topics,
+    language,
+    url,
+    description,
     author_id
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 insertAuthor:
 INSERT OR REPLACE

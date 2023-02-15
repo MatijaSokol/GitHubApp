@@ -6,6 +6,8 @@ import com.matijasokol.repo_domain.model.Author
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.repodatasource.cache.AuthorEntity
 import com.matijasokol.repodatasource.cache.RepoEntity
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 fun RepoDto.toRepo() = Repo(
     id = id,
@@ -22,7 +24,11 @@ fun RepoDto.toRepo() = Repo(
     forksCount = forks,
     issuesCount = openIssues,
     lastUpdated = DateUtils.fromStringToDate(updatedAt),
-    starsCount = stars
+    starsCount = stars,
+    topics = topics,
+    language = language,
+    url = url,
+    description = description
 )
 
 fun RepoEntity.toRepo(authorEntity: AuthorEntity) = Repo(
@@ -38,5 +44,9 @@ fun RepoEntity.toRepo(authorEntity: AuthorEntity) = Repo(
     forksCount = forks.toInt(),
     issuesCount = open_issues.toInt(),
     lastUpdated = DateUtils.fromStringToDate(updated_at),
-    starsCount = stars.toInt()
+    starsCount = stars.toInt(),
+    topics = Json.decodeFromString(topics),
+    language = language,
+    url = url,
+    description = description
 )

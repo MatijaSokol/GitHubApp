@@ -4,6 +4,8 @@ import com.matijasokol.repo_datasource.mappers.toRepo
 import com.matijasokol.repo_domain.DateUtils
 import com.matijasokol.repo_domain.RepoCache
 import com.matijasokol.repo_domain.model.Repo
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class RepoCacheImpl @Inject constructor(
@@ -32,7 +34,11 @@ class RepoCacheImpl @Inject constructor(
                     open_issues = issuesCount.toLong(),
                     stars = starsCount.toLong(),
                     updated_at = DateUtils.fromDateToString(lastUpdated),
-                    author_id = author.id.toLong()
+                    author_id = author.id.toLong(),
+                    topics = Json.encodeToString(topics),
+                    language = language,
+                    url = url,
+                    description = description
                 )
             }
         }
@@ -81,7 +87,11 @@ class RepoCacheImpl @Inject constructor(
                         open_issues = issuesCount.toLong(),
                         stars = starsCount.toLong(),
                         updated_at = DateUtils.fromDateToString(lastUpdated),
-                        author_id = author.id.toLong()
+                        author_id = author.id.toLong(),
+                        topics = Json.encodeToString(topics),
+                        language = language,
+                        url = url,
+                        description = description
                     )
                 }
             }
