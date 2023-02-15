@@ -18,14 +18,15 @@ class FetchReposTest {
 
     @Test
     fun getReposSuccess() = runBlocking {
+        val repoCache = RepoCacheFake(
+            RepoDatabaseFake()
+        )
         fetchRepos = FetchReposUseCase(
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     type = RepoServiceResponseType.GoodData
                 ),
-                repoCache = RepoCacheFake(
-                    RepoDatabaseFake()
-                )
+                repoCache = repoCache
             )
         )
 
@@ -35,20 +36,25 @@ class FetchReposTest {
 
         assert(emissions[1] is Resource.Success)
         assert((emissions[1] as Resource.Success).data.size == 50)
+        assert((emissions[1] as Resource.Success).data.size == repoCache.getAllRepos().size)
+        assert(
+            repoCache.getAllRepos().all { cachedRepo -> (emissions[1] as Resource.Success).data.contains(cachedRepo) }
+        )
 
         assert(emissions[2] == Resource.Loading<List<Repo>>(isLoading = false))
     }
 
     @Test
     fun getReposEmpty() = runBlocking {
+        val repoCache = RepoCacheFake(
+            RepoDatabaseFake()
+        )
         fetchRepos = FetchReposUseCase(
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     type = RepoServiceResponseType.EmptyList
                 ),
-                repoCache = RepoCacheFake(
-                    RepoDatabaseFake()
-                )
+                repoCache = repoCache
             )
         )
 
@@ -58,20 +64,25 @@ class FetchReposTest {
 
         assert(emissions[1] is Resource.Success)
         assert((emissions[1] as Resource.Success).data.isEmpty())
+        assert((emissions[1] as Resource.Success).data.size == repoCache.getAllRepos().size)
+        assert(
+            repoCache.getAllRepos().all { cachedRepo -> (emissions[1] as Resource.Success).data.contains(cachedRepo) }
+        )
 
         assert(emissions[2] == Resource.Loading<List<Repo>>(isLoading = false))
     }
 
     @Test
     fun getReposMalformed() = runBlocking {
+        val repoCache = RepoCacheFake(
+            RepoDatabaseFake()
+        )
         fetchRepos = FetchReposUseCase(
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     type = RepoServiceResponseType.MalformedData
                 ),
-                repoCache = RepoCacheFake(
-                    RepoDatabaseFake()
-                )
+                repoCache = repoCache
             )
         )
 
@@ -87,14 +98,15 @@ class FetchReposTest {
 
     @Test
     fun getReposInvalid() = runBlocking {
+        val repoCache = RepoCacheFake(
+            RepoDatabaseFake()
+        )
         fetchRepos = FetchReposUseCase(
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     type = RepoServiceResponseType.Http404
                 ),
-                repoCache = RepoCacheFake(
-                    RepoDatabaseFake()
-                )
+                repoCache = repoCache
             )
         )
 

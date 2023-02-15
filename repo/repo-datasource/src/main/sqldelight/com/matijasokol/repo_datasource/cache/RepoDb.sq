@@ -44,6 +44,9 @@ getRepo:
 SELECT * FROM repoEntity
 WHERE id = :id;
 
+getAllRepos:
+SELECT * FROM repoEntity;
+
 getAuthor:
 SELECT * FROM authorEntity
 WHERE id = :id;
