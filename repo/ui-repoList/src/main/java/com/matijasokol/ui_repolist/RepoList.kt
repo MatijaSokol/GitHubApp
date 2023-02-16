@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
@@ -30,6 +31,7 @@ import com.matijasokol.repo_domain.model.Author
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repolist.components.RepoListItem
 import com.matijasokol.ui_repolist.components.RepoListToolbar
+import com.matijasokol.ui_repolist.test.TAG_REPO_INFO_MESSAGE
 
 @OptIn(
     ExperimentalFoundationApi::class,
@@ -121,7 +123,8 @@ fun RepoList(
                     Text(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .padding(16.dp),
+                            .padding(16.dp)
+                            .testTag(TAG_REPO_INFO_MESSAGE),
                         text = state.infoMessage,
                         textAlign = TextAlign.Center
                     )

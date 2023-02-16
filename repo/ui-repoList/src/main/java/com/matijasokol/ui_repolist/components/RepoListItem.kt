@@ -13,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -23,6 +24,8 @@ import coil.ImageLoader
 import com.matijasokol.components.RoundedImage
 import com.matijasokol.repo_domain.model.Author
 import com.matijasokol.repo_domain.model.Repo
+import com.matijasokol.ui_repolist.test.TAG_REPO_LIST_ITEM
+import com.matijasokol.ui_repolist.test.TAG_REPO_NAME
 
 @Composable
 fun RepoListItem(
@@ -34,7 +37,8 @@ fun RepoListItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp),
+            .padding(4.dp)
+            .testTag(TAG_REPO_LIST_ITEM),
         backgroundColor = MaterialTheme.colors.surface,
         shape = RoundedCornerShape(12.dp),
         elevation = 8.dp
@@ -70,7 +74,9 @@ fun RepoListItem(
             }
 
             Text(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .testTag(TAG_REPO_NAME),
                 text = buildAnnotatedString {
                     append("${repo.author.name}/")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {

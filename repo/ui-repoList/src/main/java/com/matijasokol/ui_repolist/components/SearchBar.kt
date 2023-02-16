@@ -13,10 +13,12 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.matijasokol.ui_repolist.test.TAG_REPO_SEARCH_BAR
 
 @Composable
 fun SearchBar(
@@ -27,7 +29,8 @@ fun SearchBar(
 ) {
     TextField(
         modifier = modifier
-            .padding(8.dp),
+            .padding(8.dp)
+            .testTag(TAG_REPO_SEARCH_BAR),
         value = value,
         onValueChange = onTextChanged,
         label = { Text(text = "Search") },
