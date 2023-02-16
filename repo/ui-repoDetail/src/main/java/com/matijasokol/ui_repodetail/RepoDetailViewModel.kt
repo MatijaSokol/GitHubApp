@@ -1,5 +1,6 @@
 package com.matijasokol.ui_repodetail
 
+import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RepoDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getRepoFromCache: GetRepoFromCache
+    private val getRepoFromCache: GetRepoFromCache,
+    private val context: Application
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RepoDetailState())
@@ -37,8 +39,8 @@ class RepoDetailViewModel @Inject constructor(
     private fun getRepoFromCache(repoId: Int) {
         getRepoFromCache.execute(repoId).onEach { resource ->
             when (resource) {
-                is Resource.Error -> _state.update { it }
-                is Resource.Loading -> _state.update { it }
+                is Resource.Error -> _state.update { it.copy(errorMessage = context.getString(R.string.repo_detail_message_cache_error, repoId)) }
+                is Resource.Loading -> _state.update { it.copy(isLoading = resource.isLoading) }
                 is Resource.Success -> _state.update { it.copy(repo = resource.data) }
             }
         }.launchIn(viewModelScope)

@@ -1,17 +1,22 @@
 package com.matijasokol.repo_domain
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 object DateUtils {
 
-    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private val apiDateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private val localDateFormatter = SimpleDateFormat("HH:mm dd.MM.yyyy")
 
     fun fromStringToDate(date: String): Date {
-        return dateFormatter.parse(date)
+        return apiDateFormatter.parse(date)
     }
 
     fun fromDateToString(date: Date): String {
-        return dateFormatter.format(date)
+        return apiDateFormatter.format(date)
+    }
+
+    fun dateToLocalDateString(date: Date): String {
+        return localDateFormatter.format(date)
     }
 }
