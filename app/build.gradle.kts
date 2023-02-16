@@ -16,6 +16,7 @@ android {
         versionCode = Android.versionCode
         versionName = Android.versionName
 
+        testInstrumentationRunner = "com.matijasokol.githubapp.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -107,4 +108,12 @@ dependencies {
     implementation(Ktor.contentNegotiation)
     implementation(Ktor.json)
     implementation(Ktor.logging)
+
+    androidTestImplementation(project(Modules.repoDataSourceTest))
+    androidTestImplementation(AndroidXTest.runner)
+    androidTestImplementation(ComposeTest.uiTestJunit4)
+    debugImplementation(ComposeTest.uiTestManifest)
+    androidTestImplementation(HiltTest.hiltAndroidTesting)
+    kaptAndroidTest(Hilt.compiler)
+    androidTestImplementation(Junit.junit4)
 }

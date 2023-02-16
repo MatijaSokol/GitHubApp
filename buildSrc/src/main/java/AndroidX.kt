@@ -9,3 +9,8 @@ object AndroidX {
     private const val lifecycleVmKtxVersion = "2.5.1"
     const val lifecycleVmKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVmKtxVersion"
 }
+
+object AndroidXTest {
+    private const val version = "1.5.2"
+    const val runner = "androidx.test:runner:$version"
+}
