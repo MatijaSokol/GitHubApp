@@ -15,9 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.matijasokol.ui_repodetail.R
+import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_INFO_TEXT
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -57,7 +59,9 @@ fun RepoDetailPanel(
 
         items(stats) {
             Text(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag(TAG_REPO_DETAIL_INFO_TEXT),
                 text = it,
                 fontSize = 20.sp
             )

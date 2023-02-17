@@ -24,12 +24,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import com.matijasokol.components.RoundedImage
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repodetail.components.RepoDetailPanel
+import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
+import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_ERROR_TEXT
+import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_PROGRESS
+import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_SCREEN
 
 @Composable
 fun RepoDetail(
@@ -49,7 +54,11 @@ fun RepoDetail(
 
 @Composable
 private fun BoxScope.LoadingScreen() {
-    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    CircularProgressIndicator(
+        modifier = Modifier
+            .align(Alignment.Center)
+            .testTag(TAG_REPO_DETAIL_PROGRESS)
+    )
 }
 
 @Composable
@@ -57,7 +66,8 @@ private fun BoxScope.ErrorScreen(errorMessage: String) {
     Text(
         modifier = Modifier
             .align(Alignment.Center)
-            .padding(8.dp),
+            .padding(8.dp)
+            .testTag(TAG_REPO_DETAIL_ERROR_TEXT),
         text = errorMessage,
         textAlign = TextAlign.Center
     )
@@ -77,7 +87,8 @@ private fun BoxScope.SuccessScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(16.dp),
+                .padding(16.dp)
+                .testTag(TAG_REPO_DETAIL_SCREEN),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
@@ -131,17 +142,19 @@ private fun BoxScope.SuccessScreen(
                 }
 
                 Row {
-                    Button(onClick = {
-                        try {
-                            uriHandler.openUri(repo.url)
-                        } catch (e: Exception) {
-                            Toast.makeText(
-                                context,
-                                R.string.repo_detail_message_repo_browser_error,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }) {
+                    Button(
+                        modifier = Modifier.testTag(TAG_REPO_DETAIL_BUTTON_REPO_WEB),
+                        onClick = {
+                            try {
+                                uriHandler.openUri(repo.url)
+                            } catch (e: Exception) {
+                                Toast.makeText(
+                                    context,
+                                    R.string.repo_detail_message_repo_browser_error,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }) {
                         Text(text = context.getString(R.string.repo_detail_btn_repo_details))
                     }
                 }

@@ -8,4 +8,9 @@ dependencies {
     "implementation"(project(Modules.repoDomain))
 
     "implementation"(Coil.coil)
+
+    "androidTestImplementation"(project(Modules.repoDataSourceTest))
+    "androidTestImplementation"(ComposeTest.uiTestJunit4)
+    "androidTestImplementation"(Junit.junit4)
+    "debugImplementation"(ComposeTest.uiTestManifest)
 }
