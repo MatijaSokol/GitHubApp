@@ -42,28 +42,28 @@ class RepoServiceFake {
                                 when (type) {
                                     is RepoServiceResponseType.EmptyList -> {
                                         respond(
-                                            ClassLoader.getSystemResource("repo_list_empty.json").readText(),
+                                            this@Companion::class.java.getResource("/repo_list_empty.json").readText(),
                                             status = HttpStatusCode.OK,
                                             headers = responseHeaders
                                         )
                                     }
                                     is RepoServiceResponseType.MalformedData -> {
                                         respond(
-                                            ClassLoader.getSystemResource("repo_list_malformed.json").readText(),
+                                            this@Companion::class.java.getResource("/repo_list_malformed.json").readText(),
                                             status = HttpStatusCode.OK,
                                             headers = responseHeaders
                                         )
                                     }
                                     is RepoServiceResponseType.GoodData -> {
                                         respond(
-                                            ClassLoader.getSystemResource("repo_list_valid.json").readText(),
+                                            this@Companion::class.java.getResource("/repo_list_valid.json").readText(),
                                             status = HttpStatusCode.OK,
                                             headers = responseHeaders
                                         )
                                     }
                                     is RepoServiceResponseType.Http404 -> {
                                         respond(
-                                            ClassLoader.getSystemResource("repo_list_invalid.json").readText(),
+                                            this@Companion::class.java.getResource("/repo_list_invalid.json").readText(),
                                             status = HttpStatusCode.NotFound,
                                             headers = responseHeaders
                                         )

@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-const val DEFAULT_QUERY = "android"
+const val DEFAULT_QUERY = "kotlin"
 
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
