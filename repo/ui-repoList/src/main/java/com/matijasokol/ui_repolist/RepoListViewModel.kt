@@ -58,9 +58,7 @@ class RepoListViewModel @Inject constructor(
                 query = info.query,
                 shouldReset = listOf(RefreshTrigger.PullToRefresh, RefreshTrigger.Query).contains(info.refreshTrigger)
             ).map { repos -> updateState(info, repos) }
-                .onEach { shouldFetchNewPage -> if (shouldFetchNewPage) _refreshTrigger.update { it.copy(
-                    refreshTrigger = RefreshTrigger.NextPage
-                ) } }
+                .onEach { shouldFetchNewPage -> if (shouldFetchNewPage) onEvent(RepoListEvent.LoadMore) }
         }
         .flowOn(Dispatchers.IO)
 
