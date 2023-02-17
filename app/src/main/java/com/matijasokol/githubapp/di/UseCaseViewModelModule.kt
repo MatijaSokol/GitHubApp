@@ -1,20 +1,20 @@
 package com.matijasokol.githubapp.di
 
-import com.matijasokol.repo_datasource.BasicPaginator
 import com.matijasokol.repo_domain.Paginator
-import dagger.Binds
+import com.matijasokol.repo_domain.usecase.FetchReposUseCase
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
-abstract class ViewModelModule {
+object UseCaseViewModelModule {
 
-    @Binds
+    @Provides
     @ViewModelScoped
-    abstract fun provideBasicPaginator(basicPaginator: BasicPaginator): Paginator
+    fun provideFetchReposUseCase(paginator: Paginator): FetchReposUseCase {
+        return FetchReposUseCase(paginator)
+    }
 }
