@@ -31,6 +31,7 @@ import com.matijasokol.repo_domain.model.Author
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repolist.components.RepoListItem
 import com.matijasokol.ui_repolist.components.RepoListToolbar
+import com.matijasokol.ui_repolist.test.TAG_PULL_TO_REFRESH
 import com.matijasokol.ui_repolist.test.TAG_REPO_INFO_MESSAGE
 
 @OptIn(
@@ -135,7 +136,9 @@ fun RepoList(
         PullRefreshIndicator(
             refreshing = state.isLoading,
             state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .testTag(TAG_PULL_TO_REFRESH)
         )
     }
 }
