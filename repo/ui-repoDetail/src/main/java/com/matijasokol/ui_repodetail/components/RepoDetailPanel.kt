@@ -2,6 +2,7 @@ package com.matijasokol.ui_repodetail.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,7 +34,11 @@ fun RepoDetailPanel(
             .fillMaxSize()
             .padding(horizontal = 40.dp, vertical = 20.dp)
             .background(
-                color = Color(218, 218, 218),
+                color = if (isSystemInDarkTheme()) {
+                    Color(50, 50, 50)
+                } else {
+                    Color(218, 218, 218)
+                },
                 shape = RoundedCornerShape(8.dp)
             ),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -43,7 +48,11 @@ fun RepoDetailPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(180, 180, 180),
+                        color = if (isSystemInDarkTheme()) {
+                            Color(100, 100, 100)
+                        } else {
+                            Color(180, 180, 180)
+                        },
                         shape = RoundedCornerShape(
                             topStart = 8.dp,
                             topEnd = 8.dp,

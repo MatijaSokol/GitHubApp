@@ -2,12 +2,14 @@ package com.matijasokol.ui_repolist.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -66,8 +68,13 @@ fun RepoListToolbar(
                     items.forEach { item ->
                         DropdownMenuItem(
                             modifier = Modifier.background(
-                                if (item.first == appliedSortType) Color(187, 240, 194)
-                                else Color.White
+                                if (item.first == appliedSortType) {
+                                    if (isSystemInDarkTheme()) {
+                                        Color(50, 50, 50)
+                                    } else {
+                                        Color(187, 240, 194)
+                                    }
+                                } else MaterialTheme.colors.surface
                             ),
                             onClick = {
                                 onSortTypeClicked(item.first)

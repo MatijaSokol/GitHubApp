@@ -1,6 +1,7 @@
 package com.matijasokol.ui_repodetail
 
 import android.widget.Toast
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -132,8 +133,16 @@ private fun BoxScope.SuccessScreen(
                             modifier = Modifier.padding(horizontal = 2.dp),
                             enabled = false,
                             colors = ChipDefaults.chipColors(
-                                backgroundColor = Color(218, 218, 218),
-                                contentColor = Color.Black
+                                backgroundColor = if (isSystemInDarkTheme()) {
+                                    Color(50, 50, 50)
+                                } else {
+                                    Color(100, 100, 100)
+                                },
+                                contentColor = if (isSystemInDarkTheme()) {
+                                    Color.White
+                                } else {
+                                    Color.Black
+                                }
                             )
                         ) {
                             Text(text = it)
