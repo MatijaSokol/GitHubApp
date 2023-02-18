@@ -52,7 +52,12 @@ class RepoListViewModel @Inject constructor(
                 else -> false
             }
         }
-        .filter { !state.value.isLoading }
+        .filter {
+            when (it.refreshTrigger) {
+                RefreshTrigger.NextPage -> !state.value.isLoading
+                else -> true
+            }
+        }
         .flatMapLatest { info ->
             fetchRepos.execute(
                 query = info.query,
@@ -119,7 +124,7 @@ class RepoListViewModel @Inject constructor(
         // Sometimes new page returns data which is already contained in previous page.
         // In that case automatically start fetching new page.
         val forceFetchNextPage = (resource as? Resource.Success)?.data
-            ?.takeIf { it.isNotEmpty() }
+            ?.takeIf { it.isNotEmpty() && info.refreshTrigger is RefreshTrigger.NextPage }
             ?.let { state.value.items.containsAll(it) }
             ?: false
 
