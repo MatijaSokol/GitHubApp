@@ -1,6 +1,8 @@
 package com.matijasokol.githubapp.di
 
 import com.matijasokol.repo_domain.RepoCache
+import com.matijasokol.repo_domain.RepoService
+import com.matijasokol.repo_domain.usecase.GetRepoDetails
 import com.matijasokol.repo_domain.usecase.GetRepoFromCache
 import com.matijasokol.repo_domain.usecase.SortReposUseCase
 import dagger.Module
@@ -23,5 +25,17 @@ object UseCaseAppModule {
     @Singleton
     fun provideGetRepoFromCacheUseCase(repoCache: RepoCache): GetRepoFromCache {
         return GetRepoFromCache(repoCache)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetRepoDetailsUseCase(
+        repoService: RepoService,
+        repoCache: RepoCache
+    ): GetRepoDetails {
+        return GetRepoDetails(
+            repoService = repoService,
+            repoCache = repoCache
+        )
     }
 }

@@ -21,7 +21,11 @@ class RepoCacheImpl @Inject constructor(
                     id = id.toLong(),
                     image_url = image,
                     name = name,
-                    profile_url = profileUrl
+                    profile_url = profileUrl,
+                    followers_url = followersUrl,
+                    repos_url = reposUrl,
+                    followers_count = followersCount?.toLong(),
+                    repos_count = reposCount?.toLong()
                 )
             }
 
@@ -74,7 +78,11 @@ class RepoCacheImpl @Inject constructor(
                         id = id.toLong(),
                         image_url = image,
                         name = name,
-                        profile_url = profileUrl
+                        profile_url = profileUrl,
+                        followers_url = followersUrl,
+                        repos_url = reposUrl,
+                        followers_count = followersCount?.toLong(),
+                        repos_count = reposCount?.toLong()
                     )
                 }
 
@@ -96,5 +104,13 @@ class RepoCacheImpl @Inject constructor(
                 }
             }
         }
+    }
+
+    override suspend fun updateFollowersCount(count: Int, authorId: Int) {
+        queries.updateFollowersCount(count.toLong(), authorId.toLong())
+    }
+
+    override suspend fun updateReposCount(count: Int, authorId: Int) {
+        queries.updateReposCount(count.toLong(), authorId.toLong())
     }
 }

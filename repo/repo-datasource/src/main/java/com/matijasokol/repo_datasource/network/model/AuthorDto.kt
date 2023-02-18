@@ -15,5 +15,11 @@ data class AuthorDto(
     val name: String,
 
     @SerialName("html_url")
-    val profileUrl: String
+    val profileUrl: String,
+
+    @SerialName("followers_url")
+    val followersUrl: String,
+
+    @SerialName("repos_url")
+    val reposUrl: String
 )

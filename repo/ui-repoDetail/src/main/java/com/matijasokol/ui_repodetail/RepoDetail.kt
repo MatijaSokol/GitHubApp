@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
@@ -17,6 +19,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -163,22 +166,31 @@ private fun BoxScope.SuccessScreen(
                     }
                 }
 
-                Row {
-                    Button(
-                        modifier = Modifier.testTag(TAG_REPO_DETAIL_BUTTON_REPO_WEB),
-                        onClick = {
-                            try {
-                                uriHandler.openUri(repo.url)
-                            } catch (e: Exception) {
-                                Toast.makeText(
-                                    context,
-                                    R.string.repo_detail_message_repo_browser_error,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }) {
-                        Text(text = context.getString(R.string.repo_detail_btn_repo_details))
-                    }
+                Spacer(modifier = Modifier.height(2.dp))
+                Divider()
+                Spacer(modifier = Modifier.height(2.dp))
+
+                repo.author.followersCount?.let {
+                    Text(text = context.getString(R.string.repo_detail_followers_count_text, it))
+                }
+                repo.author.reposCount?.let {
+                    Text(text = context.getString(R.string.repo_detail_repos_count_text, it))
+                }
+
+                Button(
+                    modifier = Modifier.testTag(TAG_REPO_DETAIL_BUTTON_REPO_WEB),
+                    onClick = {
+                        try {
+                            uriHandler.openUri(repo.url)
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                context,
+                                R.string.repo_detail_message_repo_browser_error,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }) {
+                    Text(text = context.getString(R.string.repo_detail_btn_repo_details))
                 }
             }
         }

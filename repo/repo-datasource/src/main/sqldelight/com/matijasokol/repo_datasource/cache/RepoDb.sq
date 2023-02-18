@@ -19,7 +19,11 @@ CREATE TABLE authorEntity(
     id INTEGER NOT NULL PRIMARY KEY,
     image_url TEXT NOT NULL,
     name TEXT NOT NULL,
-    profile_url TEXT NOT NULL
+    profile_url TEXT NOT NULL,
+    followers_url TEXT NOT NULL,
+    repos_url TEXT NOT NULL,
+    followers_count INTEGER DEFAULT NULL,
+    repos_count INTEGER DEFAULT NULL
 );
 
 insertRepo:
@@ -45,8 +49,12 @@ INTO authorEntity(
     id,
     image_url,
     name,
-    profile_url
-) VALUES (?, ?, ?, ?);
+    profile_url,
+    followers_url,
+    repos_url,
+    followers_count,
+    repos_count
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 getRepo:
 SELECT * FROM repoEntity
@@ -61,3 +69,13 @@ WHERE id = :id;
 
 removeAllAuthors:
 DELETE FROM authorEntity;
+
+updateFollowersCount:
+UPDATE authorEntity
+SET followers_count = :follower_count
+WHERE id = :id;
+
+updateReposCount:
+UPDATE authorEntity
+SET repos_count = :repos_count
+WHERE id = :id;

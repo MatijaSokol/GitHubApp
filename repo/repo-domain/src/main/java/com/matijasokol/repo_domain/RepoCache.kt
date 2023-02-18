@@ -15,4 +15,8 @@ interface RepoCache {
     suspend fun deleteAll()
 
     suspend fun replaceRepos(repos: List<Repo>)
+
+    suspend fun updateFollowersCount(count: Int, authorId: Int)
+
+    suspend fun updateReposCount(count: Int, authorId: Int)
 }

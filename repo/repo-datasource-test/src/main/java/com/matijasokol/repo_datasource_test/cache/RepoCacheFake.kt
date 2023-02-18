@@ -48,4 +48,12 @@ class RepoCacheFake(
             insertRepos(repos)
         }
     }
+
+    override suspend fun updateFollowersCount(count: Int, authorId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateReposCount(count: Int, authorId: Int) {
+        TODO("Not yet implemented")
+    }
 }
