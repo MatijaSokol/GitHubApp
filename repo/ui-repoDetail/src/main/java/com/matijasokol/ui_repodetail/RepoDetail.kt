@@ -26,7 +26,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import com.matijasokol.components.RoundedImage
@@ -123,8 +127,17 @@ private fun BoxScope.SuccessScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = repo.name)
-                Text(text = repo.author.name)
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    text = buildAnnotatedString {
+                        append("${repo.author.name}/")
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(repo.name)
+                        }
+                    },
+                    textAlign = TextAlign.Center
+                )
 
                 LazyRow {
                     items(repo.topics) {
