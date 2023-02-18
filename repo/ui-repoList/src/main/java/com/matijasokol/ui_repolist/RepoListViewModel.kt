@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matijasokol.core.domain.Resource
+import com.matijasokol.repo_domain.NetworkException
 import com.matijasokol.repo_domain.ParseException
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.repo_domain.usecase.FetchReposUseCase
@@ -131,14 +132,14 @@ class RepoListViewModel @Inject constructor(
         when (resource) {
             is Resource.Error -> _state.update {
                 when (resource.ex) {
-                    is ParseException -> it.copy(
+                    is ParseException, is NetworkException -> it.copy(
                         infoMessage = when (info.refreshTrigger) {
                             RefreshTrigger.NextPage -> ""
-                            RefreshTrigger.PullToRefresh -> if (it.items.isEmpty()) context.getString(R.string.repo_list_message_error) else ""
-                            else -> context.getString(R.string.repo_list_message_error)
+                            RefreshTrigger.PullToRefresh -> if (it.items.isEmpty()) getMessageForError(resource.ex) else ""
+                            else -> getMessageForError(resource.ex)
                         },
                         uiMessages = when (info.refreshTrigger) {
-                            RefreshTrigger.NextPage, RefreshTrigger.PullToRefresh -> it.uiMessages + context.getString(R.string.repo_list_message_error)
+                            RefreshTrigger.NextPage, RefreshTrigger.PullToRefresh -> it.uiMessages + getMessageForError(resource.ex)
                             else -> it.uiMessages
                         },
                         items = when (info.refreshTrigger) {
@@ -168,5 +169,13 @@ class RepoListViewModel @Inject constructor(
         }
 
         return forceFetchNextPage
+    }
+
+    fun getMessageForError(exception: Exception): String {
+        return when (exception) {
+            is ParseException -> context.getString(R.string.repo_list_message_error)
+            is NetworkException -> context.getString(R.string.repo_list_message_network_error)
+            else -> ""
+        }
     }
 }

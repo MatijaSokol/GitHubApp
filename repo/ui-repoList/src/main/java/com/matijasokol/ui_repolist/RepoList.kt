@@ -75,8 +75,8 @@ fun RepoList(
     }
 
     LaunchedEffect(key1 = state.uiMessages) {
-        if (state.uiMessages.isNotEmpty()) {
-            Toast.makeText(context, context.getString(R.string.repo_list_message_error), Toast.LENGTH_SHORT).show()
+        state.uiMessages.firstOrNull()?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             onEvent(RepoListEvent.UIMessageShown)
         }
     }

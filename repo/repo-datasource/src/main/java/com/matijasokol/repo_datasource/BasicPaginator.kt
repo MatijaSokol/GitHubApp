@@ -1,12 +1,14 @@
 package com.matijasokol.repo_datasource
 
 import com.matijasokol.core.domain.Resource
+import com.matijasokol.repo_domain.NetworkException
 import com.matijasokol.repo_domain.Paginator
 import com.matijasokol.repo_domain.ParseException
 import com.matijasokol.repo_domain.RepoCache
 import com.matijasokol.repo_domain.RepoService
 import io.ktor.serialization.JsonConvertException
 import kotlinx.coroutines.flow.flow
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class BasicPaginator @Inject constructor(
@@ -44,6 +46,9 @@ class BasicPaginator @Inject constructor(
         } catch (e: JsonConvertException) {
             e.printStackTrace()
             emit(Resource.Error(ParseException()))
+        } catch (e: UnknownHostException) {
+            e.printStackTrace()
+            emit(Resource.Error(NetworkException()))
         } catch (e: Exception) {
             e.printStackTrace()
             emit(Resource.Error(e))
