@@ -1,11 +1,8 @@
 object Modules {
 
     const val app = ":app"
-
     const val core = ":core"
-
     const val components = ":components"
-
     const val repo = ":repo"
     const val repoDataSource = ":repo:repo-datasource"
     const val repoDataSourceTest = ":repo:repo-datasource-test"

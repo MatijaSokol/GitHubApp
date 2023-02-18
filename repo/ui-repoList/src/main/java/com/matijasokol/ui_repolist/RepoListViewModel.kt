@@ -122,7 +122,7 @@ class RepoListViewModel @Inject constructor(
         resource: Resource<List<Repo>>
     ): Boolean {
         // Sometimes new page returns data which is already contained in previous page.
-        // In that case automatically start fetching new page.
+        // In that case, automatically start fetching a new page.
         val forceFetchNextPage = (resource as? Resource.Success)?.data
             ?.takeIf { it.isNotEmpty() && info.refreshTrigger is RefreshTrigger.NextPage }
             ?.let { state.value.items.containsAll(it) }
