@@ -7,7 +7,7 @@ import com.matijasokol.repo_domain.model.Repo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetRepoDetails(
+class GetRepoDetailsUseCase(
     private val repoService: RepoService,
     private val repoCache: RepoCache
 ) {

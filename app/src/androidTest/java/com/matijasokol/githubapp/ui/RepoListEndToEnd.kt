@@ -41,7 +41,7 @@ import com.matijasokol.repo_domain.Paginator
 import com.matijasokol.repo_domain.RepoCache
 import com.matijasokol.repo_domain.RepoService
 import com.matijasokol.repo_domain.usecase.FetchReposUseCase
-import com.matijasokol.repo_domain.usecase.GetRepoDetails
+import com.matijasokol.repo_domain.usecase.GetRepoDetailsUseCase
 import com.matijasokol.repo_domain.usecase.SortReposUseCase
 import com.matijasokol.ui_repodetail.RepoDetail
 import com.matijasokol.ui_repodetail.RepoDetailViewModel
@@ -107,8 +107,8 @@ class RepoListEndToEnd {
         fun provideGetRepoDetailsUseCase(
             repoService: RepoService,
             repoCache: RepoCache
-        ): GetRepoDetails {
-            return GetRepoDetails(
+        ): GetRepoDetailsUseCase {
+            return GetRepoDetailsUseCase(
                 repoService = repoService,
                 repoCache = repoCache
             )

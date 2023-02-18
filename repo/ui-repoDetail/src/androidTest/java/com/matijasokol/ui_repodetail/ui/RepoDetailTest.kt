@@ -8,7 +8,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import coil.ImageLoader
-import com.matijasokol.repo_datasource_test.network.serializeRepoListData
+import com.matijasokol.repo_datasource_test.network.serializeRepoResponseData
 import com.matijasokol.ui_repodetail.RepoDetail
 import com.matijasokol.ui_repodetail.RepoDetailState
 import com.matijasokol.ui_repodetail.coil.FakeImageLoader
@@ -26,7 +26,7 @@ class RepoDetailTest {
     val composeTestRule = createComposeRule()
 
     private val imageLoader: ImageLoader = FakeImageLoader.build()
-    private val repoData = serializeRepoListData(this::class.java.getResource("/repo_list_valid.json").readText())
+    private val repoData = serializeRepoResponseData(this::class.java.getResource("/repo_list_valid.json").readText())
 
     @Test
     fun repoDetailShownCorrectly() {

@@ -7,7 +7,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import coil.ImageLoader
-import com.matijasokol.repo_datasource_test.network.serializeRepoListData
+import com.matijasokol.repo_datasource_test.network.serializeRepoResponseData
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repolist.RepoList
 import com.matijasokol.ui_repolist.RepoListState
@@ -38,7 +38,7 @@ class RepoListTest {
     @Test
     fun repoListSuccessShowData() {
         composeTestRule.setContent {
-            repoData.addAll(serializeRepoListData(this::class.java.getResource("/repo_list_valid.json").readText()))
+            repoData.addAll(serializeRepoResponseData(this::class.java.getResource("/repo_list_valid.json").readText()))
 
             val state = remember {
                 RepoListState(
@@ -73,7 +73,7 @@ class RepoListTest {
     @Test
     fun repoListEmptyShowEmptyScreen() {
         composeTestRule.setContent {
-            repoData.addAll(serializeRepoListData(this::class.java.getResource("/repo_list_empty.json").readText()))
+            repoData.addAll(serializeRepoResponseData(this::class.java.getResource("/repo_list_empty.json").readText()))
 
             val state = remember {
                 RepoListState(

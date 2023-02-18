@@ -1,7 +1,7 @@
 package com.matijasokol.repo_domain
 
 import com.matijasokol.core.domain.SortOrder
-import com.matijasokol.repo_datasource_test.network.serializeRepoListData
+import com.matijasokol.repo_datasource_test.network.serializeRepoResponseData
 import com.matijasokol.repo_domain.usecase.SortReposUseCase
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -11,7 +11,7 @@ class SortReposTest {
 
     private lateinit var sortRepos: SortReposUseCase
 
-    private val repoList = serializeRepoListData(ClassLoader.getSystemResource("repo_list_valid.json").readText())
+    private val repoList = serializeRepoResponseData(ClassLoader.getSystemResource("repo_list_valid.json").readText())
 
     @Before
     fun setUp() {

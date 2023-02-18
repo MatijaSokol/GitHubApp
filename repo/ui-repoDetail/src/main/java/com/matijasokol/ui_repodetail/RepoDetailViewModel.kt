@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matijasokol.core.domain.Resource
-import com.matijasokol.repo_domain.usecase.GetRepoDetails
+import com.matijasokol.repo_domain.usecase.GetRepoDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RepoDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getRepoDetails: GetRepoDetails,
+    private val getRepoDetails: GetRepoDetailsUseCase,
     private val context: Application
 ) : ViewModel() {
 

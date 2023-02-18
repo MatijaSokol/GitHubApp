@@ -2,7 +2,7 @@ package com.matijasokol.githubapp.di
 
 import com.matijasokol.repo_domain.RepoCache
 import com.matijasokol.repo_domain.RepoService
-import com.matijasokol.repo_domain.usecase.GetRepoDetails
+import com.matijasokol.repo_domain.usecase.GetRepoDetailsUseCase
 import com.matijasokol.repo_domain.usecase.SortReposUseCase
 import dagger.Module
 import dagger.Provides
@@ -25,8 +25,8 @@ object UseCaseAppModule {
     fun provideGetRepoDetailsUseCase(
         repoService: RepoService,
         repoCache: RepoCache
-    ): GetRepoDetails {
-        return GetRepoDetails(
+    ): GetRepoDetailsUseCase {
+        return GetRepoDetailsUseCase(
             repoService = repoService,
             repoCache = repoCache
         )
