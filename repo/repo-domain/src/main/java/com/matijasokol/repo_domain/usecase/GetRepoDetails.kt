@@ -38,10 +38,7 @@ class GetRepoDetails(
                 repoCache.updateFollowersCount(followersCountNew, repo.author.id)
                 repoCache.updateReposCount(reposCountNew, repo.author.id)
 
-                val updatedRepo = repo.copy(author = repo.author.copy(
-                    followersCount = followersCountNew,
-                    reposCount = reposCountNew
-                ))
+                val updatedRepo = repoCache.getRepo(repoId)
 
                 emit(Resource.Success(updatedRepo))
             } catch (e: Exception) {
