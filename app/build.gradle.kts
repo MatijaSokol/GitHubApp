@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -14,8 +16,35 @@ android {
         versionCode = Android.versionCode
         versionName = Android.versionName
 
+        testInstrumentationRunner = "com.matijasokol.githubapp.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    flavorDimensions += listOf("mode")
+
+    productFlavors {
+        create("free") {
+            dimension = "mode"
+            resValue("string", "app_name", "GitHub App Free")
+            applicationIdSuffix = ".free"
+        }
+        create("paid") {
+            dimension = "mode"
+            resValue("string", "app_name", "GitHub App")
+        }
+    }
+
+    sourceSets.getByName("free") {
+        java {
+            srcDirs("src/free/java")
+        }
+    }
+
+    sourceSets.getByName("paid") {
+        java {
+            srcDirs("src/paid/java")
         }
     }
 
@@ -46,6 +75,8 @@ android {
 }
 
 dependencies {
+    implementation(project(Modules.repoDataSource))
+    implementation(project(Modules.repoDomain))
     implementation(project(Modules.ui_repoList))
     implementation(project(Modules.ui_repoDetail))
 
@@ -55,11 +86,34 @@ dependencies {
 
     implementation(Coil.coil)
 
+    implementation(Accompanist.animations)
+
     implementation(Compose.activity)
     implementation(Compose.ui)
     implementation(Compose.material)
     implementation(Compose.tooling)
     implementation(Compose.navigation)
+    implementation(Compose.hiltNavigation)
 
     implementation(Google.material)
+
+    implementation(Hilt.android)
+    kapt(Hilt.compiler)
+
+    implementation(SqlDelight.androidDriver)
+
+    implementation(Ktor.core)
+    implementation(Ktor.clientSerialization)
+    implementation(Ktor.android)
+    implementation(Ktor.contentNegotiation)
+    implementation(Ktor.json)
+    implementation(Ktor.logging)
+
+    androidTestImplementation(project(Modules.repoDataSourceTest))
+    androidTestImplementation(AndroidXTest.runner)
+    androidTestImplementation(ComposeTest.uiTestJunit4)
+    debugImplementation(ComposeTest.uiTestManifest)
+    androidTestImplementation(HiltTest.hiltAndroidTesting)
+    kaptAndroidTest(Hilt.compiler)
+    androidTestImplementation(Junit.junit4)
 }

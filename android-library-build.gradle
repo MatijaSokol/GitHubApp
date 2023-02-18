@@ -53,6 +53,10 @@ dependencies{
     implementation Compose.material
     implementation Compose.tooling
     implementation Compose.navigation
+    implementation Compose.foundation
 
     implementation Google.material
+
+    implementation Hilt.android
+    kapt Hilt.compiler
 }
