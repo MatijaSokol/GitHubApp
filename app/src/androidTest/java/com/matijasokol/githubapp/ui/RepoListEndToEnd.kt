@@ -41,10 +41,12 @@ import com.matijasokol.repo_domain.Paginator
 import com.matijasokol.repo_domain.RepoCache
 import com.matijasokol.repo_domain.RepoService
 import com.matijasokol.repo_domain.usecase.FetchReposUseCase
-import com.matijasokol.repo_domain.usecase.GetRepoFromCache
+import com.matijasokol.repo_domain.usecase.GetRepoDetails
 import com.matijasokol.repo_domain.usecase.SortReposUseCase
 import com.matijasokol.ui_repodetail.RepoDetail
 import com.matijasokol.ui_repodetail.RepoDetailViewModel
+import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
+import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_REPOS_COUNT
 import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_SCREEN
 import com.matijasokol.ui_repolist.RepoList
 import com.matijasokol.ui_repolist.RepoListViewModel
@@ -102,8 +104,14 @@ class RepoListEndToEnd {
 
         @Provides
         @Singleton
-        fun provideGetRepoFromCacheUseCase(repoCache: RepoCache): GetRepoFromCache {
-            return GetRepoFromCache(cache = repoCache)
+        fun provideGetRepoDetailsUseCase(
+            repoService: RepoService,
+            repoCache: RepoCache
+        ): GetRepoDetails {
+            return GetRepoDetails(
+                repoService = repoService,
+                repoCache = repoCache
+            )
         }
 
         @Provides
@@ -228,5 +236,9 @@ class RepoListEndToEnd {
 
         composeTestRule.onAllNodesWithTag(TAG_REPO_LIST_ITEM).onFirst().performClick()
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_SCREEN).assertExists()
+        composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_FOLLOWERS_COUNT, true)
+            .assertTextEquals(composeTestRule.activity.getString(com.matijasokol.ui_repodetail.R.string.repo_detail_followers_count_text, 30))
+        composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_REPOS_COUNT, true)
+            .assertTextEquals(composeTestRule.activity.getString(com.matijasokol.ui_repodetail.R.string.repo_detail_repos_count_text, 30))
     }
 }

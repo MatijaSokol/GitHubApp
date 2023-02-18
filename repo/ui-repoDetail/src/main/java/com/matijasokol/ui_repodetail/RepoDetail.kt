@@ -41,7 +41,9 @@ import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repodetail.components.RepoDetailPanel
 import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
 import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_ERROR_TEXT
+import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
 import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_PROGRESS
+import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_REPOS_COUNT
 import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_SCREEN
 
 @Composable
@@ -171,10 +173,16 @@ private fun BoxScope.SuccessScreen(
                 Spacer(modifier = Modifier.height(2.dp))
 
                 repo.author.followersCount?.let {
-                    Text(text = context.getString(R.string.repo_detail_followers_count_text, it))
+                    Text(
+                        modifier = Modifier.testTag(TAG_REPO_DETAIL_FOLLOWERS_COUNT),
+                        text = context.getString(R.string.repo_detail_followers_count_text, it)
+                    )
                 }
                 repo.author.reposCount?.let {
-                    Text(text = context.getString(R.string.repo_detail_repos_count_text, it))
+                    Text(
+                        modifier = Modifier.testTag(TAG_REPO_DETAIL_REPOS_COUNT),
+                        text = context.getString(R.string.repo_detail_repos_count_text, it)
+                    )
                 }
 
                 Button(

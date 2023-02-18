@@ -50,10 +50,24 @@ class RepoCacheFake(
     }
 
     override suspend fun updateFollowersCount(count: Int, authorId: Int) {
-        TODO("Not yet implemented")
+        if (repoDatabaseFake.repos.isEmpty()) return
+
+        repoDatabaseFake.repos.replaceAll {
+            if (it.author.id != authorId) it
+            else it.copy(author = it.author.copy(
+                followersCount = count
+            ))
+        }
     }
 
     override suspend fun updateReposCount(count: Int, authorId: Int) {
-        TODO("Not yet implemented")
+        if (repoDatabaseFake.repos.isEmpty()) return
+
+        repoDatabaseFake.repos.replaceAll {
+            if (it.author.id != authorId) it
+            else it.copy(author = it.author.copy(
+                reposCount = count
+            ))
+        }
     }
 }

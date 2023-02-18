@@ -3,7 +3,6 @@ package com.matijasokol.githubapp.di
 import com.matijasokol.repo_domain.RepoCache
 import com.matijasokol.repo_domain.RepoService
 import com.matijasokol.repo_domain.usecase.GetRepoDetails
-import com.matijasokol.repo_domain.usecase.GetRepoFromCache
 import com.matijasokol.repo_domain.usecase.SortReposUseCase
 import dagger.Module
 import dagger.Provides
@@ -19,12 +18,6 @@ object UseCaseAppModule {
     @Singleton
     fun provideSortReposUseCase(): SortReposUseCase {
         return SortReposUseCase()
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetRepoFromCacheUseCase(repoCache: RepoCache): GetRepoFromCache {
-        return GetRepoFromCache(repoCache)
     }
 
     @Provides
