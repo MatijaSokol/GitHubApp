@@ -27,8 +27,6 @@ import com.matijasokol.githubapp.coil.FakeImageLoader
 import com.matijasokol.githubapp.di.CacheModule
 import com.matijasokol.githubapp.di.DataSourceModule
 import com.matijasokol.githubapp.di.NetworkModule
-import com.matijasokol.githubapp.di.UseCaseAppModule
-import com.matijasokol.githubapp.di.UseCaseViewModelModule
 import com.matijasokol.githubapp.di.ViewModelModule
 import com.matijasokol.githubapp.navigation.Screen
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
@@ -40,9 +38,6 @@ import com.matijasokol.repo_datasource_test.network.RepoServiceResponseType
 import com.matijasokol.repo_domain.Paginator
 import com.matijasokol.repo_domain.RepoCache
 import com.matijasokol.repo_domain.RepoService
-import com.matijasokol.repo_domain.usecase.FetchReposUseCase
-import com.matijasokol.repo_domain.usecase.GetRepoDetailsUseCase
-import com.matijasokol.repo_domain.usecase.SortReposUseCase
 import com.matijasokol.ui_repodetail.RepoDetail
 import com.matijasokol.ui_repodetail.RepoDetailViewModel
 import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
@@ -69,8 +64,6 @@ import javax.inject.Singleton
     CacheModule::class,
     NetworkModule::class,
     DataSourceModule::class,
-    UseCaseAppModule::class,
-    UseCaseViewModelModule::class,
     ViewModelModule::class
 )
 @HiltAndroidTest
@@ -98,24 +91,6 @@ class RepoListEndToEnd {
 
         @Provides
         @Singleton
-        fun provideSortReposUseCase(): SortReposUseCase {
-            return SortReposUseCase()
-        }
-
-        @Provides
-        @Singleton
-        fun provideGetRepoDetailsUseCase(
-            repoService: RepoService,
-            repoCache: RepoCache
-        ): GetRepoDetailsUseCase {
-            return GetRepoDetailsUseCase(
-                repoService = repoService,
-                repoCache = repoCache
-            )
-        }
-
-        @Provides
-        @Singleton
         fun providePaginator(
             repoService: RepoService,
             repoCache: RepoCache
@@ -124,12 +99,6 @@ class RepoListEndToEnd {
                 repoService = repoService,
                 repoCache = repoCache
             )
-        }
-
-        @Provides
-        @Singleton
-        fun provideFetchReposUseCase(paginator: Paginator): FetchReposUseCase {
-            return FetchReposUseCase(paginator = paginator)
         }
     }
 

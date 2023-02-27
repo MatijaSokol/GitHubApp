@@ -10,4 +10,6 @@ dependencies {
     "testImplementation"(project(Modules.repoDataSourceTest))
     "testImplementation"(Junit.junit4)
     "testImplementation"(Ktor.clientSerialization)
+
+    "implementation"(Javax.inject)
 }
