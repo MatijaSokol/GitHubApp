@@ -5,8 +5,9 @@ import com.matijasokol.repo_domain.RepoSortType
 import com.matijasokol.repo_domain.model.Repo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class SortReposUseCase {
+class SortReposUseCase @Inject constructor() {
 
     suspend fun execute(
         repos: List<Repo>,

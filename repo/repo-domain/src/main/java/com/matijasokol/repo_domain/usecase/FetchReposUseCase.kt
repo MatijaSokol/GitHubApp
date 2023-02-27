@@ -1,8 +1,9 @@
 package com.matijasokol.repo_domain.usecase
 
 import com.matijasokol.repo_domain.Paginator
+import javax.inject.Inject
 
-class FetchReposUseCase(
+class FetchReposUseCase @Inject constructor(
     private val paginator: Paginator
 ) {
 
