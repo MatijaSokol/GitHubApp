@@ -29,6 +29,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.matijasokol.githubapp.navigation.Screen
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
 import com.matijasokol.ui_repodetail.RepoDetail
+import com.matijasokol.ui_repodetail.RepoDetailConstants
 import com.matijasokol.ui_repodetail.RepoDetailViewModel
 import com.matijasokol.ui_repolist.RepoList
 import com.matijasokol.ui_repolist.RepoListViewModel
@@ -138,7 +139,7 @@ fun NavGraphBuilder.addRepoDetail(
     width: Int
 ) {
     composable(
-        route = Screen.RepoDetail.route + "/{repoId}",
+        route = Screen.RepoDetail.route + "/{${RepoDetailConstants.ARGUMENT_REPO_ID}}",
         arguments = Screen.RepoDetail.arguments,
         enterTransition = {
             slideInHorizontally(

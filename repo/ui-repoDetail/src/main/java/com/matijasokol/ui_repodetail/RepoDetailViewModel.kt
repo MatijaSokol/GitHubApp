@@ -25,7 +25,7 @@ class RepoDetailViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
-        savedStateHandle.get<Int>("repoId")?.let { repoId ->
+        savedStateHandle.get<Int>(RepoDetailConstants.ARGUMENT_REPO_ID)?.let { repoId ->
             onEvent(RepoDetailEvent.GetRepoDetails(repoId))
         }
     }
