@@ -14,14 +14,18 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "GitHub App"
+rootProject.name = "GitHubApp"
 
-include("app")
-include("core")
-include("components")
-include("repo")
-include("repo:repo-datasource")
-include("repo:repo-datasource-test")
-include("repo:repo-domain")
-include("repo:ui-repoList")
-include("repo:ui-repoDetail")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+include(
+    "app",
+    "core",
+    "components",
+    "repo",
+    "repo:repo-datasource",
+    "repo:repo-datasource-test",
+    "repo:repo-domain",
+    "repo:ui-repoList",
+    "repo:ui-repoDetail",
+)

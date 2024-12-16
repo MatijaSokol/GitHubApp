@@ -1,20 +1,23 @@
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose.compiler)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
+
+val appId = "com.matijasokol.githubapp"
 
 android {
     namespace = "com.matijasokol.githubapp"
-    compileSdk = Android.compileSdk
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = Android.appId
-        minSdk = Android.minSdk
-        targetSdk = Android.targetSdk
-        versionCode = Android.versionCode
-        versionName = Android.versionName
+        applicationId = appId
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = 1
+        versionName = "1.0"
 
         testInstrumentationRunner = "com.matijasokol.githubapp.CustomTestRunner"
         vectorDrawables {
@@ -55,19 +58,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "21"
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Compose.kotlinCompilerExtensionVersion
-    }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -75,45 +72,38 @@ android {
 }
 
 dependencies {
-    implementation(project(Modules.repoDataSource))
-    implementation(project(Modules.repoDomain))
-    implementation(project(Modules.ui_repoList))
-    implementation(project(Modules.ui_repoDetail))
+    implementation(projects.repo.repoDatasource)
+    implementation(projects.repo.repoDomain)
+    implementation(projects.repo.uiRepoList)
+    implementation(projects.repo.uiRepoDetail)
 
-    implementation(AndroidX.coreKtx)
-    implementation(AndroidX.appCompat)
-    implementation(AndroidX.lifecycleVmKtx)
+    implementation(libs.coreKtx)
+    implementation(libs.appcompat)
+    implementation(libs.lifecycle.viewmodel)
 
-    implementation(Coil.coil)
+    implementation(libs.coil.compose)
 
-    implementation(Accompanist.animations)
+    implementation(libs.activity.compose)
+    implementation(libs.compose.hilt.navigation)
+    implementation(libs.compose.navigation)
+    implementation(libs.material)
 
-    implementation(Compose.activity)
-    implementation(Compose.ui)
-    implementation(Compose.material)
-    implementation(Compose.tooling)
-    implementation(Compose.navigation)
-    implementation(Compose.hiltNavigation)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.compose)
 
-    implementation(Google.material)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
-    implementation(Hilt.android)
-    kapt(Hilt.compiler)
+    implementation(libs.sqldelight.driver.android)
 
-    implementation(SqlDelight.androidDriver)
+    implementation(platform(libs.ktor.bom))
+    implementation(libs.bundles.ktor)
 
-    implementation(Ktor.core)
-    implementation(Ktor.clientSerialization)
-    implementation(Ktor.android)
-    implementation(Ktor.contentNegotiation)
-    implementation(Ktor.json)
-    implementation(Ktor.logging)
-
-    androidTestImplementation(project(Modules.repoDataSourceTest))
-    androidTestImplementation(AndroidXTest.runner)
-    androidTestImplementation(ComposeTest.uiTestJunit4)
-    debugImplementation(ComposeTest.uiTestManifest)
-    androidTestImplementation(HiltTest.hiltAndroidTesting)
-    kaptAndroidTest(Hilt.compiler)
-    androidTestImplementation(Junit.junit4)
+    androidTestImplementation(projects.repo.repoDatasourceTest)
+    androidTestImplementation(libs.test.runner)
+    androidTestImplementation(libs.compose.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    androidTestImplementation(libs.junit)
 }

@@ -3,30 +3,25 @@ apply {
 }
 
 plugins {
-    kotlin(KotlinPlugins.serialization) version Kotlin.version
-    kotlin("kapt")
-    id(SqlDelight.plugin)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.sqldelight)
+    alias(libs.plugins.ksp)
 }
 
 dependencies {
-    "implementation"(project(Modules.repoDomain))
-    "implementation"(project(Modules.core))
+    "implementation"(projects.repo.repoDomain)
+    "implementation"(projects.core)
 
-    "implementation"(Ktor.core)
-    "implementation"(Ktor.clientSerialization)
-    "implementation"(Ktor.android)
-    "implementation"(Ktor.contentNegotiation)
-    "implementation"(Ktor.json)
-    "implementation"(Ktor.logging)
+    "implementation"(project.dependencies.platform(libs.ktor.bom))
+    "implementation"(libs.bundles.ktor)
 
-    "implementation"(SqlDelight.runtime)
-
-    "implementation"(Javax.inject)
+    "implementation"(libs.javax.inject)
 }
 
 sqldelight {
-    database("RepoDatabase") {
-        packageName = "com.matijasokol.repo_datasource.cache"
-        sourceFolders = listOf("sqldelight")
+    // this will be the name of the generated database class
+    databases.create("RepoDatabase") {
+        // package name used for the database class
+        packageName.set("com.matijasokol.repo_datasource.cache")
     }
 }

@@ -3,11 +3,13 @@ apply {
 }
 
 dependencies {
-    "implementation"(project(Modules.core))
+    "implementation"(projects.core)
 
-    "implementation"(Kotlin.coroutines)
+    "implementation"(libs.kotlinx.coroutines)
 
-    "testImplementation"(project(Modules.repoDataSourceTest))
-    "testImplementation"(Junit.junit4)
-    "testImplementation"(Ktor.clientSerialization)
+    "testImplementation"(projects.repo.repoDatasourceTest)
+    "testImplementation"(libs.junit)
+
+    "testImplementation"(project.dependencies.platform(libs.ktor.bom))
+    "testImplementation"(libs.ktor.serialization.kotlinx.json)
 }

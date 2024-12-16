@@ -2,17 +2,28 @@ apply {
     from("$rootDir/android-library-build.gradle")
 }
 
+plugins {
+    alias(libs.plugins.kotlin.compose.compiler)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.ksp)
+}
+
+android {
+    namespace = "com.matijasokol.ui_repolist"
+}
+
 dependencies {
-    "implementation"(project(Modules.core))
-    "implementation"(project(Modules.components))
-    "implementation"(project(Modules.repoDomain))
+    "implementation"(projects.core)
+    "implementation"(projects.components)
+    "implementation"(projects.repo.repoDomain)
 
-    "implementation"(SqlDelight.androidDriver)
+    "implementation"(libs.sqldelight.driver.android)
 
-    "implementation"(Coil.coil)
+    "implementation"(libs.coil.compose)
+    "implementation"(libs.material.icons)
 
-    "androidTestImplementation"(project(Modules.repoDataSourceTest))
-    "androidTestImplementation"(ComposeTest.uiTestJunit4)
-    "androidTestImplementation"(Junit.junit4)
-    "debugImplementation"(ComposeTest.uiTestManifest)
+    "androidTestImplementation"(projects.repo.repoDatasourceTest)
+    "androidTestImplementation"(libs.compose.junit4)
+    "androidTestImplementation"(libs.junit)
+    "debugImplementation"(libs.compose.ui.test.manifest)
 }
