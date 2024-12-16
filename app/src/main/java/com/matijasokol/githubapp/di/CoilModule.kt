@@ -1,8 +1,9 @@
 package com.matijasokol.githubapp.di
 
 import android.app.Application
-import coil.ImageLoader
-import coil.memory.MemoryCache
+import coil3.ImageLoader
+import coil3.memory.MemoryCache
+import coil3.request.crossfade
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +20,7 @@ object CoilModule {
         app: Application
     ): ImageLoader {
         return ImageLoader.Builder(app)
-            .memoryCache(MemoryCache.Builder(app).maxSizePercent(0.25).build())
+            .memoryCache(MemoryCache.Builder().maxSizePercent(app, 0.25).build())
             .crossfade(true)
             .build()
     }

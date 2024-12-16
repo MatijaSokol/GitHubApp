@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
+import coil3.ImageLoader
 import com.matijasokol.repo_domain.model.Author
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repolist.components.RepoListItem
