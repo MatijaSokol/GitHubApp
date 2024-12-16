@@ -6,8 +6,9 @@ import com.matijasokol.repo_domain.RepoService
 import com.matijasokol.repo_domain.model.Repo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class GetRepoDetailsUseCase(
+class GetRepoDetailsUseCase @Inject constructor(
     private val repoService: RepoService,
     private val repoCache: RepoCache
 ) {

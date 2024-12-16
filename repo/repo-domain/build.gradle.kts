@@ -4,8 +4,8 @@ apply {
 
 dependencies {
     "implementation"(projects.core)
-
     "implementation"(libs.kotlinx.coroutines)
+    "implementation"(libs.javax.inject)
 
     "testImplementation"(projects.repo.repoDatasourceTest)
     "testImplementation"(libs.junit)
