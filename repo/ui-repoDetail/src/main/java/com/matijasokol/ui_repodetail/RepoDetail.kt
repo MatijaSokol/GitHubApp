@@ -35,7 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
+import coil3.ImageLoader
 import com.matijasokol.components.RoundedImage
 import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.ui_repodetail.components.RepoDetailPanel

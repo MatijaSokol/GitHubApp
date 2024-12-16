@@ -22,10 +22,10 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import coil.ImageLoader
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import coil3.ImageLoader
 import com.matijasokol.githubapp.navigation.Screen
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
 import com.matijasokol.ui_repodetail.RepoDetail
@@ -47,13 +47,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             GitHubAppTheme {
-                val navController = rememberAnimatedNavController()
+                val navController = rememberNavController()
                 BoxWithConstraints {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
                     ) {
-                        AnimatedNavHost(
+                        NavHost(
                             navController = navController,
                             startDestination = Screen.RepoList.route,
                             builder = {

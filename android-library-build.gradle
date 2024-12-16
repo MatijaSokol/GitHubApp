@@ -2,14 +2,13 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdk Android.compileSdk
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdk Android.minSdk
-        targetSdk Android.targetSdk
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -25,38 +24,30 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '21'
     }
-    buildFeatures {
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion Compose.kotlinCompilerExtensionVersion
-    }
-    packagingOptions {
+    packaging {
         exclude("META-INF/AL2.0")
         exclude("META-INF/LGPL2.1")
     }
 }
 
 dependencies{
-    implementation AndroidX.coreKtx
-    implementation AndroidX.appCompat
-    implementation AndroidX.lifecycleVmKtx
+    implementation libs.coreKtx
+    implementation libs.appcompat
+    implementation libs.lifecycle.viewmodel
 
-    implementation Compose.activity
-    implementation Compose.ui
-    implementation Compose.material
-    implementation Compose.tooling
-    implementation Compose.navigation
-    implementation Compose.foundation
+    implementation(libs.activity.compose)
+    implementation libs.compose.navigation
+    implementation libs.material
 
-    implementation Google.material
+    implementation(platform(libs.compose.bom))
+    implementation libs.bundles.compose
 
-    implementation Hilt.android
-    kapt Hilt.compiler
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
 }
