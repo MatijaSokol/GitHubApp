@@ -1,0 +1,105 @@
+[versions]
+compileSdk = "34"
+minSdk = "24"
+targetSdk = "34"
+
+kotlin = "2.0.21" # update to 2.1.0 when Hilt support is available
+ksp = "2.0.21-1.0.28"
+kotlinxCoroutines = "1.9.0"
+kotlinxSerialization = "1.7.3"
+
+activityCompose = "1.9.3"
+agp = "8.7.2"
+coreKtx = "1.13.1" # newer versions require targetSdk 35
+appcompat = "1.7.0"
+lifecycleViewModel = "2.8.7"
+testRunner = "1.6.2"
+junit = "4.13.2"
+
+composeBom = "2024.12.01"
+composeNavigationHilt = "1.2.0"
+composeNavigation = "2.8.5"
+composeJunit4 = "1.7.6"
+coil = "3.0.4"
+material = "1.12.0"
+materialIcons = "1.7.6"
+
+sqldelight = "2.0.2"
+ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check https://github.com/InsertKoinIO/koin/pull/1978
+
+hilt = "2.53.1"
+javaxInject = "1"
+
+[libraries]
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+coreKtx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewModel" }
+test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-material = { group = "androidx.compose.material", name = "material" }
+compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+
+compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "composeNavigationHilt" }
+compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
+compose-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "composeJunit4" }
+
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIcons" }
+
+sqldelight-driver-android = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqldelight" }
+
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javaxInject" }
+
+ktor-bom = { group = "io.ktor", name = "ktor-bom", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json" }
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core" }
+ktor-client-encoding = { group = "io.ktor", name = "ktor-client-encoding" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging" }
+ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp" }
+ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation" }
+ktor-client-resources = { group = "io.ktor", name = "ktor-client-resources" }
+ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+
+[bundles]
+ktor = [
+    "ktor-client-core",
+    "ktor-client-okhttp",
+    "ktor-client-encoding",
+    "ktor-client-logging",
+    "ktor-serialization-kotlinx-json",
+    "ktor-client-content-negotiation",
+    "ktor-client-resources",
+    "ktor-client-mock",
+]
+
+compose = [
+    "compose-foundation",
+    "compose-ui",
+    "compose-material",
+    "compose-tooling",
+]
