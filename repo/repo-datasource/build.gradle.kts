@@ -6,11 +6,11 @@ plugins {
 }
 
 dependencies {
-    "implementation"(projects.repo.repoDomain)
-    "implementation"(projects.core)
+    implementation(projects.repo.repoDomain)
+    implementation(projects.core)
 
-    "implementation"(project.dependencies.platform(libs.ktor.bom))
-    "implementation"(libs.bundles.ktor)
+    implementation(project.dependencies.platform(libs.ktor.bom))
+    implementation(libs.bundles.ktor)
 
-    "implementation"(libs.javax.inject)
+    implementation(libs.javax.inject)
 }
