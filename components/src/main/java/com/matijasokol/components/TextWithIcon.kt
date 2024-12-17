@@ -14,18 +14,20 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TextWithIcon(
     text: String,
-    imageVector: ImageVector
+    imageVector: ImageVector,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier,
     ) {
         Text(text = text)
 
         Spacer(modifier = Modifier.width(10.dp))
-        
+
         Icon(
             imageVector = imageVector,
-            contentDescription = imageVector.name
+            contentDescription = imageVector.name,
         )
     }
 }

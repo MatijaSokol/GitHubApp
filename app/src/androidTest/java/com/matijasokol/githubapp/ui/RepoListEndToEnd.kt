@@ -30,24 +30,24 @@ import com.matijasokol.githubapp.di.NetworkModule
 import com.matijasokol.githubapp.di.ViewModelModule
 import com.matijasokol.githubapp.navigation.Screen
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
-import com.matijasokol.repo_datasource_test.cache.RepoCacheFake
-import com.matijasokol.repo_datasource_test.cache.RepoDatabaseFake
-import com.matijasokol.repo_datasource_test.network.FakePaginator
-import com.matijasokol.repo_datasource_test.network.RepoServiceFake
-import com.matijasokol.repo_datasource_test.network.RepoServiceResponseType
-import com.matijasokol.repo_domain.Paginator
-import com.matijasokol.repo_domain.RepoCache
-import com.matijasokol.repo_domain.RepoService
-import com.matijasokol.ui_repodetail.RepoDetail
-import com.matijasokol.ui_repodetail.RepoDetailViewModel
-import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
-import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_REPOS_COUNT
-import com.matijasokol.ui_repodetail.test.TAG_REPO_DETAIL_SCREEN
-import com.matijasokol.ui_repolist.RepoList
-import com.matijasokol.ui_repolist.RepoListViewModel
-import com.matijasokol.ui_repolist.test.TAG_REPO_LIST_ITEM
-import com.matijasokol.ui_repolist.test.TAG_REPO_NAME
-import com.matijasokol.ui_repolist.test.TAG_REPO_SEARCH_BAR
+import com.matijasokol.repodatasourcetest.cache.RepoCacheFake
+import com.matijasokol.repodatasourcetest.cache.RepoDatabaseFake
+import com.matijasokol.repodatasourcetest.network.FakePaginator
+import com.matijasokol.repodatasourcetest.network.RepoServiceFake
+import com.matijasokol.repodatasourcetest.network.RepoServiceResponseType
+import com.matijasokol.repodomain.Paginator
+import com.matijasokol.repodomain.RepoCache
+import com.matijasokol.repodomain.RepoService
+import com.matijasokol.uirepodetail.RepoDetail
+import com.matijasokol.uirepodetail.RepoDetailViewModel
+import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
+import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_REPOS_COUNT
+import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_SCREEN
+import com.matijasokol.uirepolist.RepoList
+import com.matijasokol.uirepolist.RepoListViewModel
+import com.matijasokol.uirepolist.test.TAG_REPO_LIST_ITEM
+import com.matijasokol.uirepolist.test.TAG_REPO_NAME
+import com.matijasokol.uirepolist.test.TAG_REPO_SEARCH_BAR
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,7 +64,7 @@ import javax.inject.Singleton
     CacheModule::class,
     NetworkModule::class,
     DataSourceModule::class,
-    ViewModelModule::class
+    ViewModelModule::class,
 )
 @HiltAndroidTest
 class RepoListEndToEnd {
@@ -77,7 +77,7 @@ class RepoListEndToEnd {
         @Singleton
         fun provideRepoCache(): RepoCache {
             return RepoCacheFake(
-                repoDatabaseFake = RepoDatabaseFake()
+                repoDatabaseFake = RepoDatabaseFake(),
             )
         }
 
@@ -85,7 +85,7 @@ class RepoListEndToEnd {
         @Singleton
         fun provideRepoService(): RepoService {
             return RepoServiceFake.build(
-                type = RepoServiceResponseType.GoodData
+                type = RepoServiceResponseType.GoodData,
             )
         }
 
@@ -93,11 +93,11 @@ class RepoListEndToEnd {
         @Singleton
         fun providePaginator(
             repoService: RepoService,
-            repoCache: RepoCache
+            repoCache: RepoCache,
         ): Paginator {
             return FakePaginator(
                 repoService = repoService,
-                repoCache = repoCache
+                repoCache = repoCache,
             )
         }
     }
@@ -120,7 +120,7 @@ class RepoListEndToEnd {
                     startDestination = Screen.RepoList.route,
                     builder = {
                         composable(
-                            route = Screen.RepoList.route
+                            route = Screen.RepoList.route,
                         ) {
                             val viewModel: RepoListViewModel = hiltViewModel()
                             val state = viewModel.state.collectAsState()
@@ -134,7 +134,7 @@ class RepoListEndToEnd {
                                 onItemClick = { repo ->
                                     if (ModeChecker.CAN_NAVIGATE_TO_DETAILS) {
                                         navController.navigate(
-                                            route = "${Screen.RepoDetail.route}/${repo.id}"
+                                            route = "${Screen.RepoDetail.route}/${repo.id}",
                                         )
                                     } else {
                                         Toast.makeText(context, context.getString(R.string.mode_checker_navigation_disabled_message), Toast.LENGTH_SHORT).show()
@@ -144,24 +144,24 @@ class RepoListEndToEnd {
                                     try {
                                         uriHandler.openUri(it.profileUrl)
                                     } catch (e: Exception) {
-                                        Toast.makeText(context, context.getString(com.matijasokol.ui_repolist.R.string.repo_list_message_browser_error), Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, context.getString(com.matijasokol.uirepolist.R.string.repo_list_message_browser_error), Toast.LENGTH_SHORT).show()
                                     }
                                 },
-                                imageLoader = imageLoader
+                                imageLoader = imageLoader,
                             )
                         }
                         composable(
                             route = Screen.RepoDetail.route + "/{repoId}",
-                            arguments = Screen.RepoDetail.arguments
+                            arguments = Screen.RepoDetail.arguments,
                         ) {
                             val viewModel: RepoDetailViewModel = hiltViewModel()
                             val state = viewModel.state.collectAsState()
                             RepoDetail(
                                 state = state.value,
-                                imageLoader = imageLoader
+                                imageLoader = imageLoader,
                             )
                         }
-                    }
+                    },
                 )
             }
         }
@@ -193,7 +193,7 @@ class RepoListEndToEnd {
             composeTestRule.onAllNodesWithTag(TAG_REPO_NAME, true)
                 .onFirst().fetchSemanticsNode()
                 .config[SemanticsProperties.Text]
-                .toString() != firstItemText
+                .toString() != firstItemText,
         )
     }
 
@@ -206,8 +206,8 @@ class RepoListEndToEnd {
         composeTestRule.onAllNodesWithTag(TAG_REPO_LIST_ITEM).onFirst().performClick()
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_SCREEN).assertExists()
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_FOLLOWERS_COUNT, true)
-            .assertTextEquals(composeTestRule.activity.getString(com.matijasokol.ui_repodetail.R.string.repo_detail_followers_count_text, 30))
+            .assertTextEquals(composeTestRule.activity.getString(com.matijasokol.uirepodetail.R.string.repo_detail_followers_count_text, 30))
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_REPOS_COUNT, true)
-            .assertTextEquals(composeTestRule.activity.getString(com.matijasokol.ui_repodetail.R.string.repo_detail_repos_count_text, 30))
+            .assertTextEquals(composeTestRule.activity.getString(com.matijasokol.uirepodetail.R.string.repo_detail_repos_count_text, 30))
     }
 }

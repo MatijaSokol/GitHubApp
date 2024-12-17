@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.matijasokol.ui_repolist"
+    namespace = "com.matijasokol.uirepolist"
 }
 
 dependencies {

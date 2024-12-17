@@ -28,11 +28,11 @@ import androidx.navigation.compose.rememberNavController
 import coil3.ImageLoader
 import com.matijasokol.githubapp.navigation.Screen
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
-import com.matijasokol.ui_repodetail.RepoDetail
-import com.matijasokol.ui_repodetail.RepoDetailConstants
-import com.matijasokol.ui_repodetail.RepoDetailViewModel
-import com.matijasokol.ui_repolist.RepoList
-import com.matijasokol.ui_repolist.RepoListViewModel
+import com.matijasokol.uirepodetail.RepoDetail
+import com.matijasokol.uirepodetail.RepoDetailConstants
+import com.matijasokol.uirepodetail.RepoDetailViewModel
+import com.matijasokol.uirepolist.RepoList
+import com.matijasokol.uirepolist.RepoListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 BoxWithConstraints {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.background
+                        color = MaterialTheme.colors.background,
                     ) {
                         NavHost(
                             navController = navController,
@@ -60,14 +60,14 @@ class MainActivity : ComponentActivity() {
                                 addRepoList(
                                     navController = navController,
                                     imageLoader = imageLoader,
-                                    width = constraints.maxWidth / 2
+                                    width = constraints.maxWidth / 2,
                                 )
 
                                 addRepoDetail(
                                     imageLoader = imageLoader,
-                                    width = constraints.maxWidth / 2
+                                    width = constraints.maxWidth / 2,
                                 )
-                            }
+                            },
                         )
                     }
                 }
@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
 fun NavGraphBuilder.addRepoList(
     navController: NavController,
     imageLoader: ImageLoader,
-    width: Int
+    width: Int,
 ) {
     composable(
         route = Screen.RepoList.route,
@@ -89,8 +89,8 @@ fun NavGraphBuilder.addRepoList(
                 targetOffsetX = { -width },
                 animationSpec = tween(
                     durationMillis = 300,
-                    easing = FastOutSlowInEasing
-                )
+                    easing = FastOutSlowInEasing,
+                ),
             ) + fadeOut(animationSpec = tween(durationMillis = 300))
         },
         popEnterTransition = {
@@ -98,10 +98,10 @@ fun NavGraphBuilder.addRepoList(
                 initialOffsetX = { -width },
                 animationSpec = tween(
                     durationMillis = 300,
-                    easing = FastOutSlowInEasing
-                )
+                    easing = FastOutSlowInEasing,
+                ),
             ) + fadeIn(animationSpec = tween(durationMillis = 300))
-        }
+        },
     ) {
         val viewModel: RepoListViewModel = hiltViewModel()
         val state = viewModel.state.collectAsState()
@@ -115,20 +115,28 @@ fun NavGraphBuilder.addRepoList(
             onItemClick = { repo ->
                 if (ModeChecker.CAN_NAVIGATE_TO_DETAILS) {
                     navController.navigate(
-                        route = "${Screen.RepoDetail.route}/${repo.id}"
+                        route = "${Screen.RepoDetail.route}/${repo.id}",
                     )
                 } else {
-                    Toast.makeText(context, context.getString(R.string.mode_checker_navigation_disabled_message), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.mode_checker_navigation_disabled_message),
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 }
             },
             onImageClick = {
                 try {
                     uriHandler.openUri(it.profileUrl)
                 } catch (e: Exception) {
-                    Toast.makeText(context, context.getString(com.matijasokol.ui_repolist.R.string.repo_list_message_browser_error), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(com.matijasokol.uirepolist.R.string.repo_list_message_browser_error),
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 }
             },
-            onEvent = { viewModel.onEvent(it) }
+            onEvent = { viewModel.onEvent(it) },
         )
     }
 }
@@ -136,7 +144,7 @@ fun NavGraphBuilder.addRepoList(
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addRepoDetail(
     imageLoader: ImageLoader,
-    width: Int
+    width: Int,
 ) {
     composable(
         route = Screen.RepoDetail.route + "/{${RepoDetailConstants.ARGUMENT_REPO_ID}}",
@@ -146,8 +154,8 @@ fun NavGraphBuilder.addRepoDetail(
                 initialOffsetX = { width },
                 animationSpec = tween(
                     durationMillis = 300,
-                    easing = FastOutSlowInEasing
-                )
+                    easing = FastOutSlowInEasing,
+                ),
             ) + fadeIn(animationSpec = tween(durationMillis = 300))
         },
         popExitTransition = {
@@ -155,18 +163,17 @@ fun NavGraphBuilder.addRepoDetail(
                 targetOffsetX = { width },
                 animationSpec = tween(
                     durationMillis = 300,
-                    easing = FastOutSlowInEasing
-                )
+                    easing = FastOutSlowInEasing,
+                ),
             ) + fadeOut(animationSpec = tween(durationMillis = 300))
-        }
+        },
     ) {
         val viewModel: RepoDetailViewModel = hiltViewModel()
         val state = viewModel.state.collectAsState()
 
         RepoDetail(
             state = state.value,
-            imageLoader = imageLoader
+            imageLoader = imageLoader,
         )
     }
 }
-

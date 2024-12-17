@@ -17,7 +17,7 @@ object CoilModule {
     @Provides
     @Singleton
     fun provideImageLoader(
-        app: Application
+        app: Application,
     ): ImageLoader {
         return ImageLoader.Builder(app)
             .memoryCache(MemoryCache.Builder().maxSizePercent(app, 0.25).build())

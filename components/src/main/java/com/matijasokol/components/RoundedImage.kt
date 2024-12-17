@@ -21,20 +21,21 @@ import coil3.request.ImageRequest
 fun RoundedImage(
     imageUrl: String,
     contentDescription: String?,
-    size: Dp = 64.dp,
     imageLoader: ImageLoader,
+    modifier: Modifier = Modifier,
+    size: Dp = 64.dp,
     borderColor: Color? = Color.Black,
     borderWidth: Dp? = 2.dp,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(imageUrl)
             .build(),
-        imageLoader = imageLoader
+        imageLoader = imageLoader,
     )
     Image(
-        modifier = Modifier
+        modifier = modifier
             .size(size)
             .clip(CircleShape)
             .apply {
@@ -42,7 +43,7 @@ fun RoundedImage(
                     border(
                         width = borderWidth,
                         color = borderColor,
-                        shape = CircleShape
+                        shape = CircleShape,
                     )
                 }
             }
