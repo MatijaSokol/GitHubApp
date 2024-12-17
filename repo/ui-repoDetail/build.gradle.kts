@@ -14,6 +14,7 @@ dependencies {
     implementation(projects.repo.repoDomain)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.network)
 
     androidTestImplementation(projects.repo.repoDatasourceTest)
     androidTestImplementation(libs.compose.junit4)

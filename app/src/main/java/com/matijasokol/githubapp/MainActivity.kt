@@ -25,7 +25,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import coil3.ImageLoader
 import com.matijasokol.githubapp.navigation.Screen
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
 import com.matijasokol.uirepodetail.RepoDetail
@@ -34,14 +33,10 @@ import com.matijasokol.uirepodetail.RepoDetailViewModel
 import com.matijasokol.uirepolist.RepoList
 import com.matijasokol.uirepolist.RepoListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @OptIn(ExperimentalAnimationApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var imageLoader: ImageLoader
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,12 +54,10 @@ class MainActivity : ComponentActivity() {
                             builder = {
                                 addRepoList(
                                     navController = navController,
-                                    imageLoader = imageLoader,
                                     width = constraints.maxWidth / 2,
                                 )
 
                                 addRepoDetail(
-                                    imageLoader = imageLoader,
                                     width = constraints.maxWidth / 2,
                                 )
                             },
@@ -79,7 +72,6 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addRepoList(
     navController: NavController,
-    imageLoader: ImageLoader,
     width: Int,
 ) {
     composable(
@@ -111,7 +103,6 @@ fun NavGraphBuilder.addRepoList(
 
         RepoList(
             state = state.value,
-            imageLoader = imageLoader,
             onItemClick = { repo ->
                 if (ModeChecker.CAN_NAVIGATE_TO_DETAILS) {
                     navController.navigate(
@@ -143,7 +134,6 @@ fun NavGraphBuilder.addRepoList(
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addRepoDetail(
-    imageLoader: ImageLoader,
     width: Int,
 ) {
     composable(
@@ -173,7 +163,6 @@ fun NavGraphBuilder.addRepoDetail(
 
         RepoDetail(
             state = state.value,
-            imageLoader = imageLoader,
         )
     }
 }

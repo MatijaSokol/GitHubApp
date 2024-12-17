@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.lifecycle.viewmodel)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.network)
 
     implementation(libs.activity.compose)
     implementation(libs.compose.hilt.navigation)

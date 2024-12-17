@@ -35,7 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
 import com.matijasokol.components.RoundedImage
 import com.matijasokol.repodomain.DateUtils
 import com.matijasokol.repodomain.model.Repo
@@ -50,7 +49,6 @@ import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_SCREEN
 @Composable
 fun RepoDetail(
     state: RepoDetailState,
-    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -59,7 +57,7 @@ fun RepoDetail(
         when {
             state.isLoading -> LoadingScreen()
             state.errorMessage != null -> ErrorScreen(state.errorMessage)
-            state.repo != null -> SuccessScreen(state.repo, imageLoader)
+            state.repo != null -> SuccessScreen(state.repo)
         }
     }
 }
@@ -90,7 +88,6 @@ private fun BoxScope.ErrorScreen(errorMessage: String) {
 @Composable
 private fun BoxScope.SuccessScreen(
     repo: Repo,
-    imageLoader: ImageLoader,
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
@@ -112,7 +109,6 @@ private fun BoxScope.SuccessScreen(
                 RoundedImage(
                     imageUrl = repo.author.image,
                     contentDescription = repo.author.name,
-                    imageLoader = imageLoader,
                     size = 160.dp,
                     onClick = {
                         try {

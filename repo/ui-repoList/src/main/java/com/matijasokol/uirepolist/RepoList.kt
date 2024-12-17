@@ -25,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
 import com.matijasokol.repodomain.model.Author
 import com.matijasokol.repodomain.model.Repo
 import com.matijasokol.uirepolist.components.RepoListItem
@@ -38,7 +37,6 @@ import com.matijasokol.uirepolist.test.TAG_REPO_INFO_MESSAGE
 @Composable
 fun RepoList(
     state: RepoListState,
-    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
     onItemClick: (Repo) -> Unit,
     onImageClick: (Author) -> Unit,
@@ -112,7 +110,6 @@ fun RepoList(
                         ) { repo ->
                             RepoListItem(
                                 repo = repo,
-                                imageLoader = imageLoader,
                                 onItemClick = onItemClick,
                                 onImageClick = onImageClick,
                             )

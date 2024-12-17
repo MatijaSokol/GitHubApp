@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.sqldelight.driver.android)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.network)
     implementation(libs.material.icons)
 
     androidTestImplementation(projects.repo.repoDatasourceTest)

@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
 import com.matijasokol.components.RoundedImage
 import com.matijasokol.repodomain.model.Author
 import com.matijasokol.repodomain.model.Repo
@@ -31,7 +30,6 @@ import com.matijasokol.uirepolist.test.TAG_REPO_NAME
 @Composable
 fun RepoListItem(
     repo: Repo,
-    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
     onItemClick: (Repo) -> Unit,
     onImageClick: (Author) -> Unit,
@@ -61,7 +59,6 @@ fun RepoListItem(
                 RoundedImage(
                     imageUrl = repo.author.image,
                     contentDescription = repo.author.name,
-                    imageLoader = imageLoader,
                     onClick = { onImageClick(repo.author) },
                 )
 
