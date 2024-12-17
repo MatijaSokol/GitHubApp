@@ -8,6 +8,7 @@ class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
       pluginManager.apply(libs.plugins.android.library)
+      pluginManager.apply(libs.plugins.kotlin.compose.compiler)
       extensions.configure<LibraryExtension>(::configureAndroidCompose)
     }
   }
