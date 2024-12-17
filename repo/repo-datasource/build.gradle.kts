@@ -1,8 +1,5 @@
-apply {
-    from("$rootDir/library-build.gradle")
-}
-
 plugins {
+    alias(libs.plugins.githubapp.jvm.library)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.githubapp.sqldelight)
