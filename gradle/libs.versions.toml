@@ -30,7 +30,7 @@ ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check htt
 hilt = "2.53.1"
 javaxInject = "1"
 
-detekt = "1.23.1"
+detekt = "1.23.7"
 detektCompose ="0.0.26"
 ktlint = "0.50.0"
 ktlintGradlePlugin = "11.5.1"
