@@ -25,7 +25,7 @@ material = "1.12.0"
 materialIcons = "1.7.6"
 
 sqldelight = "2.0.2"
-ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check https://github.com/InsertKoinIO/koin/pull/1978
+ktor = "3.0.2" # update to 3.x.x when available (check Koin support), check https://github.com/InsertKoinIO/koin/pull/1978
 
 hilt = "2.53.1"
 javaxInject = "1"
