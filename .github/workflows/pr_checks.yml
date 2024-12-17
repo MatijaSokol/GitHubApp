@@ -1,0 +1,99 @@
+name: PR checks
+
+on:
+  push:
+    branches:
+      - master
+      - 'release*'
+      - develop
+  pull_request:
+    branches:
+      - master
+      - 'release*'
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static_analysis:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Prepare environment
+        run: |
+          export GRADLE_USER_HOME=`pwd`/.gradle
+          chmod +x ./gradlew
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.5.0
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Static Analysis
+        run: |
+          ./gradlew ktlintCheck detekt --stacktrace
+
+  build_free:
+    runs-on: macos-latest
+    env:
+      GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
+      GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Prepare environment
+        run: |
+          export GRADLE_USER_HOME=`pwd`/.gradle
+          chmod +x ./gradlew
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.5.0
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Assemble
+        run: |
+          ./gradlew assembleProdFreeRelease --stacktrace
+
+  build_paid:
+    runs-on: macos-latest
+    env:
+      GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
+      GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Prepare environment
+        run: |
+          export GRADLE_USER_HOME=`pwd`/.gradle
+          chmod +x ./gradlew
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.5.0
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Assemble
+        run: |
+          ./gradlew assembleProdPaidRelease --stacktrace
+
+  unit_tests:
+    runs-on: macos-latest
+    env:
+      GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
+      GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Prepare environment
+        run: |
+          export GRADLE_USER_HOME=`pwd`/.gradle
+          chmod +x ./gradlew
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.5.0
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Unit tests
+        run: |
+          ./gradlew repo:repo-domain:test --stacktrace

@@ -21,7 +21,7 @@ object CacheModule {
         return AndroidSqliteDriver(
             schema = RepoDatabase.Schema.synchronous(),
             context = application,
-            name = "repos.db"
+            name = "repos.db",
         )
     }
 

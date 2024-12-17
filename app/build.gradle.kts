@@ -7,8 +7,6 @@ plugins {
 
     alias(libs.plugins.githubapp.application)
     alias(libs.plugins.githubapp.application.compose)
-    alias(libs.plugins.githubapp.productflavors)
-    alias(libs.plugins.githubapp.buildtypes)
 }
 
 val appId = "com.matijasokol.githubapp"

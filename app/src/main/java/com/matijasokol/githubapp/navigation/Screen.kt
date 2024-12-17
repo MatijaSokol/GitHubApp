@@ -3,17 +3,17 @@ package com.matijasokol.githubapp.navigation
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.matijasokol.ui_repodetail.RepoDetailConstants
-import com.matijasokol.ui_repolist.RepoListConstants
+import com.matijasokol.uirepodetail.RepoDetailConstants
+import com.matijasokol.uirepolist.RepoListConstants
 
 sealed class Screen(
     val route: String,
-    val arguments: List<NamedNavArgument>
+    val arguments: List<NamedNavArgument>,
 ) {
 
-    object RepoList: Screen(
+    object RepoList : Screen(
         route = RepoListConstants.SCREEN_NAME,
-        arguments = emptyList()
+        arguments = emptyList(),
     )
 
     object RepoDetail : Screen(
@@ -21,7 +21,7 @@ sealed class Screen(
         arguments = listOf(
             navArgument(RepoDetailConstants.ARGUMENT_REPO_ID) {
                 type = NavType.IntType
-            }
-        )
+            },
+        ),
     )
 }

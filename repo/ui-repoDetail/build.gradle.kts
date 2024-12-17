@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.matijasokol.ui_repodetail"
+    namespace = "com.matijasokol.uirepodetail"
 }
 
 dependencies {
