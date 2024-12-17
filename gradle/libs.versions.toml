@@ -30,6 +30,11 @@ ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check htt
 hilt = "2.53.1"
 javaxInject = "1"
 
+detekt = "1.23.1"
+detektCompose ="0.0.26"
+ktlint = "0.50.0"
+ktlintGradlePlugin = "11.5.1"
+
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 coreKtx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,6 +63,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIcons" }
 
 sqldelight-driver-android = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqldelight" }
+sqldelight-coroutines = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqldelight" }
 
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
@@ -74,6 +80,16 @@ ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-conte
 ktor-client-resources = { group = "io.ktor", name = "ktor-client-resources" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock" }
 
+# Dependencies of the included build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+sqldelight-gradlePlugin = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
+detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+detekt-formatting-compose = { group = "com.twitter.compose.rules", name = "detekt", version.ref = "detektCompose" }
+ktlint-gradlePlugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlintGradlePlugin" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
@@ -84,6 +100,19 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradlePlugin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+githubapp-application = { id = "githubapp.android.application", version = "unspecified" }
+githubapp-library = { id = "githubapp.android.library", version = "unspecified" }
+githubapp-application-compose = { id = "githubapp.android.application.compose", version = "unspecified" }
+githubapp-library-compose = { id = "githubapp.android.library.compose", version = "unspecified" }
+githubapp-jvm-library = { id = "githubapp.jvm.library", version = "unspecified" }
+githubapp-productflavors = { id = "githubapp.productflavors", version = "unspecified" }
+githubapp-buildtypes = { id = "githubapp.buildtypes", version = "unspecified" }
+githubapp-sqldelight = { id = "githubapp.sqldelight", version = "unspecified" }
+githubapp-versioning = { id = "githubapp.versioning", version = "unspecified" }
+githubapp-quality = { id = "githubapp.quality", version = "unspecified" }
 
 [bundles]
 ktor = [
@@ -101,5 +130,8 @@ compose = [
     "compose-foundation",
     "compose-ui",
     "compose-material",
+]
+
+compose-debug = [
     "compose-tooling",
 ]

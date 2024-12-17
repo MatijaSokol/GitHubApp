@@ -1,6 +1,3 @@
-apply {
-    from("$rootDir/library-build.gradle")
+plugins {
+    alias(libs.plugins.githubapp.jvm.library)
 }
-
-
-dependencies {}

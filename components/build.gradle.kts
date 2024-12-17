@@ -1,10 +1,6 @@
-apply {
-    from("$rootDir/android-library-build.gradle")
-}
-
 plugins {
-    alias(libs.plugins.kotlin.compose.compiler)
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.githubapp.library)
+    alias(libs.plugins.githubapp.library.compose)
     alias(libs.plugins.ksp)
 }
 

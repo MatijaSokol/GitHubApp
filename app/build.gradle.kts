@@ -4,40 +4,17 @@ plugins {
     alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+
+    alias(libs.plugins.githubapp.application)
+    alias(libs.plugins.githubapp.application.compose)
+    alias(libs.plugins.githubapp.productflavors)
+    alias(libs.plugins.githubapp.buildtypes)
 }
 
 val appId = "com.matijasokol.githubapp"
 
 android {
     namespace = "com.matijasokol.githubapp"
-    compileSdk = libs.versions.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = appId
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
-
-        testInstrumentationRunner = "com.matijasokol.githubapp.CustomTestRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-    }
-
-    flavorDimensions += listOf("mode")
-
-    productFlavors {
-        create("free") {
-            dimension = "mode"
-            resValue("string", "app_name", "GitHub App Free")
-            applicationIdSuffix = ".free"
-        }
-        create("paid") {
-            dimension = "mode"
-            resValue("string", "app_name", "GitHub App")
-        }
-    }
 
     sourceSets.getByName("free") {
         java {
@@ -51,19 +28,6 @@ android {
         }
     }
 
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
