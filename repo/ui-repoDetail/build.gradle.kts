@@ -15,6 +15,7 @@ dependencies {
 
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
+    implementation(libs.compose.navigation)
 
     androidTestImplementation(projects.repo.repoDatasourceTest)
     androidTestImplementation(libs.compose.junit4)

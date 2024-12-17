@@ -4,14 +4,18 @@ import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.matijasokol.core.domain.Resource
+import com.matijasokol.core.navigation.Destination
 import com.matijasokol.repodomain.usecase.GetRepoDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,30 +25,26 @@ class RepoDetailViewModel @Inject constructor(
     private val context: Application,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(RepoDetailState())
-    val state = _state.asStateFlow()
+    private val fetchTrigger = Channel<Unit>()
 
-    init {
-        savedStateHandle.get<Int>(RepoDetailConstants.ARGUMENT_REPO_ID)?.let { repoId ->
-            onEvent(RepoDetailEvent.GetRepoDetails(repoId))
-        }
-    }
+    val state = fetchTrigger.receiveAsFlow()
+        .onStart { emit(Unit) }
+        .map { savedStateHandle.toRoute<Destination.RepoDetail>().repoId }
+        .flatMapLatest(::repoDetailsFlow)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = RepoDetailState(isLoading = true),
+        )
 
-    fun onEvent(event: RepoDetailEvent) {
-        when (event) {
-            is RepoDetailEvent.GetRepoDetails -> getRepoDetails(event.repoId)
-        }
-    }
-
-    private fun getRepoDetails(repoId: Int) {
-        getRepoDetails.execute(repoId).onEach { resource ->
+    private fun repoDetailsFlow(repoId: Int) = getRepoDetails.execute(repoId)
+        .map { resource ->
             when (resource) {
-                is Resource.Error -> _state.update {
-                    it.copy(errorMessage = context.getString(R.string.repo_detail_message_cache_error, repoId))
-                }
-                is Resource.Loading -> _state.update { it.copy(isLoading = resource.isLoading) }
-                is Resource.Success -> _state.update { it.copy(repo = resource.data) }
+                is Resource.Error -> RepoDetailState(
+                    errorMessage = context.getString(R.string.repo_detail_message_cache_error, repoId),
+                )
+                is Resource.Loading -> RepoDetailState(isLoading = resource.isLoading)
+                is Resource.Success -> RepoDetailState(repo = resource.data)
             }
-        }.launchIn(viewModelScope)
-    }
+        }
 }
