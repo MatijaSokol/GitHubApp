@@ -3,7 +3,7 @@ compileSdk = "34"
 minSdk = "24"
 targetSdk = "34"
 
-kotlin = "2.0.21" # update to 2.1.0 when Hilt support is available
+kotlin = "2.1.0" # update to 2.1.0 when Hilt support is available
 ksp = "2.0.21-1.0.28"
 kotlinxCoroutines = "1.9.0"
 kotlinxSerialization = "1.7.3"
