@@ -10,7 +10,7 @@ import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.repo_domain.usecase.FetchReposUseCase
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class FetchReposTest {
 

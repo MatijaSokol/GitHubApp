@@ -4,8 +4,8 @@ import com.matijasokol.core.domain.SortOrder
 import com.matijasokol.repo_datasource_test.network.serializeRepoResponseData
 import com.matijasokol.repo_domain.usecase.SortReposUseCase
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class SortReposTest {
 
@@ -13,7 +13,7 @@ class SortReposTest {
 
     private val repoList = serializeRepoResponseData(ClassLoader.getSystemResource("repo_list_valid.json").readText())
 
-    @Before
+    @BeforeEach
     fun setUp() {
         sortRepos = SortReposUseCase()
     }

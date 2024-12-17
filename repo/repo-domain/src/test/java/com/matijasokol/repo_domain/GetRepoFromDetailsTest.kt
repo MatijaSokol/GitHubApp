@@ -12,8 +12,8 @@ import com.matijasokol.repo_domain.model.Repo
 import com.matijasokol.repo_domain.usecase.GetRepoDetailsUseCase
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class GetRepoFromDetailsTest {
 
@@ -24,7 +24,7 @@ class GetRepoFromDetailsTest {
     private val jetbrainsFollowers = serializeAuthorListData(ClassLoader.getSystemResource("jetbrains_followers.json").readText())
     private val jetbrainsRepos = serializeRepoListData(ClassLoader.getSystemResource("jetbrains_repos.json").readText())
 
-    @Before
+    @BeforeEach
     fun setUp() = runBlocking {
         repoCache = RepoCacheFake(
             repoDatabaseFake = RepoDatabaseFake()
