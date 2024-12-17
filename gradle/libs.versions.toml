@@ -14,7 +14,7 @@ coreKtx = "1.13.1" # newer versions require targetSdk 35
 appcompat = "1.7.0"
 lifecycleViewModel = "2.8.7"
 testRunner = "1.6.2"
-junit = "4.13.2"
+junit = "5.11.4"
 
 composeBom = "2024.12.01"
 composeNavigationHilt = "1.2.0"
@@ -41,7 +41,7 @@ coreKtx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" 
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewModel" }
 test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
+junit = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
 
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
