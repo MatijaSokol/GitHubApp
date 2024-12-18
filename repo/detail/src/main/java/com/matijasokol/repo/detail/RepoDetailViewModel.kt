@@ -1,4 +1,4 @@
-package com.matijasokol.uirepodetail
+package com.matijasokol.repo.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

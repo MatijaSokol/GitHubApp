@@ -32,12 +32,12 @@ import com.matijasokol.githubapp.R
 import com.matijasokol.githubapp.navigation.NavigationEffect
 import com.matijasokol.githubapp.navigation.NavigationEvent
 import com.matijasokol.githubapp.navigation.Navigator
+import com.matijasokol.repo.detail.RepoDetail
+import com.matijasokol.repo.detail.RepoDetailViewModel
 import com.matijasokol.repo.list.RepoList
 import com.matijasokol.repo.list.RepoListAction
 import com.matijasokol.repo.list.RepoListAction.NavigateToDetails
 import com.matijasokol.repo.list.RepoListViewModel
-import com.matijasokol.uirepodetail.RepoDetail
-import com.matijasokol.uirepodetail.RepoDetailViewModel
 
 @Composable
 fun AppContent(

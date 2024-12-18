@@ -39,7 +39,7 @@ dependencies {
     implementation(projects.repo.repoDatasource)
     implementation(projects.repo.repoDomain)
     implementation(projects.repo.list)
-    implementation(projects.repo.uiRepoDetail)
+    implementation(projects.repo.detail)
 
     implementation(libs.coreKtx)
     implementation(libs.appcompat)

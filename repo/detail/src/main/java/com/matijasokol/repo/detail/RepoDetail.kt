@@ -1,4 +1,4 @@
-package com.matijasokol.uirepodetail
+package com.matijasokol.repo.detail
 
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -36,15 +36,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
+import com.matijasokol.repo.detail.components.RepoDetailPanel
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_ERROR_TEXT
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_REPOS_COUNT
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
 import com.matijasokol.repodomain.DateUtils
 import com.matijasokol.repodomain.model.Repo
-import com.matijasokol.uirepodetail.components.RepoDetailPanel
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_ERROR_TEXT
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_PROGRESS
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_REPOS_COUNT
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_SCREEN
 
 @Composable
 fun RepoDetail(

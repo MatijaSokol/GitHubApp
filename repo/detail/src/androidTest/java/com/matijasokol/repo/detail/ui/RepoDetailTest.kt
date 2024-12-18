@@ -1,4 +1,4 @@
-package com.matijasokol.uirepodetail.ui
+package com.matijasokol.repo.detail.ui
 
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertAny
@@ -8,15 +8,15 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import coil.ImageLoader
+import com.matijasokol.repo.detail.RepoDetail
+import com.matijasokol.repo.detail.RepoDetailState
+import com.matijasokol.repo.detail.coil.FakeImageLoader
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_ERROR_TEXT
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_INFO_TEXT
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
 import com.matijasokol.repodatasourcetest.network.serializeRepoResponseData
-import com.matijasokol.uirepodetail.RepoDetail
-import com.matijasokol.uirepodetail.RepoDetailState
-import com.matijasokol.uirepodetail.coil.FakeImageLoader
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_ERROR_TEXT
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_INFO_TEXT
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_PROGRESS
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_SCREEN
 import org.junit.Rule
 import org.junit.Test
 

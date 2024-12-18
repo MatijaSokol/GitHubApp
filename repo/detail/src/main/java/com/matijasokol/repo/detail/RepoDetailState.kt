@@ -1,4 +1,4 @@
-package com.matijasokol.uirepodetail
+package com.matijasokol.repo.detail
 
 import com.matijasokol.repodomain.model.Repo
 

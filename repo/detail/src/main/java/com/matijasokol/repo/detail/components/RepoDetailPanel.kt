@@ -1,4 +1,4 @@
-package com.matijasokol.uirepodetail.components
+package com.matijasokol.repo.detail.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -20,8 +20,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.matijasokol.uirepodetail.R
-import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_INFO_TEXT
+import com.matijasokol.repo.detail.R
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_INFO_TEXT
 
 @Suppress("UnstableCollections")
 @OptIn(ExperimentalFoundationApi::class)

@@ -1,4 +1,4 @@
-package com.matijasokol.uirepodetail.test
+package com.matijasokol.repo.detail.test
 
 const val TAG_REPO_DETAIL_SCREEN = "TAG_REPO_DETAIL_SCREEN"
 const val TAG_REPO_DETAIL_INFO_TEXT = "TAG_REPO_DETAIL_INFO_TEXT"

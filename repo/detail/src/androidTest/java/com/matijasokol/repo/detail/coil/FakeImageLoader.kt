@@ -1,4 +1,4 @@
-package com.matijasokol.uirepodetail.coil
+package com.matijasokol.repo.detail.coil
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
