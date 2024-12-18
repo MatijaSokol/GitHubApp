@@ -1,4 +1,4 @@
-package com.matijasokol.repodatasource.network.model
+package com.matijasokol.repo.datasource.network.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

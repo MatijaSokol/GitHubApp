@@ -1,12 +1,12 @@
 package com.matijasokol.repodatasourcetest.network
 
+import com.matijasokol.repo.datasource.mappers.toAuthor
+import com.matijasokol.repo.datasource.mappers.toRepo
+import com.matijasokol.repo.datasource.network.model.AuthorDto
+import com.matijasokol.repo.datasource.network.model.FetchReposResponse
+import com.matijasokol.repo.datasource.network.model.RepoDto
 import com.matijasokol.repo.domain.model.Author
 import com.matijasokol.repo.domain.model.Repo
-import com.matijasokol.repodatasource.mappers.toAuthor
-import com.matijasokol.repodatasource.mappers.toRepo
-import com.matijasokol.repodatasource.network.model.AuthorDto
-import com.matijasokol.repodatasource.network.model.FetchReposResponse
-import com.matijasokol.repodatasource.network.model.RepoDto
 import kotlinx.serialization.json.Json
 
 val json = Json {

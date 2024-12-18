@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(projects.repo.repoDatasource)
+    implementation(projects.repo.datasource)
     implementation(projects.repo.domain)
     implementation(projects.core)
 

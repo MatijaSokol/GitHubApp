@@ -1,9 +1,9 @@
 package com.matijasokol.repodatasourcetest.network
 
+import com.matijasokol.repo.datasource.BasicPaginator
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoCache
 import com.matijasokol.repo.domain.RepoService
-import com.matijasokol.repodatasource.BasicPaginator
 
 class FakePaginator(
     private val repoService: RepoService,

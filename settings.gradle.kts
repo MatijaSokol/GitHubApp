@@ -24,7 +24,7 @@ include(
     "core",
     "core-ui",
     "repo",
-    "repo:repo-datasource",
+    "repo:datasource",
     "repo:repo-datasource-test",
     "repo:domain",
     "repo:list",

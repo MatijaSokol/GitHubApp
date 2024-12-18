@@ -1,4 +1,4 @@
-package com.matijasokol.repodatasource
+package com.matijasokol.repo.datasource
 
 import com.matijasokol.core.domain.Resource
 import com.matijasokol.repo.domain.NetworkException

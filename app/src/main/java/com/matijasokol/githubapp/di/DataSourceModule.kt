@@ -1,9 +1,9 @@
 package com.matijasokol.githubapp.di
 
+import com.matijasokol.repo.datasource.cache.RepoCacheImpl
+import com.matijasokol.repo.datasource.network.RepoServiceImpl
 import com.matijasokol.repo.domain.RepoCache
 import com.matijasokol.repo.domain.RepoService
-import com.matijasokol.repodatasource.cache.RepoCacheImpl
-import com.matijasokol.repodatasource.network.RepoServiceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
