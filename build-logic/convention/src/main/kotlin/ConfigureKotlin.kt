@@ -50,6 +50,8 @@ private fun Project.configureKotlin() {
       jvmTarget.set(JvmTarget.JVM_21)
       freeCompilerArgs.addAll(listOf(
         "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+        "-opt-in=kotlinx.coroutines.FlowPreview",
+        "-Xcontext-receivers",
       ))
     }
   }
