@@ -96,4 +96,4 @@ jobs:
           cache: 'gradle'
       - name: Unit tests
         run: |
-          ./gradlew repo:repo-domain:test --stacktrace
+          ./gradlew repo:domain:test --stacktrace

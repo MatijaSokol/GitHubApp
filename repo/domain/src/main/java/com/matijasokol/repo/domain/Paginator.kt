@@ -1,7 +1,7 @@
-package com.matijasokol.repodomain
+package com.matijasokol.repo.domain
 
 import com.matijasokol.core.domain.Resource
-import com.matijasokol.repodomain.model.Repo
+import com.matijasokol.repo.domain.model.Repo
 import kotlinx.coroutines.flow.Flow
 
 interface Paginator {

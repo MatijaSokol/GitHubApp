@@ -1,8 +1,8 @@
 package com.matijasokol.repodatasourcetest.network
 
+import com.matijasokol.repo.domain.RepoService
 import com.matijasokol.repodatasource.network.NetworkConstants
 import com.matijasokol.repodatasource.network.RepoServiceImpl
-import com.matijasokol.repodomain.RepoService
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockRequestHandleScope

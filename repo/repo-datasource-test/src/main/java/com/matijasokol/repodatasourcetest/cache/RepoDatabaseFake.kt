@@ -1,6 +1,6 @@
 package com.matijasokol.repodatasourcetest.cache
 
-import com.matijasokol.repodomain.model.Repo
+import com.matijasokol.repo.domain.model.Repo
 
 class RepoDatabaseFake {
 

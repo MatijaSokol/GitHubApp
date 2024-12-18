@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    implementation(projects.repo.repoDomain)
+    implementation(projects.repo.domain)
     implementation(projects.core)
 
     implementation(project.dependencies.platform(libs.ktor.bom))

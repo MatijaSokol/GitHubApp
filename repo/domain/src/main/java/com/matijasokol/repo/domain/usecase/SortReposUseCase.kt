@@ -1,8 +1,8 @@
-package com.matijasokol.repodomain.usecase
+package com.matijasokol.repo.domain.usecase
 
 import com.matijasokol.core.domain.SortOrder
-import com.matijasokol.repodomain.RepoSortType
-import com.matijasokol.repodomain.model.Repo
+import com.matijasokol.repo.domain.RepoSortType
+import com.matijasokol.repo.domain.model.Repo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

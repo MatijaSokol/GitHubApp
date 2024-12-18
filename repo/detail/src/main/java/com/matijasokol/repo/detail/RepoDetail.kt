@@ -43,8 +43,8 @@ import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_REPOS_COUNT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
-import com.matijasokol.repodomain.DateUtils
-import com.matijasokol.repodomain.model.Repo
+import com.matijasokol.repo.domain.DateUtils
+import com.matijasokol.repo.domain.model.Repo
 
 @Composable
 fun RepoDetail(

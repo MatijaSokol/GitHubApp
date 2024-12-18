@@ -1,6 +1,6 @@
 package com.matijasokol.repo.detail
 
-import com.matijasokol.repodomain.model.Repo
+import com.matijasokol.repo.domain.model.Repo
 
 data class RepoDetailState(
     val repo: Repo? = null,

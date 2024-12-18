@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.matijasokol.core.domain.SortOrder
-import com.matijasokol.repodomain.RepoSortType
+import com.matijasokol.repo.domain.RepoSortType
 
 @Suppress("LongParameterList", "ComposableParamOrder")
 @Composable

@@ -1,8 +1,8 @@
-package com.matijasokol.repodomain
+package com.matijasokol.repo.domain
 
 import com.matijasokol.core.domain.SortOrder
+import com.matijasokol.repo.domain.usecase.SortReposUseCase
 import com.matijasokol.repodatasourcetest.network.serializeRepoResponseData
-import com.matijasokol.repodomain.usecase.SortReposUseCase
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

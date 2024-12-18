@@ -1,9 +1,9 @@
-package com.matijasokol.repodomain.usecase
+package com.matijasokol.repo.domain.usecase
 
 import com.matijasokol.core.domain.Resource
-import com.matijasokol.repodomain.RepoCache
-import com.matijasokol.repodomain.RepoService
-import com.matijasokol.repodomain.model.Repo
+import com.matijasokol.repo.domain.RepoCache
+import com.matijasokol.repo.domain.RepoService
+import com.matijasokol.repo.domain.model.Repo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

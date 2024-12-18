@@ -37,7 +37,7 @@ dependencies {
     implementation(projects.core)
     implementation(projects.coreUi)
     implementation(projects.repo.repoDatasource)
-    implementation(projects.repo.repoDomain)
+    implementation(projects.repo.domain)
     implementation(projects.repo.list)
     implementation(projects.repo.detail)
 

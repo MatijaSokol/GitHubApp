@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.TextWithIcon
+import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.list.R
-import com.matijasokol.repodomain.model.Repo
 
 @Composable
 fun RepoInfoPanel(

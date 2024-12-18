@@ -35,6 +35,9 @@ import com.matijasokol.repo.detail.RepoDetailViewModel
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_REPOS_COUNT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
+import com.matijasokol.repo.domain.Paginator
+import com.matijasokol.repo.domain.RepoCache
+import com.matijasokol.repo.domain.RepoService
 import com.matijasokol.repo.list.RepoList
 import com.matijasokol.repo.list.RepoListViewModel
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
@@ -45,9 +48,6 @@ import com.matijasokol.repodatasourcetest.cache.RepoDatabaseFake
 import com.matijasokol.repodatasourcetest.network.FakePaginator
 import com.matijasokol.repodatasourcetest.network.RepoServiceFake
 import com.matijasokol.repodatasourcetest.network.RepoServiceResponseType
-import com.matijasokol.repodomain.Paginator
-import com.matijasokol.repodomain.RepoCache
-import com.matijasokol.repodomain.RepoService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

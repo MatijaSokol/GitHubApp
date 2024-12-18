@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matijasokol.core.domain.Resource
 import com.matijasokol.coreui.dictionary.Dictionary
-import com.matijasokol.repodomain.NetworkException
-import com.matijasokol.repodomain.ParseException
-import com.matijasokol.repodomain.model.Repo
-import com.matijasokol.repodomain.usecase.FetchReposUseCase
-import com.matijasokol.repodomain.usecase.SortReposUseCase
+import com.matijasokol.repo.domain.NetworkException
+import com.matijasokol.repo.domain.ParseException
+import com.matijasokol.repo.domain.model.Repo
+import com.matijasokol.repo.domain.usecase.FetchReposUseCase
+import com.matijasokol.repo.domain.usecase.SortReposUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel

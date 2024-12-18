@@ -1,7 +1,7 @@
-package com.matijasokol.repodomain
+package com.matijasokol.repo.domain
 
-import com.matijasokol.repodomain.model.Author
-import com.matijasokol.repodomain.model.Repo
+import com.matijasokol.repo.domain.model.Author
+import com.matijasokol.repo.domain.model.Repo
 
 interface RepoService {
 

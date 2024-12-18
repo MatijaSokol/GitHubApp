@@ -1,11 +1,11 @@
 package com.matijasokol.repodatasource
 
 import com.matijasokol.core.domain.Resource
-import com.matijasokol.repodomain.NetworkException
-import com.matijasokol.repodomain.Paginator
-import com.matijasokol.repodomain.ParseException
-import com.matijasokol.repodomain.RepoCache
-import com.matijasokol.repodomain.RepoService
+import com.matijasokol.repo.domain.NetworkException
+import com.matijasokol.repo.domain.Paginator
+import com.matijasokol.repo.domain.ParseException
+import com.matijasokol.repo.domain.RepoCache
+import com.matijasokol.repo.domain.RepoService
 import io.ktor.serialization.JsonConvertException
 import kotlinx.coroutines.flow.flow
 import java.net.UnknownHostException

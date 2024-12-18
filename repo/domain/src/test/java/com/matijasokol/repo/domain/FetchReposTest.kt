@@ -1,13 +1,13 @@
-package com.matijasokol.repodomain
+package com.matijasokol.repo.domain
 
 import com.matijasokol.core.domain.Resource
+import com.matijasokol.repo.domain.model.Repo
+import com.matijasokol.repo.domain.usecase.FetchReposUseCase
 import com.matijasokol.repodatasourcetest.cache.RepoCacheFake
 import com.matijasokol.repodatasourcetest.cache.RepoDatabaseFake
 import com.matijasokol.repodatasourcetest.network.FakePaginator
 import com.matijasokol.repodatasourcetest.network.RepoServiceFake
 import com.matijasokol.repodatasourcetest.network.RepoServiceResponseType
-import com.matijasokol.repodomain.model.Repo
-import com.matijasokol.repodomain.usecase.FetchReposUseCase
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test

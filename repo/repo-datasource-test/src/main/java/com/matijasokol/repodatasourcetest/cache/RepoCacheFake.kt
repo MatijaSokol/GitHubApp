@@ -1,7 +1,7 @@
 package com.matijasokol.repodatasourcetest.cache
 
-import com.matijasokol.repodomain.RepoCache
-import com.matijasokol.repodomain.model.Repo
+import com.matijasokol.repo.domain.RepoCache
+import com.matijasokol.repo.domain.model.Repo
 
 class RepoCacheFake(
     private val repoDatabaseFake: RepoDatabaseFake,

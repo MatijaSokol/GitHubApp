@@ -1,4 +1,4 @@
-package com.matijasokol.repodomain.model
+package com.matijasokol.repo.domain.model
 
 data class Author(
     val id: Int,

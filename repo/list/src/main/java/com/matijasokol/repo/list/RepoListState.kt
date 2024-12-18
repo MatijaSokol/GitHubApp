@@ -1,7 +1,7 @@
 package com.matijasokol.repo.list
 
-import com.matijasokol.repodomain.RepoSortType
-import com.matijasokol.repodomain.model.Repo
+import com.matijasokol.repo.domain.RepoSortType
+import com.matijasokol.repo.domain.model.Repo
 
 data class RepoListState(
     val isLoading: Boolean = false,

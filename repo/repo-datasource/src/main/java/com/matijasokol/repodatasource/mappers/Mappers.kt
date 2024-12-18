@@ -1,13 +1,12 @@
 package com.matijasokol.repodatasource.mappers
 
+import com.matijasokol.repo.domain.DateUtils
+import com.matijasokol.repo.domain.model.Author
+import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repodatasource.cache.AuthorEntity
 import com.matijasokol.repodatasource.cache.RepoEntity
 import com.matijasokol.repodatasource.network.model.AuthorDto
 import com.matijasokol.repodatasource.network.model.RepoDto
-import com.matijasokol.repodomain.DateUtils
-import com.matijasokol.repodomain.model.Author
-import com.matijasokol.repodomain.model.Repo
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 fun RepoDto.toRepo() = Repo(

@@ -1,10 +1,9 @@
 package com.matijasokol.repodatasource.cache
 
+import com.matijasokol.repo.domain.RepoCache
+import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo_datasource.cache.RepoDatabase
 import com.matijasokol.repodatasource.mappers.toRepo
-import com.matijasokol.repodomain.DateUtils
-import com.matijasokol.repodomain.RepoCache
-import com.matijasokol.repodomain.model.Repo
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -38,7 +37,7 @@ class RepoCacheImpl @Inject constructor(
                     watchers = watchersCount.toLong(),
                     open_issues = issuesCount.toLong(),
                     stars = starsCount.toLong(),
-                    updated_at = com.matijasokol.repodomain.DateUtils.fromDateToString(lastUpdated),
+                    updated_at = com.matijasokol.repo.domain.DateUtils.fromDateToString(lastUpdated),
                     author_id = author.id.toLong(),
                     topics = Json.encodeToString(topics),
                     language = language,
@@ -95,7 +94,7 @@ class RepoCacheImpl @Inject constructor(
                         watchers = watchersCount.toLong(),
                         open_issues = issuesCount.toLong(),
                         stars = starsCount.toLong(),
-                        updated_at = com.matijasokol.repodomain.DateUtils.fromDateToString(lastUpdated),
+                        updated_at = com.matijasokol.repo.domain.DateUtils.fromDateToString(lastUpdated),
                         author_id = author.id.toLong(),
                         topics = Json.encodeToString(topics),
                         language = language,

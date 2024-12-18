@@ -1,6 +1,6 @@
-package com.matijasokol.repodomain.usecase
+package com.matijasokol.repo.domain.usecase
 
-import com.matijasokol.repodomain.Paginator
+import com.matijasokol.repo.domain.Paginator
 import javax.inject.Inject
 
 class FetchReposUseCase @Inject constructor(

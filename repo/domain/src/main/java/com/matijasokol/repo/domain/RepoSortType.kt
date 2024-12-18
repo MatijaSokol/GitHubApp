@@ -1,4 +1,4 @@
-package com.matijasokol.repodomain
+package com.matijasokol.repo.domain
 
 import com.matijasokol.core.domain.SortOrder
 

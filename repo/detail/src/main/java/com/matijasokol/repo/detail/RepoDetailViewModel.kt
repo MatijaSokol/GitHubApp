@@ -7,7 +7,7 @@ import androidx.navigation.toRoute
 import com.matijasokol.core.domain.Resource
 import com.matijasokol.core.navigation.Destination
 import com.matijasokol.coreui.dictionary.Dictionary
-import com.matijasokol.repodomain.usecase.GetRepoDetailsUseCase
+import com.matijasokol.repo.domain.usecase.GetRepoDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted

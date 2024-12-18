@@ -1,4 +1,4 @@
-package com.matijasokol.repodomain.model
+package com.matijasokol.repo.domain.model
 
 import java.util.Date
 

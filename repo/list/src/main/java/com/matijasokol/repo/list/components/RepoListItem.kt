@@ -21,10 +21,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
+import com.matijasokol.repo.domain.model.Author
+import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
 import com.matijasokol.repo.list.test.TAG_REPO_NAME
-import com.matijasokol.repodomain.model.Author
-import com.matijasokol.repodomain.model.Repo
 
 @Suppress("ComposableParamOrder")
 @Composable

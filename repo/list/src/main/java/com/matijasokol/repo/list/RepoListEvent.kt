@@ -1,6 +1,6 @@
 package com.matijasokol.repo.list
 
-import com.matijasokol.repodomain.RepoSortType
+import com.matijasokol.repo.domain.RepoSortType
 
 sealed interface RepoListEvent {
 

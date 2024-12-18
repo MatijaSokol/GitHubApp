@@ -1,13 +1,13 @@
 package com.matijasokol.repodatasource.network
 
+import com.matijasokol.repo.domain.RepoService
+import com.matijasokol.repo.domain.model.Author
+import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repodatasource.mappers.toAuthor
 import com.matijasokol.repodatasource.mappers.toRepo
 import com.matijasokol.repodatasource.network.model.AuthorDto
 import com.matijasokol.repodatasource.network.model.FetchReposResponse
 import com.matijasokol.repodatasource.network.model.RepoDto
-import com.matijasokol.repodomain.RepoService
-import com.matijasokol.repodomain.model.Author
-import com.matijasokol.repodomain.model.Repo
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get

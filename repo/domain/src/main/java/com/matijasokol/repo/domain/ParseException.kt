@@ -1,3 +1,3 @@
-package com.matijasokol.repodomain
+package com.matijasokol.repo.domain
 
 class ParseException : Exception()
