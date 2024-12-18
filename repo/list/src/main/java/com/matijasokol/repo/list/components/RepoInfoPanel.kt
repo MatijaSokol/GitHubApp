@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import com.matijasokol.components.TextWithIcon
+import com.matijasokol.coreui.components.TextWithIcon
 import com.matijasokol.repo.list.R
 import com.matijasokol.repodomain.model.Repo
 

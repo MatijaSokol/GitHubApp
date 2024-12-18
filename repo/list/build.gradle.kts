@@ -10,7 +10,7 @@ android {
 
 dependencies {
     implementation(projects.core)
-    implementation(projects.components)
+    implementation(projects.coreUi)
     implementation(projects.repo.repoDomain)
 
     implementation(libs.sqldelight.driver.android)

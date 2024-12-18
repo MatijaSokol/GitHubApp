@@ -1,12 +1,12 @@
 package com.matijasokol.uirepodetail
 
-import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.matijasokol.core.domain.Resource
 import com.matijasokol.core.navigation.Destination
+import com.matijasokol.coreui.dictionary.Dictionary
 import com.matijasokol.repodomain.usecase.GetRepoDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class RepoDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getRepoDetails: GetRepoDetailsUseCase,
-    private val context: Application,
+    private val dictionary: Dictionary,
 ) : ViewModel() {
 
     private val fetchTrigger = Channel<Unit>()
@@ -41,7 +41,7 @@ class RepoDetailViewModel @Inject constructor(
         .map { resource ->
             when (resource) {
                 is Resource.Error -> RepoDetailState(
-                    errorMessage = context.getString(R.string.repo_detail_message_cache_error, repoId),
+                    errorMessage = dictionary.getString(R.string.repo_detail_message_cache_error, repoId),
                 )
                 is Resource.Loading -> RepoDetailState(isLoading = resource.isLoading)
                 is Resource.Success -> RepoDetailState(repo = resource.data)

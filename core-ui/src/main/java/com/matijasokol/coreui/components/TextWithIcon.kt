@@ -1,4 +1,4 @@
-package com.matijasokol.components
+package com.matijasokol.coreui.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

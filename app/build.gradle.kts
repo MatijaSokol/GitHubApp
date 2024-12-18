@@ -35,6 +35,7 @@ android {
 
 dependencies {
     implementation(projects.core)
+    implementation(projects.coreUi)
     implementation(projects.repo.repoDatasource)
     implementation(projects.repo.repoDomain)
     implementation(projects.repo.list)

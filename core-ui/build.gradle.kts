@@ -5,11 +5,12 @@ plugins {
 }
 
 android {
-    namespace = "com.matijasokol.components"
+    namespace = "com.matijasokol.coreui"
 }
 
 dependencies {
     implementation(projects.core)
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
+    implementation(libs.javax.inject)
 }

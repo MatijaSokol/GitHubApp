@@ -1,9 +1,9 @@
 package com.matijasokol.repo.list
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matijasokol.core.domain.Resource
+import com.matijasokol.coreui.dictionary.Dictionary
 import com.matijasokol.repodomain.NetworkException
 import com.matijasokol.repodomain.ParseException
 import com.matijasokol.repodomain.model.Repo
@@ -35,7 +35,7 @@ const val DEFAULT_QUERY = "kotlin"
 class RepoListViewModel @Inject constructor(
     private val fetchRepos: FetchReposUseCase,
     private val sortRepos: SortReposUseCase,
-    private val context: Application,
+    private val dictionary: Dictionary,
 ) : ViewModel() {
 
     private val _actions = Channel<RepoListAction>(capacity = BUFFERED)
@@ -191,11 +191,9 @@ class RepoListViewModel @Inject constructor(
         return forceFetchNextPage
     }
 
-    fun getMessageForError(exception: Exception): String {
-        return when (exception) {
-            is ParseException -> context.getString(R.string.repo_list_message_error)
-            is NetworkException -> context.getString(R.string.repo_list_message_network_error)
-            else -> ""
-        }
+    private fun getMessageForError(exception: Exception): String = when (exception) {
+        is ParseException -> dictionary.getString(R.string.repo_list_message_error)
+        is NetworkException -> dictionary.getString(R.string.repo_list_message_network_error)
+        else -> ""
     }
 }

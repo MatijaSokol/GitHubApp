@@ -1,4 +1,4 @@
-package com.matijasokol.components
+package com.matijasokol.coreui.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
