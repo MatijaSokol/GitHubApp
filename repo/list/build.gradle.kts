@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.matijasokol.uirepolist"
+    namespace = "com.matijasokol.repo.list"
 }
 
 dependencies {

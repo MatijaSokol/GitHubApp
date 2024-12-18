@@ -1,4 +1,4 @@
-package com.matijasokol.uirepolist.test
+package com.matijasokol.repo.list.test
 
 const val TAG_REPO_SEARCH_BAR = "TAG_REPO_SEARCH_BAR"
 const val TAG_REPO_LIST_ITEM = "TAG_REPO_LIST_ITEM"

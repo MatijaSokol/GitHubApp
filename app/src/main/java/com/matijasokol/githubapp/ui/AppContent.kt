@@ -32,8 +32,8 @@ import com.matijasokol.githubapp.navigation.NavigationEvent
 import com.matijasokol.githubapp.navigation.Navigator
 import com.matijasokol.uirepodetail.RepoDetail
 import com.matijasokol.uirepodetail.RepoDetailViewModel
-import com.matijasokol.uirepolist.RepoList
-import com.matijasokol.uirepolist.RepoListViewModel
+import com.matijasokol.repo.list.RepoList
+import com.matijasokol.repo.list.RepoListViewModel
 import kotlinx.coroutines.launch
 
 @Composable

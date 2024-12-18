@@ -27,6 +27,6 @@ include(
     "repo:repo-datasource",
     "repo:repo-datasource-test",
     "repo:repo-domain",
-    "repo:ui-repoList",
+    "repo:list",
     "repo:ui-repoDetail",
 )

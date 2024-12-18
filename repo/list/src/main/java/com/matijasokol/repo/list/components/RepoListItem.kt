@@ -1,4 +1,4 @@
-package com.matijasokol.uirepolist.components
+package com.matijasokol.repo.list.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import com.matijasokol.components.RoundedImage
 import com.matijasokol.repodomain.model.Author
 import com.matijasokol.repodomain.model.Repo
-import com.matijasokol.uirepolist.test.TAG_REPO_LIST_ITEM
-import com.matijasokol.uirepolist.test.TAG_REPO_NAME
+import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
+import com.matijasokol.repo.list.test.TAG_REPO_NAME
 
 @Suppress("ComposableParamOrder")
 @Composable

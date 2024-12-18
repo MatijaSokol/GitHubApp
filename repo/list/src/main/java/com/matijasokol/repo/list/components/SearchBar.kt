@@ -1,4 +1,4 @@
-package com.matijasokol.uirepolist.components
+package com.matijasokol.repo.list.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
@@ -18,7 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.matijasokol.uirepolist.test.TAG_REPO_SEARCH_BAR
+import com.matijasokol.repo.list.test.TAG_REPO_SEARCH_BAR
 
 @Suppress("ComposableParamOrder")
 @Composable

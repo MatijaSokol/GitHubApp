@@ -1,4 +1,4 @@
-package com.matijasokol.uirepolist.ui
+package com.matijasokol.repo.list.ui
 
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertTextEquals
@@ -9,14 +9,17 @@ import androidx.compose.ui.test.onNodeWithTag
 import coil.ImageLoader
 import com.matijasokol.repodatasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repodomain.model.Repo
-import com.matijasokol.uirepolist.RepoList
-import com.matijasokol.uirepolist.RepoListState
+import com.matijasokol.repo.list.RepoList
+import com.matijasokol.repo.list.RepoListState
 import com.matijasokol.uirepolist.coil.FakeImageLoader
-import com.matijasokol.uirepolist.test.TAG_PULL_TO_REFRESH
-import com.matijasokol.uirepolist.test.TAG_REPO_INFO_MESSAGE
-import com.matijasokol.uirepolist.test.TAG_REPO_LIST_ITEM
-import com.matijasokol.uirepolist.test.TAG_REPO_NAME
-import com.matijasokol.uirepolist.test.TAG_REPO_SEARCH_BAR
+import com.matijasokol.repo.list.test.TAG_PULL_TO_REFRESH
+import com.matijasokol.repo.list.test.TAG_REPO_INFO_MESSAGE
+import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
+import com.matijasokol.repo.list.test.TAG_REPO_NAME
+import com.matijasokol.repo.list.test.TAG_REPO_SEARCH_BAR
+import com.matijasokol.repodatasourcetest.network.serializeRepoResponseData
+import com.matijasokol.repodomain.model.Repo
+import com.matijasokol.repo.list.coil.FakeImageLoader
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

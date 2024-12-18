@@ -1,4 +1,4 @@
-package com.matijasokol.uirepolist.components
+package com.matijasokol.repo.list.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

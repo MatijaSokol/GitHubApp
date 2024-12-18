@@ -1,4 +1,4 @@
-package com.matijasokol.uirepolist
+package com.matijasokol.repo.list
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -27,10 +27,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.matijasokol.repodomain.model.Author
 import com.matijasokol.repodomain.model.Repo
-import com.matijasokol.uirepolist.components.RepoListItem
-import com.matijasokol.uirepolist.components.RepoListToolbar
-import com.matijasokol.uirepolist.test.TAG_PULL_TO_REFRESH
-import com.matijasokol.uirepolist.test.TAG_REPO_INFO_MESSAGE
+import com.matijasokol.repo.list.components.RepoListItem
+import com.matijasokol.repo.list.components.RepoListToolbar
+import com.matijasokol.repo.list.test.TAG_PULL_TO_REFRESH
+import com.matijasokol.repo.list.test.TAG_REPO_INFO_MESSAGE
 
 @Suppress("ComposableParamOrder")
 @OptIn(ExperimentalMaterialApi::class)

@@ -1,4 +1,4 @@
-package com.matijasokol.uirepolist
+package com.matijasokol.repo.list
 
 import com.matijasokol.repodomain.RepoSortType
 import com.matijasokol.repodomain.model.Repo

@@ -1,4 +1,4 @@
-package com.matijasokol.uirepolist
+package com.matijasokol.repo.list
 
 class RefreshTriggerInfo(
     val refreshTrigger: RefreshTrigger = RefreshTrigger.Initial,
