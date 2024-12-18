@@ -4,23 +4,23 @@ import com.matijasokol.repodomain.RepoSortType
 
 sealed interface RepoListEvent {
 
-    object LoadMore : RepoListEvent
+    data object LoadMore : RepoListEvent
 
     data class OnQueryChanged(
         val query: String,
     ) : RepoListEvent
 
-    object PullToRefreshTriggered : RepoListEvent
+    data object PullToRefreshTriggered : RepoListEvent
 
     data class UpdateSortType(
         val repoSortType: RepoSortType,
     ) : RepoListEvent
 
-    object ScrollToTopExecuted : RepoListEvent
+    data object ScrollToTopExecuted : RepoListEvent
 
-    object ToggleSortMenuOptionsVisibility : RepoListEvent
+    data object ToggleSortMenuOptionsVisibility : RepoListEvent
 
-    object SortMenuOptionsDismissed : RepoListEvent
+    data object SortMenuOptionsDismissed : RepoListEvent
 
-    object UIMessageShown : RepoListEvent
+    data object UIMessageShown : RepoListEvent
 }

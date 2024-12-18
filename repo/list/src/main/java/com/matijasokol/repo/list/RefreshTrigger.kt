@@ -2,11 +2,11 @@ package com.matijasokol.repo.list
 
 sealed interface RefreshTrigger {
 
-    object Query : RefreshTrigger
+    data object Query : RefreshTrigger
 
-    object PullToRefresh : RefreshTrigger
+    data object PullToRefresh : RefreshTrigger
 
-    object NextPage : RefreshTrigger
+    data object NextPage : RefreshTrigger
 
-    object Initial : RefreshTrigger
+    data object Initial : RefreshTrigger
 }
