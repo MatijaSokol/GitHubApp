@@ -34,16 +34,19 @@ android {
 }
 
 dependencies {
-    implementation(projects.repo.repoDatasource)
-    implementation(projects.repo.repoDomain)
-    implementation(projects.repo.uiRepoList)
-    implementation(projects.repo.uiRepoDetail)
+    implementation(projects.core)
+    implementation(projects.coreUi)
+    implementation(projects.repo.datasource)
+    implementation(projects.repo.domain)
+    implementation(projects.repo.list)
+    implementation(projects.repo.detail)
 
     implementation(libs.coreKtx)
     implementation(libs.appcompat)
     implementation(libs.lifecycle.viewmodel)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.network)
 
     implementation(libs.activity.compose)
     implementation(libs.compose.hilt.navigation)
@@ -61,7 +64,7 @@ dependencies {
     implementation(platform(libs.ktor.bom))
     implementation(libs.bundles.ktor)
 
-    androidTestImplementation(projects.repo.repoDatasourceTest)
+    androidTestImplementation(projects.repo.datasourceTest)
     androidTestImplementation(libs.test.runner)
     androidTestImplementation(libs.compose.junit4)
     debugImplementation(libs.compose.ui.test.manifest)

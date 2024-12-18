@@ -1,7 +1,7 @@
 package com.matijasokol.githubapp.di
 
-import com.matijasokol.repodatasource.BasicPaginator
-import com.matijasokol.repodomain.Paginator
+import com.matijasokol.repo.datasource.BasicPaginator
+import com.matijasokol.repo.domain.Paginator
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -22,11 +22,11 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(
     "app",
     "core",
-    "components",
+    "core-ui",
     "repo",
-    "repo:repo-datasource",
-    "repo:repo-datasource-test",
-    "repo:repo-domain",
-    "repo:ui-repoList",
-    "repo:ui-repoDetail",
+    "repo:datasource",
+    "repo:datasource-test",
+    "repo:domain",
+    "repo:list",
+    "repo:detail",
 )
