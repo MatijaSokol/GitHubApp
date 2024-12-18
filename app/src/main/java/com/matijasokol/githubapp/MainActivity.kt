@@ -15,12 +15,15 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigator: Navigator
 
+    @Inject
+    lateinit var modeChecker: ModeChecker
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             GitHubAppTheme {
-                AppContent(navigator)
+                AppContent(navigator, modeChecker)
             }
         }
     }

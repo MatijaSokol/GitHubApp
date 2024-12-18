@@ -23,4 +23,12 @@ sealed interface RepoListEvent {
     data object SortMenuOptionsDismissed : RepoListEvent
 
     data object UIMessageShown : RepoListEvent
+
+    data class OnItemClick(
+        val repoId: Int,
+    ) : RepoListEvent
+
+    data class OnImageClick(
+        val profileUrl: String,
+    ) : RepoListEvent
 }

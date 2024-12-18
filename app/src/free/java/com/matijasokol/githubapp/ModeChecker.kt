@@ -1,6 +1,8 @@
 package com.matijasokol.githubapp
 
-object ModeChecker {
+import javax.inject.Inject
 
-    const val CAN_NAVIGATE_TO_DETAILS = false
+class ModeChecker @Inject constructor() {
+
+    val canNavigateToDetails = false
 }

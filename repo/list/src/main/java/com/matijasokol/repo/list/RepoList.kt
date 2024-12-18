@@ -25,8 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.matijasokol.repodomain.model.Author
-import com.matijasokol.repodomain.model.Repo
 import com.matijasokol.repo.list.components.RepoListItem
 import com.matijasokol.repo.list.components.RepoListToolbar
 import com.matijasokol.repo.list.test.TAG_PULL_TO_REFRESH
@@ -38,8 +36,6 @@ import com.matijasokol.repo.list.test.TAG_REPO_INFO_MESSAGE
 fun RepoList(
     state: RepoListState,
     modifier: Modifier = Modifier,
-    onItemClick: (Repo) -> Unit,
-    onImageClick: (Author) -> Unit,
     onEvent: (RepoListEvent) -> Unit,
 ) {
     val context = LocalContext.current
@@ -105,13 +101,13 @@ fun RepoList(
                         state = lazyStaggeredGridState,
                     ) {
                         items(
-                            state.items,
+                            items = state.items,
                             key = { repo -> repo.id },
                         ) { repo ->
                             RepoListItem(
                                 repo = repo,
-                                onItemClick = onItemClick,
-                                onImageClick = onImageClick,
+                                onItemClick = { onEvent(RepoListEvent.OnItemClick(it.id)) },
+                                onImageClick = { onEvent(RepoListEvent.OnImageClick(it.profileUrl)) },
                             )
                         }
                     }

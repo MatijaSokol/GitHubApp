@@ -11,6 +11,8 @@ import com.matijasokol.repodomain.usecase.FetchReposUseCase
 import com.matijasokol.repodomain.usecase.SortReposUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
@@ -34,6 +37,9 @@ class RepoListViewModel @Inject constructor(
     private val sortRepos: SortReposUseCase,
     private val context: Application,
 ) : ViewModel() {
+
+    private val _actions = Channel<RepoListAction>(capacity = BUFFERED)
+    val actions = _actions.receiveAsFlow()
 
     private val _state = MutableStateFlow(RepoListState().copy(query = DEFAULT_QUERY))
     val state = _state.asStateFlow()
@@ -116,6 +122,12 @@ class RepoListViewModel @Inject constructor(
             }
             RepoListEvent.UIMessageShown -> _state.update {
                 it.copy(uiMessages = it.uiMessages.drop(1))
+            }
+            is RepoListEvent.OnItemClick -> viewModelScope.launch {
+                _actions.send(RepoListAction.NavigateToDetails(event.repoId))
+            }
+            is RepoListEvent.OnImageClick -> viewModelScope.launch {
+                _actions.send(RepoListAction.OpenProfile(event.profileUrl))
             }
         }
     }
