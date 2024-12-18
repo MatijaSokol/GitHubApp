@@ -19,7 +19,7 @@ dependencies {
     implementation(libs.coil.network)
     implementation(libs.material.icons)
 
-    androidTestImplementation(projects.repo.repoDatasourceTest)
+    androidTestImplementation(projects.repo.datasourceTest)
     androidTestImplementation(libs.compose.junit4)
     androidTestImplementation(libs.junit)
     debugImplementation(libs.compose.ui.test.manifest)

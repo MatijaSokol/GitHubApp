@@ -1,15 +1,15 @@
 package com.matijasokol.repo.domain
 
 import com.matijasokol.core.domain.Resource
+import com.matijasokol.repo.datasourcetest.cache.RepoCacheFake
+import com.matijasokol.repo.datasourcetest.cache.RepoDatabaseFake
+import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
+import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
+import com.matijasokol.repo.datasourcetest.network.serializeAuthorListData
+import com.matijasokol.repo.datasourcetest.network.serializeRepoListData
+import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.domain.usecase.GetRepoDetailsUseCase
-import com.matijasokol.repodatasourcetest.cache.RepoCacheFake
-import com.matijasokol.repodatasourcetest.cache.RepoDatabaseFake
-import com.matijasokol.repodatasourcetest.network.RepoServiceFake
-import com.matijasokol.repodatasourcetest.network.RepoServiceResponseType
-import com.matijasokol.repodatasourcetest.network.serializeAuthorListData
-import com.matijasokol.repodatasourcetest.network.serializeRepoListData
-import com.matijasokol.repodatasourcetest.network.serializeRepoResponseData
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach

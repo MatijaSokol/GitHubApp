@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import coil.ImageLoader
+import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.list.RepoList
 import com.matijasokol.repo.list.RepoListState
@@ -16,7 +17,6 @@ import com.matijasokol.repo.list.test.TAG_REPO_INFO_MESSAGE
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
 import com.matijasokol.repo.list.test.TAG_REPO_NAME
 import com.matijasokol.repo.list.test.TAG_REPO_SEARCH_BAR
-import com.matijasokol.repodatasourcetest.network.serializeRepoResponseData
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

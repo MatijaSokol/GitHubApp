@@ -7,7 +7,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines)
     implementation(libs.javax.inject)
 
-    testImplementation(projects.repo.repoDatasourceTest)
+    testImplementation(projects.repo.datasourceTest)
     testImplementation(libs.junit)
 
     testImplementation(project.dependencies.platform(libs.ktor.bom))

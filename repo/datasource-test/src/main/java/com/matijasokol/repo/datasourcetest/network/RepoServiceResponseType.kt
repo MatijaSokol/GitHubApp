@@ -1,4 +1,4 @@
-package com.matijasokol.repodatasourcetest.network
+package com.matijasokol.repo.datasourcetest.network
 
 sealed interface RepoServiceResponseType {
 

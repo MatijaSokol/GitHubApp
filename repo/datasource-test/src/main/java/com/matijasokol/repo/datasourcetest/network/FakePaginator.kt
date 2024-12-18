@@ -1,4 +1,4 @@
-package com.matijasokol.repodatasourcetest.network
+package com.matijasokol.repo.datasourcetest.network
 
 import com.matijasokol.repo.datasource.BasicPaginator
 import com.matijasokol.repo.domain.Paginator

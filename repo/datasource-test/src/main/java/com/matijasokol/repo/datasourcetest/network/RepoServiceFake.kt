@@ -1,4 +1,4 @@
-package com.matijasokol.repodatasourcetest.network
+package com.matijasokol.repo.datasourcetest.network
 
 import com.matijasokol.repo.datasource.network.NetworkConstants
 import com.matijasokol.repo.datasource.network.RepoServiceImpl
