@@ -7,11 +7,8 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import coil.ImageLoader
-import com.matijasokol.repodatasourcetest.network.serializeRepoResponseData
-import com.matijasokol.repodomain.model.Repo
 import com.matijasokol.repo.list.RepoList
 import com.matijasokol.repo.list.RepoListState
-import com.matijasokol.uirepolist.coil.FakeImageLoader
 import com.matijasokol.repo.list.test.TAG_PULL_TO_REFRESH
 import com.matijasokol.repo.list.test.TAG_REPO_INFO_MESSAGE
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM

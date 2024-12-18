@@ -30,6 +30,11 @@ import com.matijasokol.githubapp.di.NetworkModule
 import com.matijasokol.githubapp.di.ViewModelModule
 import com.matijasokol.githubapp.navigation.Screen
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
+import com.matijasokol.repo.list.RepoList
+import com.matijasokol.repo.list.RepoListViewModel
+import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
+import com.matijasokol.repo.list.test.TAG_REPO_NAME
+import com.matijasokol.repo.list.test.TAG_REPO_SEARCH_BAR
 import com.matijasokol.repodatasourcetest.cache.RepoCacheFake
 import com.matijasokol.repodatasourcetest.cache.RepoDatabaseFake
 import com.matijasokol.repodatasourcetest.network.FakePaginator
@@ -43,11 +48,6 @@ import com.matijasokol.uirepodetail.RepoDetailViewModel
 import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
 import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_REPOS_COUNT
 import com.matijasokol.uirepodetail.test.TAG_REPO_DETAIL_SCREEN
-import com.matijasokol.repo.list.RepoList
-import com.matijasokol.repo.list.RepoListViewModel
-import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
-import com.matijasokol.repo.list.test.TAG_REPO_NAME
-import com.matijasokol.repo.list.test.TAG_REPO_SEARCH_BAR
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
