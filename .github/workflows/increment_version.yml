@@ -1,0 +1,59 @@
+name: Increment app version
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        type: choice
+        description: 'Increment version'
+        options: [ Major, Minor, Patch, Build ]
+        default: 'Patch'
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  increment_version:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Prepare environment
+        run: |
+          export GRADLE_USER_HOME=`pwd`/.gradle
+          chmod +x ./gradlew
+
+      - name: Increment major version
+        if: ${{ inputs.name == 'Major' }}
+        run: ./gradlew incrementMajor --stacktrace
+
+      - name: Increment minor version
+        if: ${{ inputs.name == 'Minor' }}
+        run: ./gradlew incrementMinor --stacktrace
+
+      - name: Increment patch version
+        if: ${{ inputs.name == 'Patch' }}
+        run: ./gradlew incrementPatch --stacktrace
+
+      - name: Increment build version
+        if: ${{ inputs.name == 'Build' }}
+        run: ./gradlew incrementBuild --stacktrace
+
+      - name: Get version
+        id: version
+        run: |
+          version=$(./gradlew printVersionName --quiet --stacktrace)
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Commit and push version bump
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          cd ./release
+
+          git add version.properties
+          git commit -m "Bump version to ${{ steps.version.outputs.version }}"
+          git push -u origin develop
