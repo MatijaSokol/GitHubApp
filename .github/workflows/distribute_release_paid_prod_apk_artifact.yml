@@ -34,14 +34,15 @@ jobs:
         id: version
         run: |
           version=$(./gradlew printVersionName --quiet --stacktrace)
-          version=${version//./-}
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Generate app name
         id: name
         run: |
-          name="app-prod-paid-release-${{ steps.version.outputs.version }}.apk"
-          echo "name=name" >> $GITHUB_OUTPUT
+          version="${{ steps.version.outputs.version }}"
+          transformed=${version//./-}
+          name="app-prod-paid-release-${transformed}.apk"
+          echo "name=$name" >> $GITHUB_OUTPUT
 
       - name: Rename apk file
         run: |
@@ -53,3 +54,14 @@ jobs:
         with:
           name: ${{ steps.name.outputs.name }}
           path: app/build/outputs/apk/prodPaid/release/
+
+      - name: Commit and push version bump
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          cd ./release
+
+          git add version.properties
+          git commit -m "Bump version to ${{ steps.version.outputs.version }}"
+          git push -u origin develop
