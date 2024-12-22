@@ -1,74 +1,74 @@
 package com.matijasokol.repo.domain
 
-import com.matijasokol.core.domain.Resource
-import com.matijasokol.repo.datasourcetest.cache.RepoCacheFake
-import com.matijasokol.repo.datasourcetest.cache.RepoDatabaseFake
-import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
-import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
-import com.matijasokol.repo.datasourcetest.network.serializeAuthorListData
-import com.matijasokol.repo.datasourcetest.network.serializeRepoListData
-import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
+import arrow.core.left
+import arrow.core.right
+import com.matijasokol.core.error.NetworkError
+import com.matijasokol.repo.domain.model.Author
 import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.domain.usecase.GetRepoDetailsUseCase
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeEach
+import io.mockk.coEvery
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.junit5.MockKExtension
+import kotlinx.coroutines.test.runTest
+import org.amshove.kluent.`should be`
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import java.util.Date
 
+@ExtendWith(MockKExtension::class)
 class GetRepoFromDetailsTest {
 
-    private lateinit var repoCache: RepoCache
-    private lateinit var getRepoDetails: GetRepoDetailsUseCase
+    @RelaxedMockK
+    private lateinit var repoService: RepoService
 
-    private val repoList =
-        serializeRepoResponseData(ClassLoader.getSystemResource("repo_list_valid.json").readText())
-    private val jetbrainsFollowers =
-        serializeAuthorListData(ClassLoader.getSystemResource("jetbrains_followers.json").readText())
-    private val jetbrainsRepos =
-        serializeRepoListData(ClassLoader.getSystemResource("jetbrains_repos.json").readText())
+    @InjectMockKs
+    private lateinit var sut: GetRepoDetailsUseCase
 
-    @BeforeEach
-    fun setUp() = runBlocking {
-        repoCache = RepoCacheFake(
-            repoDatabaseFake = RepoDatabaseFake(),
-        )
+    private val repoName = "JetBrains/kotlin"
 
-        repoCache.deleteAll()
-        repoCache.insertRepos(repoList)
+    @Test
+    fun `should RETURN SUCCESS when request was successful`() = runTest {
+        val expectedResult = buildFakeRepo()
+        coEvery { repoService.fetchRepoDetails(repoName) } returns expectedResult.right()
 
-        getRepoDetails = GetRepoDetailsUseCase(
-            repoService = RepoServiceFake.build(
-                type = RepoServiceResponseType.GoodData,
-            ),
-            repoCache = repoCache,
-        )
+        val actualResult = sut(repoName)
+
+        actualResult.getOrNull() `should be` expectedResult
     }
 
     @Test
-    fun getRepoDetailsSuccess() = runBlocking {
-        repoCache.updateFollowersCount(
-            count = jetbrainsFollowers.distinctBy { it.id }.size,
-            authorId = 878437,
-        )
+    fun `should RETURN ERROR when request fails`() = runTest {
+        val expectedResult = NetworkError.UnknownNetworkError
+        coEvery { repoService.fetchRepoDetails(repoName) } returns expectedResult.left()
 
-        repoCache.updateReposCount(
-            count = jetbrainsRepos.distinctBy { it.id }.size,
-            authorId = 878437,
-        )
+        val actualResult = sut(repoName)
 
-        val emissions = getRepoDetails.execute(3432266).toList()
-
-        assert(emissions[0] == Resource.Loading<List<Repo>>(isLoading = true))
-        assert(emissions[1] is Resource.Success)
-        assert(emissions[2] == Resource.Loading<List<Repo>>(isLoading = false))
-    }
-
-    @Test
-    fun getRepoDetailsError() = runBlocking {
-        val emissions = getRepoDetails.execute(-1).toList()
-
-        assert(emissions[0] == Resource.Loading<List<Repo>>(isLoading = true))
-        assert(emissions[1] is Resource.Error)
-        assert(emissions[2] == Resource.Loading<List<Repo>>(isLoading = false))
+        actualResult.leftOrNull() `should be` expectedResult
     }
 }
+
+private fun buildFakeRepo() = Repo(
+    id = 3432266,
+    name = "kotlin",
+    fullName = "JetBrains/kotlin",
+    description = "The Kotlin Programming Language.",
+    starsCount = 3432266,
+    forksCount = 3432266,
+    issuesCount = 3432266,
+    lastUpdated = Date(),
+    topics = emptyList(),
+    language = "Kotlin",
+    url = "",
+    author = Author(
+        id = 1,
+        name = "JetBrains",
+        image = "",
+        profileUrl = "",
+        followersUrl = "",
+        reposUrl = "",
+        followersCount = null,
+        reposCount = null,
+    ),
+    watchersCount = 3432266,
+)
