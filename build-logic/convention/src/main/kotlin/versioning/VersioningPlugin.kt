@@ -53,5 +53,11 @@ class VersioningPlugin : Plugin<Project> {
         }
       }
     }
+
+    task("printVersionName") {
+      doLast {
+        println(versioning.readVersion().versionName)
+      }
+    }
   }
 }
