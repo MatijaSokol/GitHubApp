@@ -25,11 +25,31 @@ jobs:
           cache: 'gradle'
 
       - name: Assemble
+        run: ./gradlew assembleProdPaidRelease --stacktrace
+
+      - name: Increment patch version
+        run: ./gradlew incrementPatch --stacktrace
+
+      - name: Get version
+        id: version
         run: |
-          ./gradlew assembleProdPaidRelease --stacktrace
+          version=$(./gradlew printVersionName --quiet --stacktrace)
+          version=${version//./-}
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Generate app name
+        id: name
+        run: |
+          name="app-prod-paid-release-${{ steps.version.outputs.version }}.apk"
+          echo "name=name" >> $GITHUB_OUTPUT
+
+      - name: Rename apk file
+        run: |
+          cd app/build/outputs/apk/prodPaid/release/
+          mv app-prod-paid-release.apk ${{ steps.name.outputs.name }}
 
       - name: Upload to artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: app-prod-paid-release.apk
+          name: ${{ steps.name.outputs.name }}
           path: app/build/outputs/apk/prodPaid/release/
