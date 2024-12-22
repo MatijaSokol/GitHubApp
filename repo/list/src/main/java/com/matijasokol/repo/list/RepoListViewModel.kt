@@ -2,38 +2,29 @@ package com.matijasokol.repo.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.matijasokol.core.domain.Resource
 import com.matijasokol.coreui.dictionary.Dictionary
-import com.matijasokol.repo.domain.NetworkException
-import com.matijasokol.repo.domain.ParseException
-import com.matijasokol.repo.domain.model.Repo
-import com.matijasokol.repo.domain.usecase.FetchReposUseCase
+import com.matijasokol.repo.domain.Paginator
+import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.domain.usecase.SortReposUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-const val DEFAULT_QUERY = "kotlin"
-
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
-    private val fetchRepos: FetchReposUseCase,
+    private val paginator: Paginator,
     private val sortRepos: SortReposUseCase,
     private val dictionary: Dictionary,
 ) : ViewModel() {
@@ -41,159 +32,60 @@ class RepoListViewModel @Inject constructor(
     private val _actions = Channel<RepoListAction>(capacity = BUFFERED)
     val actions = _actions.receiveAsFlow()
 
-    private val _state = MutableStateFlow(RepoListState().copy(query = DEFAULT_QUERY))
-    val state = _state.asStateFlow()
+    private val query = MutableStateFlow(DEFAULT_QUERY)
 
-    private val _refreshTrigger = MutableStateFlow(RefreshTriggerInfo())
-    private val refreshTrigger = _refreshTrigger
-        .debounce { (refreshTrigger, _) ->
-            when (refreshTrigger) {
-                is RefreshTrigger.Query -> 500
-                else -> 0
-            }
-        }
-        .distinctUntilChanged { old, new ->
-            when (new.refreshTrigger) {
-                RefreshTrigger.NextPage -> state.value.endReached
-                is RefreshTrigger.Query -> old.query == new.query
-                else -> false
-            }
-        }
-        .filter {
-            when (it.refreshTrigger) {
-                RefreshTrigger.NextPage -> !state.value.isLoading
-                else -> true
-            }
-        }
-        .flatMapLatest { info ->
-            fetchRepos.execute(
-                query = info.query,
-                shouldReset = listOf(RefreshTrigger.PullToRefresh, RefreshTrigger.Query).contains(info.refreshTrigger),
-            ).map { repos -> updateState(info, repos) }
-                .onEach { shouldFetchNewPage -> if (shouldFetchNewPage) onEvent(RepoListEvent.LoadMore) }
-        }
-        .flowOn(Dispatchers.IO)
+    private val popupVisible = MutableStateFlow(false)
+    private val sortType = MutableStateFlow<RepoSortType>(RepoSortType.Unknown())
 
-    init {
-        refreshTrigger.launchIn(viewModelScope)
-    }
+    private val items = query
+        .debounce(500L)
+        .distinctUntilChanged()
+        .filter(String::isNotEmpty)
+        .flatMapLatest(paginator::getData)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = emptyList(),
+        )
+
+    private val sortedItems = combine(
+        items,
+        sortType,
+        sortRepos::invoke,
+    )
+
+    val state = combine(
+        paginator.loadState,
+        sortedItems,
+        query,
+        popupVisible,
+        sortType,
+        ::RepoListState,
+    ).stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000L),
+        initialValue = RepoListState(),
+    )
 
     fun onEvent(event: RepoListEvent) {
         when (event) {
-            RepoListEvent.LoadMore -> viewModelScope.launch {
-                _refreshTrigger.update { it.copy(refreshTrigger = RefreshTrigger.NextPage) }
-            }
-            is RepoListEvent.OnQueryChanged -> {
-                val updatedState = _state.updateAndGet {
-                    it.copy(
-                        query = event.query,
-                        removeQueryEnabled = event.query.isNotEmpty(),
-                    )
-                }
-                viewModelScope.launch {
-                    _refreshTrigger.update {
-                        it.copy(
-                            refreshTrigger = RefreshTrigger.Query,
-                            query = updatedState.query,
-                        )
-                    }
-                }
-            }
-            RepoListEvent.PullToRefreshTriggered -> viewModelScope.launch {
-                _refreshTrigger.update { it.copy(refreshTrigger = RefreshTrigger.PullToRefresh) }
-            }
+            RepoListEvent.LoadMore -> paginator.nextPage()
+            is RepoListEvent.OnQueryChanged -> this.query.update { event.query }
             is RepoListEvent.UpdateSortType -> viewModelScope.launch {
-                _state.update {
-                    it.copy(
-                        repoSortType = event.repoSortType,
-                        items = sortRepos.execute(it.items, event.repoSortType),
-                        scrollToTop = true,
-                    )
-                }
+                sortType.update { event.repoSortType }
+                _actions.send(RepoListAction.ScrollToTop)
             }
-            RepoListEvent.ScrollToTopExecuted -> _state.update {
-                it.copy(scrollToTop = false)
-            }
-            RepoListEvent.SortMenuOptionsDismissed -> _state.update {
-                it.copy(sortMenuVisible = false)
-            }
-            RepoListEvent.ToggleSortMenuOptionsVisibility -> _state.update {
-                it.copy(sortMenuVisible = !it.sortMenuVisible)
-            }
-            RepoListEvent.UIMessageShown -> _state.update {
-                it.copy(uiMessages = it.uiMessages.drop(1))
-            }
+            RepoListEvent.SortMenuOptionsDismissed -> popupVisible.update { false }
+            RepoListEvent.ToggleSortMenuOptionsVisibility -> popupVisible.update { !it }
             is RepoListEvent.OnItemClick -> viewModelScope.launch {
-                _actions.send(RepoListAction.NavigateToDetails(event.repoId))
+                _actions.send(RepoListAction.NavigateToDetails(event.repoName))
             }
             is RepoListEvent.OnImageClick -> viewModelScope.launch {
                 _actions.send(RepoListAction.OpenProfile(event.profileUrl))
             }
+            RepoListEvent.OnRetryClick -> viewModelScope.launch { paginator.retry() }
         }
-    }
-
-    private fun updateState(
-        info: RefreshTriggerInfo,
-        resource: Resource<List<Repo>>,
-    ): Boolean {
-        // Sometimes new page returns data which is already contained in previous page.
-        // In that case, automatically start fetching a new page.
-        val forceFetchNextPage = (resource as? Resource.Success)?.data
-            ?.takeIf { it.isNotEmpty() && info.refreshTrigger is RefreshTrigger.NextPage }
-            ?.let { state.value.items.containsAll(it) }
-            ?: false
-
-        when (resource) {
-            is Resource.Error -> _state.update {
-                when (resource.ex) {
-                    is ParseException, is NetworkException -> it.copy(
-                        infoMessage = when (info.refreshTrigger) {
-                            RefreshTrigger.NextPage -> ""
-                            RefreshTrigger.PullToRefresh ->
-                                if (it.items.isEmpty()) getMessageForError(resource.ex) else ""
-                            else -> getMessageForError(resource.ex)
-                        },
-                        uiMessages = when (info.refreshTrigger) {
-                            RefreshTrigger.NextPage, RefreshTrigger.PullToRefresh ->
-                                it.uiMessages + getMessageForError(resource.ex)
-                            else -> it.uiMessages
-                        },
-                        items = when (info.refreshTrigger) {
-                            RefreshTrigger.NextPage -> state.value.items
-                            else -> emptyList()
-                        },
-                    )
-                    else -> it
-                }
-            }
-            is Resource.Loading -> _state.update {
-                it.copy(
-                    isLoading = resource.isLoading,
-                    infoMessage = if (resource.isLoading) "" else it.infoMessage,
-                )
-            }
-            is Resource.Success -> _state.update {
-                it.copy(
-                    items = when (info.refreshTrigger) {
-                        RefreshTrigger.NextPage -> (state.value.items + resource.data).distinctBy { repo -> repo.id }
-                        else -> resource.data
-                    },
-                    endReached = resource.data.isEmpty(),
-                    infoMessage = "",
-                    scrollToTop = when (info.refreshTrigger) {
-                        RefreshTrigger.Query -> true
-                        else -> state.value.scrollToTop
-                    },
-                )
-            }
-        }
-
-        return forceFetchNextPage
-    }
-
-    private fun getMessageForError(exception: Exception): String = when (exception) {
-        is ParseException -> dictionary.getString(R.string.repo_list_message_error)
-        is NetworkException -> dictionary.getString(R.string.repo_list_message_network_error)
-        else -> ""
     }
 }
+
+const val DEFAULT_QUERY = "kotlin"

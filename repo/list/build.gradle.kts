@@ -26,4 +26,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.arrow.core)
+    implementation(libs.arrow.coroutines)
 }
