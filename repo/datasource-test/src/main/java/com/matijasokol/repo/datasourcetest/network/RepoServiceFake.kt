@@ -22,7 +22,7 @@ object RepoServiceFake {
     private val Url.hostWithPortIfRequired: String get() = if (port == protocol.defaultPort) host else hostWithPort
     private val Url.fullUrl: String get() = "${protocol.name}://$hostWithPortIfRequired$fullPath"
 
-    private const val BASE_URL_TEST = BASE_URL + "?q=kotlin&per_page=30&page=0"
+    private const val BASE_URL_TEST = "$BASE_URL?q=kotlin&per_page=30&page=0"
     private const val JETBRAINS_FOLLOWERS_URL = "https://api.github.com/users/JetBrains/followers"
     private const val JETBRAINS_REPOS_URL = "https://api.github.com/users/JetBrains/repos"
 
