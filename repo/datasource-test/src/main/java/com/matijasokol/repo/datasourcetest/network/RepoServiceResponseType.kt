@@ -2,11 +2,11 @@ package com.matijasokol.repo.datasourcetest.network
 
 sealed interface RepoServiceResponseType {
 
-    object EmptyList : RepoServiceResponseType
+    data object EmptyList : RepoServiceResponseType
 
-    object MalformedData : RepoServiceResponseType
+    data object MalformedData : RepoServiceResponseType
 
-    object GoodData : RepoServiceResponseType
+    data object GoodData : RepoServiceResponseType
 
-    object Http404 : RepoServiceResponseType
+    data object Http404 : RepoServiceResponseType
 }

@@ -1,4 +1,4 @@
-package com.matijasokol.core.navigation
+package com.matijasokol.coreui.navigation
 
 import kotlinx.serialization.Serializable
 
@@ -8,5 +8,5 @@ sealed interface Destination {
     data object RepoList : Destination
 
     @Serializable
-    data class RepoDetail(val repoId: Int) : Destination
+    data class RepoDetail(val repoName: String) : Destination
 }

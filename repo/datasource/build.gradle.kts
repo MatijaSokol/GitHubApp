@@ -12,5 +12,8 @@ dependencies {
     implementation(project.dependencies.platform(libs.ktor.bom))
     implementation(libs.bundles.ktor)
 
+    implementation(libs.arrow.core)
+    implementation(libs.arrow.coroutines)
+
     implementation(libs.javax.inject)
 }

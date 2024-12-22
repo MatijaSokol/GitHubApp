@@ -33,6 +33,7 @@ class RepoCacheImpl @Inject constructor(
                 queries.insertRepo(
                     id = id.toLong(),
                     name = name,
+                    fullName = fullName,
                     forks = forksCount.toLong(),
                     watchers = watchersCount.toLong(),
                     open_issues = issuesCount.toLong(),
@@ -90,6 +91,7 @@ class RepoCacheImpl @Inject constructor(
                     queries.insertRepo(
                         id = id.toLong(),
                         name = name,
+                        fullName = fullName,
                         forks = forksCount.toLong(),
                         watchers = watchersCount.toLong(),
                         open_issues = issuesCount.toLong(),

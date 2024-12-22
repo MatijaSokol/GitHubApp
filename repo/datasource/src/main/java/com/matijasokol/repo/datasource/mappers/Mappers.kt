@@ -12,6 +12,7 @@ import kotlinx.serialization.json.Json
 fun RepoDto.toRepo() = Repo(
     id = id,
     name = name,
+    fullName = fullName,
     author = author.toAuthor(),
     watchersCount = watchers,
     forksCount = forks,
@@ -27,6 +28,7 @@ fun RepoDto.toRepo() = Repo(
 fun RepoEntity.toRepo(authorEntity: AuthorEntity) = Repo(
     id = id.toInt(),
     name = name,
+    fullName = fullName,
     author = authorEntity.toAuthor(),
     watchersCount = watchers.toInt(),
     forksCount = forks.toInt(),

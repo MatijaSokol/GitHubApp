@@ -10,25 +10,21 @@ sealed interface RepoListEvent {
         val query: String,
     ) : RepoListEvent
 
-    data object PullToRefreshTriggered : RepoListEvent
-
     data class UpdateSortType(
         val repoSortType: RepoSortType,
     ) : RepoListEvent
-
-    data object ScrollToTopExecuted : RepoListEvent
 
     data object ToggleSortMenuOptionsVisibility : RepoListEvent
 
     data object SortMenuOptionsDismissed : RepoListEvent
 
-    data object UIMessageShown : RepoListEvent
-
     data class OnItemClick(
-        val repoId: Int,
+        val repoName: String,
     ) : RepoListEvent
 
     data class OnImageClick(
         val profileUrl: String,
     ) : RepoListEvent
+
+    data object OnRetryClick : RepoListEvent
 }

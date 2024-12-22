@@ -11,6 +11,9 @@ data class RepoDto(
     @SerialName("name")
     val name: String,
 
+    @SerialName("full_name")
+    val fullName: String,
+
     @SerialName("owner")
     val author: AuthorDto,
 

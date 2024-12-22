@@ -10,6 +10,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -26,7 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.matijasokol.core.navigation.Destination
+import com.matijasokol.coreui.navigation.Destination
 import com.matijasokol.githubapp.ModeChecker
 import com.matijasokol.githubapp.R
 import com.matijasokol.githubapp.navigation.NavigationEffect
@@ -105,17 +106,22 @@ fun NavGraphBuilder.repoList(
         val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
 
+        val lazyStaggeredGridState = rememberLazyStaggeredGridState()
+
         LaunchedEffect(viewModel.actions) {
             viewModel.actions.collect { action ->
                 when (action) {
-                    is NavigateToDetails -> openDetails(modeChecker, navigator, action.repoId, context)
+                    is NavigateToDetails -> openDetails(modeChecker, navigator, action.repoName, context)
                     is RepoListAction.OpenProfile -> openProfile(action.profileUrl, uriHandler, context)
+                    RepoListAction.ScrollToTop -> lazyStaggeredGridState.animateScrollToItem(0)
+                    is RepoListAction.ShowMessage -> Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         RepoList(
             state = state,
+            lazyStaggeredGridState = lazyStaggeredGridState,
             onEvent = viewModel::onEvent,
         )
     }
@@ -151,11 +157,11 @@ fun NavGraphBuilder.repoDetail(
     }
 }
 
-suspend fun openDetails(modeChecker: ModeChecker, navigator: Navigator, repoId: Int, context: Context) {
+suspend fun openDetails(modeChecker: ModeChecker, navigator: Navigator, repoName: String, context: Context) {
     when (modeChecker.canNavigateToDetails) {
         true -> navigator.emitDestination(
             NavigationEvent.Destination(
-                route = Destination.RepoDetail(repoId),
+                route = Destination.RepoDetail(repoName),
             ),
         )
         false -> Toast.makeText(
