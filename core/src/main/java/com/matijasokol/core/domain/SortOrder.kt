@@ -2,7 +2,7 @@ package com.matijasokol.core.domain
 
 sealed interface SortOrder {
 
-    object Ascending : SortOrder
+    data object Ascending : SortOrder
 
-    object Descending : SortOrder
+    data object Descending : SortOrder
 }
