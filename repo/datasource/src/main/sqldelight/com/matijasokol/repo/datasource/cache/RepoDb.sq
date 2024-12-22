@@ -1,6 +1,7 @@
 CREATE TABLE repoEntity(
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
+    fullName TEXT NOT NULL,
     forks INTEGER NOT NULL,
     watchers INTEGER NOT NULL,
     open_issues INTEGER NOT NULL,
@@ -31,6 +32,7 @@ INSERT OR REPLACE
 INTO repoEntity (
     id,
     name,
+    fullName,
     forks,
     watchers,
     open_issues,
@@ -41,7 +43,7 @@ INTO repoEntity (
     url,
     description,
     author_id
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 insertAuthor:
 INSERT OR REPLACE

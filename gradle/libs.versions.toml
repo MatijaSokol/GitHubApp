@@ -30,6 +30,8 @@ ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check htt
 hilt = "2.53.1"
 javaxInject = "1"
 
+arrow = "2.0.0"
+
 detekt = "1.23.7"
 detektCompose ="0.0.26"
 ktlint = "0.50.0"
@@ -80,6 +82,9 @@ ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation" }
 ktor-client-resources = { group = "io.ktor", name = "ktor-client-resources" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock" }
+
+arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow" }
+arrow-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", version.ref = "arrow" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
