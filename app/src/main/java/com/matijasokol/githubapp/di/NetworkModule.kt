@@ -7,6 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngineFactory
+import io.ktor.client.engine.okhttp.OkHttp
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
@@ -20,5 +22,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(json: Json): HttpClient = buildHttpClient(json)
+    fun provideEngine(): HttpClientEngineFactory<*> = OkHttp
+
+    @Provides
+    @Singleton
+    fun provideHttpClient(
+        json: Json,
+        engine: HttpClientEngineFactory<*>,
+    ): HttpClient = buildHttpClient(json, engine)
 }
