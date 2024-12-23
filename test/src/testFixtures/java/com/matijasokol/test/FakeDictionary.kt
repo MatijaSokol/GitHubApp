@@ -1,4 +1,6 @@
-package com.matijasokol.coreui.dictionary
+package com.matijasokol.test
+
+import com.matijasokol.core.dictionary.Dictionary
 
 fun FakeDictionary(
     getString: (Int) -> String = { "" },

@@ -29,4 +29,5 @@ include(
     "repo:domain",
     "repo:list",
     "repo:detail",
+    "test"
 )

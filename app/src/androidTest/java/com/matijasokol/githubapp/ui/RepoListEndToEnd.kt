@@ -13,7 +13,6 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import com.matijasokol.coreui.dictionary.Dictionary
-import com.matijasokol.coreui.dictionary.FakeDictionary
 import com.matijasokol.githubapp.MainActivity
 import com.matijasokol.githubapp.ModeChecker
 import com.matijasokol.githubapp.di.CacheModule
@@ -36,6 +35,7 @@ import com.matijasokol.repo.domain.RepoService
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
 import com.matijasokol.repo.list.test.TAG_REPO_NAME
 import com.matijasokol.repo.list.test.TAG_REPO_SEARCH_BAR
+import com.matijasokol.test.FakeDictionary
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

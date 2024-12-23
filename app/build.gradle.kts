@@ -66,6 +66,7 @@ dependencies {
     implementation(platform(libs.ktor.bom))
     implementation(libs.bundles.ktor)
 
+    androidTestImplementation(testFixtures(projects.test))
     androidTestImplementation(projects.repo.datasourceTest)
     androidTestImplementation(libs.test.runner)
     androidTestImplementation(libs.compose.junit4)
