@@ -1,8 +1,8 @@
 package com.matijasokol.repo.detail
 
 import arrow.core.Either
+import com.matijasokol.core.dictionary.Dictionary
 import com.matijasokol.core.error.NetworkError
-import com.matijasokol.coreui.dictionary.Dictionary
 import com.matijasokol.repo.domain.model.Repo
 import javax.inject.Inject
 

@@ -27,6 +27,14 @@ dependencies {
     implementation(libs.coil.network)
     implementation(libs.material.icons)
 
+    testImplementation(testFixtures(projects.test))
+    testImplementation(projects.repo.datasourceTest)
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kluent)
+    testImplementation(libs.turbine)
+
     androidTestImplementation(projects.repo.datasourceTest)
     androidTestImplementation(libs.compose.junit4)
     androidTestImplementation(libs.junit)

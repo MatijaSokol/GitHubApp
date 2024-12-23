@@ -1,4 +1,4 @@
-package com.matijasokol.coreui.dictionary
+package com.matijasokol.core.dictionary
 
 interface Dictionary {
 

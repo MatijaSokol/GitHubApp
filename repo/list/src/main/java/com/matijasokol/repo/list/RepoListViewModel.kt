@@ -2,7 +2,6 @@ package com.matijasokol.repo.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.matijasokol.coreui.dictionary.Dictionary
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.domain.usecase.SortReposUseCase
@@ -26,7 +25,6 @@ import javax.inject.Inject
 class RepoListViewModel @Inject constructor(
     private val paginator: Paginator,
     private val sortRepos: SortReposUseCase,
-    private val dictionary: Dictionary,
 ) : ViewModel() {
 
     private val _actions = Channel<RepoListAction>(capacity = BUFFERED)
