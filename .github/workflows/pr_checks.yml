@@ -97,3 +97,4 @@ jobs:
       - name: Unit tests
         run: |
           ./gradlew repo:domain:test --stacktrace
+          ./gradlew repo:detail:test --stacktrace
