@@ -1,6 +1,6 @@
 package com.matijasokol.githubapp.di
 
-import com.matijasokol.coreui.dictionary.Dictionary
+import com.matijasokol.core.dictionary.Dictionary
 import com.matijasokol.coreui.dictionary.DictionaryImpl
 import dagger.Binds
 import dagger.Module

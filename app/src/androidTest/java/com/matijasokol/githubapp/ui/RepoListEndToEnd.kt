@@ -12,7 +12,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
-import com.matijasokol.coreui.dictionary.Dictionary
+import com.matijasokol.core.dictionary.Dictionary
 import com.matijasokol.githubapp.MainActivity
 import com.matijasokol.githubapp.ModeChecker
 import com.matijasokol.githubapp.di.CacheModule

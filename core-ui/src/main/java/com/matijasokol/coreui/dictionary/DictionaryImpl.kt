@@ -1,6 +1,7 @@
 package com.matijasokol.coreui.dictionary
 
 import android.app.Application
+import com.matijasokol.core.dictionary.Dictionary
 import javax.inject.Inject
 
 class DictionaryImpl @Inject constructor(
