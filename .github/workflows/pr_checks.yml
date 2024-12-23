@@ -98,3 +98,4 @@ jobs:
         run: |
           ./gradlew repo:domain:test --stacktrace
           ./gradlew repo:detail:test --stacktrace
+          ./gradlew repo:list:test --stacktrace
