@@ -35,7 +35,7 @@ class BasicPaginator @Inject constructor(
             retryTrigger.receiveAsFlow().onStart { emit(Unit) },
         ) { page, _ -> fetchAndProcessData(page, query) }
             .flatMapLatest { newData ->
-                allItems.apply { update { it + newData } }
+                allItems.apply { update { (it + newData).distinctBy(Repo::id) } }
             }
     }
 
