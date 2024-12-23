@@ -15,6 +15,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk)
     testImplementation(libs.kluent)
+    testImplementation(libs.turbine)
 
     testImplementation(project.dependencies.platform(libs.ktor.bom))
     testImplementation(libs.ktor.serialization.kotlinx.json)
