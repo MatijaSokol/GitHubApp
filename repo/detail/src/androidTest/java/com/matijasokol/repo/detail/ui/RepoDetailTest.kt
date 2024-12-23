@@ -7,11 +7,9 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
-import coil.ImageLoader
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.detail.RepoDetail
 import com.matijasokol.repo.detail.RepoDetailState
-import com.matijasokol.repo.detail.coil.FakeImageLoader
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_ERROR_TEXT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_INFO_TEXT
@@ -25,7 +23,6 @@ class RepoDetailTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val imageLoader: ImageLoader = FakeImageLoader.build()
     private val repoData = serializeRepoResponseData(this::class.java.getResource("/repo_list_valid.json").readText())
 
     @Test
@@ -33,16 +30,9 @@ class RepoDetailTest {
         val repo = repoData.random()
         composeTestRule.setContent {
             val state = remember {
-                RepoDetailState(
-                    repo = repo,
-                    errorMessage = null,
-                    isLoading = false,
-                )
+                RepoDetailState.Success(repo = repo)
             }
-            RepoDetail(
-                state = state,
-                imageLoader = imageLoader,
-            )
+            RepoDetail(state = state)
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_BUTTON_REPO_WEB).assertExists()
@@ -55,16 +45,9 @@ class RepoDetailTest {
         val errorMessageText = "Error message"
         composeTestRule.setContent {
             val state = remember {
-                RepoDetailState(
-                    repo = null,
-                    errorMessage = errorMessageText,
-                    isLoading = false,
-                )
+                RepoDetailState.Error(errorMessage = errorMessageText)
             }
-            RepoDetail(
-                state = state,
-                imageLoader = imageLoader,
-            )
+            RepoDetail(state = state)
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_PROGRESS).assertDoesNotExist()
@@ -77,16 +60,9 @@ class RepoDetailTest {
     fun repoDetailLoadingShowsProgress() {
         composeTestRule.setContent {
             val state = remember {
-                RepoDetailState(
-                    repo = null,
-                    errorMessage = null,
-                    isLoading = true,
-                )
+                RepoDetailState.Loading
             }
-            RepoDetail(
-                state = state,
-                imageLoader = imageLoader,
-            )
+            RepoDetail(state = state)
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_PROGRESS).assertExists()
