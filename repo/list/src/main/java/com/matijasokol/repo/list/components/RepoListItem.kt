@@ -38,6 +38,7 @@ fun RepoListItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(4.dp)
+            .clickable { onItemClick(repo) }
             .testTag(TAG_REPO_LIST_ITEM),
         backgroundColor = MaterialTheme.colors.surface,
         shape = RoundedCornerShape(12.dp),
@@ -46,7 +47,6 @@ fun RepoListItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onItemClick(repo) }
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center,
         ) {

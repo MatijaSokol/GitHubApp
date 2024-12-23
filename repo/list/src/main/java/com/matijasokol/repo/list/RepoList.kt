@@ -21,16 +21,19 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.Paginator.LoadState.Append
 import com.matijasokol.repo.domain.Paginator.LoadState.AppendError
+import com.matijasokol.repo.domain.Paginator.LoadState.Loaded
 import com.matijasokol.repo.domain.Paginator.LoadState.Refresh
 import com.matijasokol.repo.domain.Paginator.LoadState.RefreshError
 import com.matijasokol.repo.domain.model.Author
 import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.list.components.RepoListItem
 import com.matijasokol.repo.list.components.RepoListToolbar
+import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
 
 @Suppress("ComposableParamOrder")
 @Composable
@@ -69,13 +72,16 @@ fun RepoList(
         Box(modifier = Modifier.fillMaxSize()) {
             when (state.loadState) {
                 Refresh -> CircularProgressIndicator(
-                    modifier = Modifier.size(50.dp).align(Alignment.Center),
+                    modifier = Modifier
+                        .size(50.dp)
+                        .align(Alignment.Center)
+                        .testTag(TAG_LOADING_INDICATOR),
                 )
                 RefreshError -> RetryContent(
                     modifier = Modifier.align(Alignment.Center),
                     onRetryClick = { onEvent(RepoListEvent.OnRetryClick) },
                 )
-                else -> ListScreen(
+                Loaded, Append, AppendError -> ListScreen(
                     items = state.items,
                     loadState = state.loadState,
                     lazyStaggeredGridState = lazyStaggeredGridState,
