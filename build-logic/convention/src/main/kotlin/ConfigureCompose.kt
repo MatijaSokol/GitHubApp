@@ -24,6 +24,7 @@ internal fun Project.configureAndroidCompose(
       freeCompilerArgs.addAll(listOf(
         "-opt-in=androidx.compose.ExperimentalComposeApi",
         "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+        "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
         "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
         "-opt-in=androidx.compose.runtime.ExperimentalComposeApi",
         "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",

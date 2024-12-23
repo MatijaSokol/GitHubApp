@@ -2,8 +2,9 @@ package com.matijasokol.repo.detail
 
 import com.matijasokol.repo.domain.model.Repo
 
-data class RepoDetailState(
-    val repo: Repo? = null,
-    val errorMessage: String? = null,
-    val isLoading: Boolean = true,
-)
+sealed interface RepoDetailState {
+
+    data class Success(val repo: Repo) : RepoDetailState
+    data class Error(val errorMessage: String) : RepoDetailState
+    data object Loading : RepoDetailState
+}

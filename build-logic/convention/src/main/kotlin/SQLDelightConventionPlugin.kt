@@ -14,7 +14,7 @@ class SQLDelightConventionPlugin : Plugin<Project> {
         // this will be the name of the generated database class
         databases.create("RepoDatabase") {
           // package name used for the database class
-          packageName.set("com.matijasokol.repo_datasource.cache")
+          packageName.set("com.matijasokol.repo.datasource.cache")
 
           // generate suspending query methods with asynchronous drivers
           generateAsync.set(true)

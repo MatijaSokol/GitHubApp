@@ -4,7 +4,7 @@ import android.app.Application
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import com.matijasokol.repo_datasource.cache.RepoDatabase
+import com.matijasokol.repo.datasource.cache.RepoDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

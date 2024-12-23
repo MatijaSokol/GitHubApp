@@ -2,19 +2,20 @@ package com.matijasokol.repo.datasourcetest.network
 
 import com.matijasokol.repo.datasource.network.BASE_URL
 import com.matijasokol.repo.datasource.network.RepoServiceImpl
+import com.matijasokol.repo.datasource.network.buildHttpClient
 import com.matijasokol.repo.domain.RepoService
-import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpResponseData
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import io.ktor.http.fullPath
 import io.ktor.http.headersOf
 import io.ktor.http.hostWithPort
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.http.withCharset
 import kotlinx.serialization.json.Json
 
 object RepoServiceFake {
@@ -22,32 +23,29 @@ object RepoServiceFake {
     private val Url.hostWithPortIfRequired: String get() = if (port == protocol.defaultPort) host else hostWithPort
     private val Url.fullUrl: String get() = "${protocol.name}://$hostWithPortIfRequired$fullPath"
 
-    private const val BASE_URL_TEST = "$BASE_URL?q=kotlin&per_page=30&page=0"
-    private const val JETBRAINS_FOLLOWERS_URL = "https://api.github.com/users/JetBrains/followers"
-    private const val JETBRAINS_REPOS_URL = "https://api.github.com/users/JetBrains/repos"
+    private const val BASE_LIST_URL_TEST = "https://$BASE_URL/search/repositories?q=kotlin&per_page=30&page="
+    private const val BASE_DETAILS_URL_TEST = "https://$BASE_URL/repos/JetBrains/kotlin"
 
     fun build(
         type: RepoServiceResponseType,
     ): RepoService {
-        val fakeClient = HttpClient(MockEngine) {
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        ignoreUnknownKeys = true
-                    },
-                )
-            }
-            engine {
-                addHandler { request ->
-                    when (request.url.toString()) {
-                        BASE_URL_TEST -> handleRepoListRequest(type)
-                        JETBRAINS_FOLLOWERS_URL -> handleJetBrainsFollowersRequest(type)
-                        JETBRAINS_REPOS_URL -> handleJetBrainsReposRequest(type)
-                        else -> error("Unhandled ${request.url.fullUrl}")
+        val fakeClient = buildHttpClient(
+            json = Json { ignoreUnknownKeys = true },
+            engine = MockEngine,
+            config = {
+                engine {
+                    addHandler { request ->
+                        val url = request.url.toString()
+
+                        when {
+                            url.startsWith(BASE_LIST_URL_TEST) -> handleRepoListRequest(type)
+                            url == BASE_DETAILS_URL_TEST -> handleRepoDetailsRequest(type)
+                            else -> error("Unhandled ${request.url.fullUrl}")
+                        }
                     }
                 }
-            }
-        }
+            },
+        )
 
         return RepoServiceImpl(httpClient = fakeClient)
     }
@@ -57,8 +55,10 @@ private fun MockRequestHandleScope.handleRepoListRequest(
     type: RepoServiceResponseType,
 ): HttpResponseData {
     val responseHeaders = headersOf(
-        "Content-Type" to listOf("application/json", "charset=utf-8"),
+        name = HttpHeaders.ContentType,
+        value = ContentType.Application.Json.withCharset(Charsets.UTF_8).toString(),
     )
+
     return when (type) {
         is RepoServiceResponseType.EmptyList -> {
             respond(
@@ -91,34 +91,18 @@ private fun MockRequestHandleScope.handleRepoListRequest(
     }
 }
 
-private fun MockRequestHandleScope.handleJetBrainsFollowersRequest(
+private fun MockRequestHandleScope.handleRepoDetailsRequest(
     type: RepoServiceResponseType,
 ): HttpResponseData {
     val responseHeaders = headersOf(
-        "Content-Type" to listOf("application/json", "charset=utf-8"),
+        name = HttpHeaders.ContentType,
+        value = ContentType.Application.Json.withCharset(Charsets.UTF_8).toString(),
     )
-    return when (type) {
-        is RepoServiceResponseType.GoodData -> {
-            respond(
-                this::class.java.getResource("/jetbrains_followers.json").readText(),
-                status = HttpStatusCode.OK,
-                headers = responseHeaders,
-            )
-        }
-        else -> throw NotImplementedError("Only GoodData case is implemented.")
-    }
-}
 
-private fun MockRequestHandleScope.handleJetBrainsReposRequest(
-    type: RepoServiceResponseType,
-): HttpResponseData {
-    val responseHeaders = headersOf(
-        "Content-Type" to listOf("application/json", "charset=utf-8"),
-    )
     return when (type) {
         is RepoServiceResponseType.GoodData -> {
             respond(
-                this::class.java.getResource("/jetbrains_repos.json").readText(),
+                this::class.java.getResource("/jetbrains_kotlin_details.json").readText(),
                 status = HttpStatusCode.OK,
                 headers = responseHeaders,
             )

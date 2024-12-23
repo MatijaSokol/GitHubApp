@@ -20,7 +20,6 @@ import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,11 +36,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
 import com.matijasokol.repo.detail.components.RepoDetailPanel
+import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_AUTHOR_AND_NAME
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_ERROR_TEXT
-import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_FOLLOWERS_COUNT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
-import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_REPOS_COUNT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
 import com.matijasokol.repo.domain.DateUtils
 import com.matijasokol.repo.domain.model.Repo
@@ -54,27 +52,29 @@ fun RepoDetail(
     Box(
         modifier = modifier.fillMaxSize(),
     ) {
-        when {
-            state.isLoading -> LoadingScreen()
-            state.errorMessage != null -> ErrorScreen(state.errorMessage)
-            state.repo != null -> SuccessScreen(state.repo)
+        when (state) {
+            is RepoDetailState.Error -> ErrorScreen(state.errorMessage)
+            RepoDetailState.Loading -> LoadingScreen()
+            is RepoDetailState.Success -> SuccessScreen(state.repo)
         }
     }
 }
 
 @Composable
-private fun BoxScope.LoadingScreen() {
+private fun BoxScope.LoadingScreen(
+    modifier: Modifier = Modifier,
+) {
     CircularProgressIndicator(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.Center)
             .testTag(TAG_REPO_DETAIL_PROGRESS),
     )
 }
 
 @Composable
-private fun BoxScope.ErrorScreen(errorMessage: String) {
+private fun BoxScope.ErrorScreen(errorMessage: String, modifier: Modifier = Modifier) {
     Text(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.Center)
             .padding(8.dp)
             .testTag(TAG_REPO_DETAIL_ERROR_TEXT),
@@ -84,15 +84,15 @@ private fun BoxScope.ErrorScreen(errorMessage: String) {
 }
 
 @Suppress("LongMethod")
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun BoxScope.SuccessScreen(
+private fun SuccessScreen(
     repo: Repo,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
 
-    Column {
+    Column(modifier = modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -133,7 +133,8 @@ private fun BoxScope.SuccessScreen(
             ) {
                 Text(
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
+                        .align(Alignment.CenterHorizontally)
+                        .testTag(TAG_REPO_DETAIL_AUTHOR_AND_NAME),
                     text = buildAnnotatedString {
                         append("${repo.author.name}/")
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -144,7 +145,10 @@ private fun BoxScope.SuccessScreen(
                 )
 
                 LazyRow {
-                    items(repo.topics) {
+                    items(
+                        items = repo.topics,
+                        key = { it },
+                    ) {
                         Chip(
                             onClick = {},
                             modifier = Modifier.padding(horizontal = 2.dp),
@@ -172,16 +176,10 @@ private fun BoxScope.SuccessScreen(
                 Spacer(modifier = Modifier.height(2.dp))
 
                 repo.author.followersCount?.let {
-                    Text(
-                        modifier = Modifier.testTag(TAG_REPO_DETAIL_FOLLOWERS_COUNT),
-                        text = context.getString(R.string.repo_detail_followers_count_text, it),
-                    )
+                    Text(text = context.getString(R.string.repo_detail_followers_count_text, it))
                 }
                 repo.author.reposCount?.let {
-                    Text(
-                        modifier = Modifier.testTag(TAG_REPO_DETAIL_REPOS_COUNT),
-                        text = context.getString(R.string.repo_detail_repos_count_text, it),
-                    )
+                    Text(text = context.getString(R.string.repo_detail_repos_count_text, it))
                 }
 
                 Button(

@@ -3,7 +3,6 @@ package com.matijasokol.repo.datasource.cache
 import com.matijasokol.repo.datasource.mappers.toRepo
 import com.matijasokol.repo.domain.RepoCache
 import com.matijasokol.repo.domain.model.Repo
-import com.matijasokol.repo_datasource.cache.RepoDatabase
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
