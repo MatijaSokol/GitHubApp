@@ -73,7 +73,7 @@ fun RepoDetail(
                         enabled = state is RepoDetailState.Success,
                         onClick = {
                             try {
-                                (state as? RepoDetailState.Success)?.repo?.author?.profileUrl?.let(uriHandler::openUri)
+                                (state as? RepoDetailState.Success)?.repoUi?.authorProfileUrl?.let(uriHandler::openUri)
                             } catch (e: Exception) {
                                 onEvent(RepoDetailEvent.OpenProfileWebError)
                             }
@@ -102,7 +102,7 @@ fun RepoDetail(
                         textAlign = TextAlign.Center,
                     )
 
-                    (state as? RepoDetailState.Success)?.repo?.let { repo ->
+                    (state as? RepoDetailState.Success)?.repoUi?.let { repo ->
                         LazyRow {
                             items(
                                 items = repo.topics,
@@ -132,14 +132,14 @@ fun RepoDetail(
                         Divider()
                         Spacer(modifier = Modifier.height(2.dp))
 
-                        state.followersCountText?.let { Text(text = it) }
-                        state.reposCountText?.let { Text(it) }
+                        state.repoUi.followersCountText?.let { Text(text = it) }
+                        state.repoUi.reposCountText?.let { Text(it) }
 
                         Button(
                             modifier = Modifier.testTag(TAG_REPO_DETAIL_BUTTON_REPO_WEB),
                             onClick = {
                                 try {
-                                    uriHandler.openUri(repo.url)
+                                    uriHandler.openUri(repo.repoUrl)
                                 } catch (e: Exception) {
                                     onEvent(RepoDetailEvent.OpenRepoWebError)
                                 }
@@ -151,7 +151,7 @@ fun RepoDetail(
                 }
             }
 
-            (state as? RepoDetailState.Success)?.info?.let { info ->
+            (state as? RepoDetailState.Success)?.repoUi?.info?.let { info ->
                 RepoDetailPanel(stats = info)
             }
         }

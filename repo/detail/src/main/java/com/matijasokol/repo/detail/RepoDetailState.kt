@@ -1,7 +1,5 @@
 package com.matijasokol.repo.detail
 
-import com.matijasokol.repo.domain.model.Repo
-
 sealed class RepoDetailState(
     open val repoFullName: String,
     open val authorImageUrl: String,
@@ -11,11 +9,8 @@ sealed class RepoDetailState(
     val repoName: String get() = repoFullName.substringAfter("/")
 
     data class Success(
-        val repo: Repo,
-        val info: List<String>,
+        val repoUi: RepoUi,
         val detailsButtonText: String,
-        val followersCountText: String?,
-        val reposCountText: String?,
         override val repoFullName: String,
         override val authorImageUrl: String,
     ) : RepoDetailState(
@@ -40,3 +35,12 @@ sealed class RepoDetailState(
         authorImageUrl = authorImageUrl,
     )
 }
+
+data class RepoUi(
+    val info: List<String>,
+    val followersCountText: String?,
+    val reposCountText: String?,
+    val authorProfileUrl: String,
+    val repoUrl: String,
+    val topics: List<String>,
+)

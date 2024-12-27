@@ -28,15 +28,19 @@ class RepoDetailsUiMapper @Inject constructor(
                 authorImageUrl = authorImageUrl,
             )
             is Either.Right -> RepoDetailState.Success(
-                repo = repoOrError.value,
-                info = buildInfoData(repoOrError.value),
                 detailsButtonText = dictionary.getString(R.string.repo_detail_btn_repo_details),
-                followersCountText = repoOrError.value.author.followersCount?.let {
-                    dictionary.getString(R.string.repo_detail_followers_count_text, it)
-                },
-                reposCountText = repoOrError.value.author.reposCount?.let {
-                    dictionary.getString(R.string.repo_detail_repos_count_text, it)
-                },
+                repoUi = RepoUi(
+                    repoUrl = repoOrError.value.url,
+                    info = buildInfoData(repoOrError.value),
+                    authorProfileUrl = repoOrError.value.author.profileUrl,
+                    topics = repoOrError.value.topics,
+                    followersCountText = repoOrError.value.author.followersCount?.let {
+                        dictionary.getString(R.string.repo_detail_followers_count_text, it)
+                    },
+                    reposCountText = repoOrError.value.author.reposCount?.let {
+                        dictionary.getString(R.string.repo_detail_repos_count_text, it)
+                    },
+                ),
                 repoFullName = repoFullName,
                 authorImageUrl = authorImageUrl,
             )
