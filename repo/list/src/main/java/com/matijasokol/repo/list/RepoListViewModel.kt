@@ -76,7 +76,7 @@ class RepoListViewModel @Inject constructor(
             RepoListEvent.SortMenuOptionsDismissed -> popupVisible.update { false }
             RepoListEvent.ToggleSortMenuOptionsVisibility -> popupVisible.update { !it }
             is RepoListEvent.OnItemClick -> viewModelScope.launch {
-                _actions.send(RepoListAction.NavigateToDetails(event.repoName))
+                _actions.send(RepoListAction.NavigateToDetails(event.authorImageUrl, event.repoFullName))
             }
             is RepoListEvent.OnImageClick -> viewModelScope.launch {
                 _actions.send(RepoListAction.OpenProfile(event.profileUrl))

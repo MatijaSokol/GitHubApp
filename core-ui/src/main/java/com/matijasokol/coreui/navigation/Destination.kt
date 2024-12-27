@@ -8,5 +8,8 @@ sealed interface Destination {
     data object RepoList : Destination
 
     @Serializable
-    data class RepoDetail(val repoName: String) : Destination
+    data class RepoDetail(
+        val repoFullName: String,
+        val authorImageUrl: String,
+    ) : Destination
 }

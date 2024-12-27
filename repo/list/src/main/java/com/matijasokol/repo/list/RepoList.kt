@@ -85,7 +85,7 @@ fun RepoList(
                     items = state.items,
                     loadState = state.loadState,
                     lazyStaggeredGridState = lazyStaggeredGridState,
-                    onItemClick = { onEvent(RepoListEvent.OnItemClick(it.fullName)) },
+                    onItemClick = { onEvent(RepoListEvent.OnItemClick(it.author.image, it.fullName)) },
                     onImageClick = { onEvent(RepoListEvent.OnImageClick(it.profileUrl)) },
                     onRetryClick = { onEvent(RepoListEvent.OnRetryClick) },
                 )

@@ -10,11 +10,11 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.detail.RepoDetail
 import com.matijasokol.repo.detail.RepoDetailState
+import com.matijasokol.repo.detail.RepoUi
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_ERROR_TEXT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_INFO_TEXT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
-import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
 import org.junit.Rule
 import org.junit.Test
 
@@ -30,9 +30,29 @@ class RepoDetailTest {
         val repo = repoData.random()
         composeTestRule.setContent {
             val state = remember {
-                RepoDetailState.Success(repo = repo)
+                RepoDetailState.Success(
+                    repoFullName = "JetBrains/kotlin",
+                    authorImageUrl = "",
+                    detailsButtonText = "Details",
+                    repoUi = RepoUi(
+                        followersCountText = null,
+                        reposCountText = null,
+                        authorProfileUrl = "",
+                        repoUrl = "",
+                        topics = emptyList(),
+                        info = listOf(
+                            "Watchers: ${repo.watchersCount}",
+                            "Issues: ${repo.issuesCount}",
+                            "Forks: ${repo.forksCount}",
+                            "Stars: ${repo.starsCount}",
+                        ),
+                    ),
+                )
             }
-            RepoDetail(state = state)
+            RepoDetail(
+                state = state,
+                onEvent = {},
+            )
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_BUTTON_REPO_WEB).assertExists()
@@ -45,13 +65,19 @@ class RepoDetailTest {
         val errorMessageText = "Error message"
         composeTestRule.setContent {
             val state = remember {
-                RepoDetailState.Error(errorMessage = errorMessageText)
+                RepoDetailState.Error(
+                    errorMessage = errorMessageText,
+                    repoFullName = "JetBrains/kotlin",
+                    authorImageUrl = "",
+                )
             }
-            RepoDetail(state = state)
+            RepoDetail(
+                state = state,
+                onEvent = {},
+            )
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_PROGRESS).assertDoesNotExist()
-        composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_SCREEN).assertDoesNotExist()
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_ERROR_TEXT).assertExists()
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_ERROR_TEXT).assertTextEquals(errorMessageText)
     }
@@ -60,13 +86,18 @@ class RepoDetailTest {
     fun repoDetailLoadingShowsProgress() {
         composeTestRule.setContent {
             val state = remember {
-                RepoDetailState.Loading
+                RepoDetailState.Loading(
+                    repoFullName = "JetBrains/kotlin",
+                    authorImageUrl = "",
+                )
             }
-            RepoDetail(state = state)
+            RepoDetail(
+                state = state,
+                onEvent = {},
+            )
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_PROGRESS).assertExists()
-        composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_SCREEN).assertDoesNotExist()
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_INFO_TEXT).assertDoesNotExist()
     }
 }

@@ -13,7 +13,6 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.test.runTest
-import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should be instance of`
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -31,7 +30,7 @@ class RepoDetailViewModelTest {
         mockkStatic("androidx.navigation.SavedStateHandleKt")
         every {
             savedStateHandle.toRoute<Destination.RepoDetail>()
-        } returns Destination.RepoDetail("JetBrains/kotlin")
+        } returns Destination.RepoDetail(repoFullName = "JetBrains/kotlin", authorImageUrl = "")
     }
 
     @Test
@@ -46,11 +45,12 @@ class RepoDetailViewModelTest {
             savedStateHandle = savedStateHandle,
             getRepoDetails = getRepoDetailsUseCase,
             uiMapper = uiMapper,
+            dictionary = FakeDictionary(),
         )
 
         sut.state.test {
             val item = awaitItem()
-            item `should be` RepoDetailState.Loading
+            item `should be instance of` RepoDetailState.Loading::class
 
             val item2 = awaitItem()
             item2 `should be instance of` RepoDetailState.Success::class
@@ -69,11 +69,12 @@ class RepoDetailViewModelTest {
             savedStateHandle = savedStateHandle,
             getRepoDetails = getRepoDetailsUseCase,
             uiMapper = uiMapper,
+            dictionary = FakeDictionary(),
         )
 
         sut.state.test {
             val item = awaitItem()
-            item `should be` RepoDetailState.Loading
+            item `should be instance of` RepoDetailState.Loading::class
 
             val item2 = awaitItem()
             item2 `should be instance of` RepoDetailState.Error::class

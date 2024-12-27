@@ -21,6 +21,7 @@ fun RoundedImage(
     size: Dp = 64.dp,
     borderColor: Color? = Color.Black,
     borderWidth: Dp? = 2.dp,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     AsyncImage(
@@ -39,7 +40,7 @@ fun RoundedImage(
                     this
                 }
             }
-            .clickable(onClick = onClick),
+            .clickable(enabled = enabled, onClick = onClick),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
     )
