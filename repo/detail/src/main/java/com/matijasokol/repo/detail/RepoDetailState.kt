@@ -12,6 +12,10 @@ sealed class RepoDetailState(
 
     data class Success(
         val repo: Repo,
+        val info: List<String>,
+        val detailsButtonText: String,
+        val followersCountText: String?,
+        val reposCountText: String?,
         override val repoFullName: String,
         override val authorImageUrl: String,
     ) : RepoDetailState(

@@ -1,6 +1,5 @@
 package com.matijasokol.repo.detail
 
-import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.SpanStyle
@@ -41,18 +39,17 @@ import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_ERROR_TEXT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
-import com.matijasokol.repo.domain.DateUtils
 
 @Suppress("LongMethod")
 @Composable
 fun RepoDetail(
     state: RepoDetailState,
     modifier: Modifier = Modifier,
+    onEvent: (RepoDetailEvent) -> Unit,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
     ) {
-        val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
 
         Column {
@@ -76,15 +73,9 @@ fun RepoDetail(
                         enabled = state is RepoDetailState.Success,
                         onClick = {
                             try {
-                                (state as? RepoDetailState.Success)?.let {
-                                    uriHandler.openUri(it.repo.author.profileUrl)
-                                }
+                                (state as? RepoDetailState.Success)?.repo?.author?.profileUrl?.let(uriHandler::openUri)
                             } catch (e: Exception) {
-                                Toast.makeText(
-                                    context,
-                                    R.string.repo_detail_message_profile_browser_error,
-                                    Toast.LENGTH_SHORT,
-                                ).show()
+                                onEvent(RepoDetailEvent.OpenProfileWebError)
                             }
                         },
                     )
@@ -122,15 +113,13 @@ fun RepoDetail(
                                     modifier = Modifier.padding(horizontal = 2.dp),
                                     enabled = false,
                                     colors = ChipDefaults.chipColors(
-                                        backgroundColor = if (isSystemInDarkTheme()) {
-                                            Color(50, 50, 50)
-                                        } else {
-                                            Color(100, 100, 100)
+                                        backgroundColor = when (isSystemInDarkTheme()) {
+                                            true -> Color(50, 50, 50)
+                                            false -> Color(100, 100, 100)
                                         },
-                                        contentColor = if (isSystemInDarkTheme()) {
-                                            Color.White
-                                        } else {
-                                            Color.Black
+                                        contentColor = when (isSystemInDarkTheme()) {
+                                            true -> Color.White
+                                            false -> Color.Black
                                         },
                                     ),
                                 ) {
@@ -143,12 +132,8 @@ fun RepoDetail(
                         Divider()
                         Spacer(modifier = Modifier.height(2.dp))
 
-                        repo.author.followersCount?.let {
-                            Text(text = context.getString(R.string.repo_detail_followers_count_text, it))
-                        }
-                        repo.author.reposCount?.let {
-                            Text(text = context.getString(R.string.repo_detail_repos_count_text, it))
-                        }
+                        state.followersCountText?.let { Text(text = it) }
+                        state.reposCountText?.let { Text(it) }
 
                         Button(
                             modifier = Modifier.testTag(TAG_REPO_DETAIL_BUTTON_REPO_WEB),
@@ -156,39 +141,18 @@ fun RepoDetail(
                                 try {
                                     uriHandler.openUri(repo.url)
                                 } catch (e: Exception) {
-                                    Toast.makeText(
-                                        context,
-                                        R.string.repo_detail_message_repo_browser_error,
-                                        Toast.LENGTH_SHORT,
-                                    ).show()
+                                    onEvent(RepoDetailEvent.OpenRepoWebError)
                                 }
                             },
                         ) {
-                            Text(text = context.getString(R.string.repo_detail_btn_repo_details))
+                            Text(text = state.detailsButtonText)
                         }
                     }
                 }
             }
 
-            (state as? RepoDetailState.Success)?.repo?.let { repo ->
-                RepoDetailPanel(
-                    stats = with(repo) {
-                        with(context) {
-                            listOf(
-                                getString(R.string.repo_detail_panel_watchers, watchersCount),
-                                getString(R.string.repo_detail_panel_issues, issuesCount),
-                                getString(R.string.repo_detail_panel_forks, forksCount),
-                                getString(R.string.repo_detail_panel_starts, starsCount),
-                                getString(R.string.repo_detail_panel_language, language),
-                                getString(R.string.repo_detail_panel_description, description),
-                                getString(
-                                    R.string.repo_detail_panel_updated,
-                                    DateUtils.dateToLocalDateString(lastUpdated),
-                                ),
-                            )
-                        }
-                    },
-                )
+            (state as? RepoDetailState.Success)?.info?.let { info ->
+                RepoDetailPanel(stats = info)
             }
         }
 

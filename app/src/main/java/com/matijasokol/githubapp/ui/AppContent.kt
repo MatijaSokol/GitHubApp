@@ -38,6 +38,7 @@ import com.matijasokol.githubapp.navigation.NavigationEffect
 import com.matijasokol.githubapp.navigation.NavigationEvent
 import com.matijasokol.githubapp.navigation.Navigator
 import com.matijasokol.repo.detail.RepoDetail
+import com.matijasokol.repo.detail.RepoDetailAction
 import com.matijasokol.repo.detail.RepoDetailViewModel
 import com.matijasokol.repo.list.RepoList
 import com.matijasokol.repo.list.RepoListAction
@@ -168,10 +169,24 @@ fun NavGraphBuilder.repoDetail(
         val viewModel: RepoDetailViewModel = hiltViewModel()
         val state by viewModel.state.collectAsState()
 
+        val context = LocalContext.current
+
+        LaunchedEffect(viewModel.actions) {
+            viewModel.actions.collect { action ->
+                when (action) {
+                    is RepoDetailAction.ShowMessage ->
+                        Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         CompositionLocalProvider(
             LocalAnimatedContentScope provides this,
         ) {
-            RepoDetail(state = state)
+            RepoDetail(
+                state = state,
+                onEvent = viewModel::onEvent,
+            )
         }
     }
 }
