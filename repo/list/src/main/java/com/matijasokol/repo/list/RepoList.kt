@@ -5,7 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -29,11 +30,11 @@ import com.matijasokol.repo.domain.Paginator.LoadState.AppendError
 import com.matijasokol.repo.domain.Paginator.LoadState.Loaded
 import com.matijasokol.repo.domain.Paginator.LoadState.Refresh
 import com.matijasokol.repo.domain.Paginator.LoadState.RefreshError
-import com.matijasokol.repo.domain.model.Author
-import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.list.components.RepoListItem
 import com.matijasokol.repo.list.components.RepoListToolbar
+import com.matijasokol.repo.list.components.ShimmerRepoListItem
 import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
+import kotlinx.collections.immutable.ImmutableList
 
 @Suppress("ComposableParamOrder")
 @Composable
@@ -71,12 +72,7 @@ fun RepoList(
 
         Box(modifier = Modifier.fillMaxSize()) {
             when (state.loadState) {
-                Refresh -> CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .align(Alignment.Center)
-                        .testTag(TAG_LOADING_INDICATOR),
-                )
+                Refresh -> LoadingContent()
                 RefreshError -> RetryContent(
                     modifier = Modifier.align(Alignment.Center),
                     onRetryClick = { onEvent(RepoListEvent.OnRetryClick) },
@@ -85,8 +81,8 @@ fun RepoList(
                     items = state.items,
                     loadState = state.loadState,
                     lazyStaggeredGridState = lazyStaggeredGridState,
-                    onItemClick = { onEvent(RepoListEvent.OnItemClick(it.author.image, it.fullName)) },
-                    onImageClick = { onEvent(RepoListEvent.OnImageClick(it.profileUrl)) },
+                    onItemClick = { onEvent(RepoListEvent.OnItemClick(it.authorImageUrl, it.fullName)) },
+                    onImageClick = { profileUrl -> onEvent(RepoListEvent.OnImageClick(profileUrl)) },
                     onRetryClick = { onEvent(RepoListEvent.OnRetryClick) },
                 )
             }
@@ -94,14 +90,13 @@ fun RepoList(
     }
 }
 
-@Suppress("UnstableCollections")
 @Composable
 private fun ListScreen(
-    items: List<Repo>,
+    items: ImmutableList<RepoListItem>,
     loadState: Paginator.LoadState,
     lazyStaggeredGridState: LazyStaggeredGridState,
-    onItemClick: (Repo) -> Unit,
-    onImageClick: (Author) -> Unit,
+    onItemClick: (RepoListItem) -> Unit,
+    onImageClick: (String) -> Unit,
     onRetryClick: () -> Unit,
 ) {
     LazyVerticalStaggeredGrid(
@@ -110,7 +105,7 @@ private fun ListScreen(
     ) {
         items(
             items = items,
-            key = Repo::id,
+            key = RepoListItem::id,
         ) { repo ->
             RepoListItem(
                 repo = repo,
@@ -149,6 +144,21 @@ private fun RetryContent(
         Text("Something went wrong")
         Button(onClick = onRetryClick) {
             Text(text = "Retry")
+        }
+    }
+}
+
+@Composable
+private fun LoadingContent(
+    modifier: Modifier = Modifier,
+) {
+    LazyVerticalGrid(
+        modifier = modifier.testTag(TAG_LOADING_INDICATOR),
+        columns = GridCells.Fixed(2),
+        userScrollEnabled = false,
+    ) {
+        items(count = 20) {
+            ShimmerRepoListItem()
         }
     }
 }

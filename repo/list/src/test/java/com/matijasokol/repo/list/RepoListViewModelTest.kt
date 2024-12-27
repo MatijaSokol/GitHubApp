@@ -35,7 +35,7 @@ class RepoListViewModelTest {
 
             awaitItem().run {
                 loadState `should be` Paginator.LoadState.Refresh
-                items `should be` emptyList()
+                items.shouldBeEmpty()
                 query `should be` initialQuery
             }
         }

@@ -1,6 +1,5 @@
 package com.matijasokol.repo.detail.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,12 +21,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.matijasokol.repo.detail.R
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_INFO_TEXT
+import kotlinx.collections.immutable.ImmutableList
 
-@Suppress("UnstableCollections")
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RepoDetailPanel(
-    stats: List<String>,
+    stats: ImmutableList<String>,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -37,10 +35,9 @@ fun RepoDetailPanel(
             .fillMaxSize()
             .padding(horizontal = 40.dp, vertical = 20.dp)
             .background(
-                color = if (isSystemInDarkTheme()) {
-                    Color(50, 50, 50)
-                } else {
-                    Color(218, 218, 218)
+                color = when (isSystemInDarkTheme()) {
+                    true -> Color(50, 50, 50)
+                    false -> Color(218, 218, 218)
                 },
                 shape = RoundedCornerShape(8.dp),
             ),
@@ -51,10 +48,9 @@ fun RepoDetailPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = if (isSystemInDarkTheme()) {
-                            Color(100, 100, 100)
-                        } else {
-                            Color(180, 180, 180)
+                        color = when (isSystemInDarkTheme()) {
+                            true -> Color(100, 100, 100)
+                            false -> Color(180, 180, 180)
                         },
                         shape = RoundedCornerShape(
                             topStart = 8.dp,

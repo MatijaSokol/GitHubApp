@@ -15,4 +15,6 @@ dependencies {
     implementation(libs.coil.network)
     implementation(libs.javax.inject)
     implementation(libs.kotlinx.serialization)
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.kotlinx.coroutines)
 }

@@ -5,6 +5,8 @@ import com.matijasokol.core.dictionary.Dictionary
 import com.matijasokol.core.error.NetworkError
 import com.matijasokol.repo.domain.DateUtils
 import com.matijasokol.repo.domain.model.Repo
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import javax.inject.Inject
 
 class RepoDetailsUiMapper @Inject constructor(
@@ -47,8 +49,8 @@ class RepoDetailsUiMapper @Inject constructor(
         }
     }
 
-    private fun buildInfoData(repo: Repo): List<String> = with(dictionary) {
-        listOf(
+    private fun buildInfoData(repo: Repo): ImmutableList<String> = with(dictionary) {
+        persistentListOf(
             getString(R.string.repo_detail_panel_watchers, repo.watchersCount),
             getString(R.string.repo_detail_panel_issues, repo.issuesCount),
             getString(R.string.repo_detail_panel_forks, repo.forksCount),

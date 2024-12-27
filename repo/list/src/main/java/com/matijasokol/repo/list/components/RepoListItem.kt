@@ -22,18 +22,17 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
 import com.matijasokol.coreui.components.withSharedBounds
-import com.matijasokol.repo.domain.model.Author
-import com.matijasokol.repo.domain.model.Repo
+import com.matijasokol.repo.list.RepoListItem
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
 import com.matijasokol.repo.list.test.TAG_REPO_NAME
 
 @Suppress("ComposableParamOrder")
 @Composable
 fun RepoListItem(
-    repo: Repo,
+    repo: RepoListItem,
     modifier: Modifier = Modifier,
-    onItemClick: (Repo) -> Unit,
-    onImageClick: (Author) -> Unit,
+    onItemClick: (RepoListItem) -> Unit,
+    onImageClick: (String) -> Unit,
 ) {
     Card(
         modifier = modifier
@@ -58,10 +57,10 @@ fun RepoListItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 RoundedImage(
-                    modifier = Modifier.withSharedBounds(key = "${repo.author.image}/${repo.fullName}"),
-                    imageUrl = repo.author.image,
-                    contentDescription = repo.author.name,
-                    onClick = { onImageClick(repo.author) },
+                    modifier = Modifier.withSharedBounds(key = "${repo.authorImageUrl}/${repo.fullName}"),
+                    imageUrl = repo.authorImageUrl,
+                    contentDescription = repo.authorName,
+                    onClick = { onImageClick(repo.authorProfileUrl) },
                 )
 
                 Column(
@@ -69,7 +68,9 @@ fun RepoListItem(
                         .padding(end = 8.dp),
                 ) {
                     RepoInfoPanel(
-                        repo = repo,
+                        watchers = repo.watchers,
+                        forks = repo.forks,
+                        issues = repo.issues,
                     )
                 }
             }
@@ -77,10 +78,10 @@ fun RepoListItem(
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .withSharedBounds(key = "${repo.author.name}/${repo.name}")
+                    .withSharedBounds(key = "${repo.authorName}/${repo.name}")
                     .testTag(TAG_REPO_NAME),
                 text = buildAnnotatedString {
-                    append("${repo.author.name}/")
+                    append("${repo.authorName}/")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append(repo.name)
                     }
