@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
+import com.matijasokol.coreui.components.withSharedBounds
 import com.matijasokol.repo.detail.components.RepoDetailPanel
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_AUTHOR_AND_NAME
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB

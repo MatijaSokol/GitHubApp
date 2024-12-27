@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
+import com.matijasokol.coreui.components.withSharedBounds
 import com.matijasokol.repo.domain.model.Author
 import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
@@ -57,6 +58,7 @@ fun RepoListItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 RoundedImage(
+                    modifier = Modifier.withSharedBounds(key = "${repo.author.image}/${repo.fullName}"),
                     imageUrl = repo.author.image,
                     contentDescription = repo.author.name,
                     onClick = { onImageClick(repo.author) },
@@ -75,6 +77,7 @@ fun RepoListItem(
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
+                    .withSharedBounds(key = "${repo.author.name}/${repo.name}")
                     .testTag(TAG_REPO_NAME),
                 text = buildAnnotatedString {
                     append("${repo.author.name}/")

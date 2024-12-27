@@ -2,6 +2,7 @@ package com.matijasokol.githubapp.ui
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,6 +29,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.matijasokol.coreui.components.LocalAnimatedContentScope
+import com.matijasokol.coreui.components.LocalSharedTransitionScope
 import com.matijasokol.coreui.navigation.Destination
 import com.matijasokol.githubapp.ModeChecker
 import com.matijasokol.githubapp.R
@@ -57,15 +61,19 @@ fun AppContent(
                 navigator = navigator,
             )
 
-            NavHost(
-                navController = navController,
-                startDestination = Destination.RepoList,
-            ) {
-                repoList(
-                    navigator = navigator,
-                    modeChecker = modeChecker,
-                    width = constraints.maxWidth / 2,
-                )
+            SharedTransitionLayout {
+                CompositionLocalProvider(
+                    LocalSharedTransitionScope provides this,
+                ) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = Destination.RepoList,
+                    ) {
+                        repoList(
+                            navigator = navigator,
+                            modeChecker = modeChecker,
+                            width = constraints.maxWidth / 2,
+                        )
 
                 repoDetail(
                     width = constraints.maxWidth / 2,
@@ -119,11 +127,15 @@ fun NavGraphBuilder.repoList(
             }
         }
 
-        RepoList(
-            state = state,
-            lazyStaggeredGridState = lazyStaggeredGridState,
-            onEvent = viewModel::onEvent,
-        )
+        CompositionLocalProvider(
+            LocalAnimatedContentScope provides this,
+        ) {
+            RepoList(
+                state = state,
+                lazyStaggeredGridState = lazyStaggeredGridState,
+                onEvent = viewModel::onEvent,
+            )
+        }
     }
 }
 
@@ -153,7 +165,11 @@ fun NavGraphBuilder.repoDetail(
         val viewModel: RepoDetailViewModel = hiltViewModel()
         val state by viewModel.state.collectAsState()
 
-        RepoDetail(state = state)
+        CompositionLocalProvider(
+            LocalAnimatedContentScope provides this,
+        ) {
+            RepoDetail(state = state)
+        }
     }
 }
 

@@ -23,6 +23,7 @@ internal fun Project.configureAndroidCompose(
     compilerOptions {
       freeCompilerArgs.addAll(listOf(
         "-opt-in=androidx.compose.ExperimentalComposeApi",
+        "-opt-in=androidx.compose.animation.ExperimentalSharedTransitionApi",
         "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
         "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
         "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
