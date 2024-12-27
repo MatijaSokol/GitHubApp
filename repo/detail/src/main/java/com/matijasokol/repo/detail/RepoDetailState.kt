@@ -1,5 +1,7 @@
 package com.matijasokol.repo.detail
 
+import kotlinx.collections.immutable.ImmutableList
+
 sealed class RepoDetailState(
     open val repoFullName: String,
     open val authorImageUrl: String,
@@ -37,7 +39,7 @@ sealed class RepoDetailState(
 }
 
 data class RepoUi(
-    val info: List<String>,
+    val info: ImmutableList<String>,
     val followersCountText: String?,
     val reposCountText: String?,
     val authorProfileUrl: String,

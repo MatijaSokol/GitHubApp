@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.domain.Paginator
+import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.list.RepoList
 import com.matijasokol.repo.list.RepoListState
 import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
@@ -14,6 +15,8 @@ import com.matijasokol.repo.list.test.TAG_REPO_INFO_MESSAGE
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
 import com.matijasokol.repo.list.test.TAG_REPO_NAME
 import com.matijasokol.repo.list.test.TAG_REPO_SEARCH_BAR
+import com.matijasokol.repo.list.toRepoListItem
+import kotlinx.collections.immutable.toPersistentList
 import org.junit.Rule
 import org.junit.Test
 
@@ -31,7 +34,7 @@ class RepoListTest {
             query = query,
             items = serializeRepoResponseData(
                 this::class.java.getResource("/repo_list_valid.json").readText(),
-            ),
+            ).map(Repo::toRepoListItem).toPersistentList(),
         )
 
         composeTestRule.setContent {
@@ -52,7 +55,7 @@ class RepoListTest {
         composeTestRule
             .onAllNodesWithTag(TAG_REPO_NAME, true)
             .onFirst()
-            .assertTextEquals("${state.items.first().author.name}/${state.items.first().name}")
+            .assertTextEquals("${state.items.first().authorName}/${state.items.first().name}")
     }
 
     @Test
@@ -63,7 +66,7 @@ class RepoListTest {
                     query = query,
                     items = serializeRepoResponseData(
                         this::class.java.getResource("/repo_list_empty.json").readText(),
-                    ),
+                    ).map(Repo::toRepoListItem).toPersistentList(),
                 ),
                 onEvent = {},
             )

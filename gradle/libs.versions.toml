@@ -7,6 +7,7 @@ kotlin = "2.0.21" # update to 2.1.0 when Hilt support is available
 ksp = "2.0.21-1.0.28"
 kotlinxCoroutines = "1.10.1"
 kotlinxSerialization = "1.7.3"
+kotlinxCollections = "0.3.8"
 
 activityCompose = "1.9.3"
 agp = "8.7.2"
@@ -54,6 +55,7 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+kotlinx-collections = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollections" }
 
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }

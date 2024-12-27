@@ -12,12 +12,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.TextWithIcon
-import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.list.R
 
 @Composable
 fun RepoInfoPanel(
-    repo: Repo,
+    watchers: String,
+    forks: String,
+    issues: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -30,21 +31,21 @@ fun RepoInfoPanel(
         horizontalAlignment = Alignment.End,
     ) {
         TextWithIcon(
-            text = repo.watchersCount.toString(),
+            text = watchers,
             imageVector = ImageVector.vectorResource(id = R.drawable.watch),
         )
 
         Divider(thickness = 1.dp, color = Color.Black)
 
         TextWithIcon(
-            text = repo.forksCount.toString(),
+            text = forks,
             imageVector = ImageVector.vectorResource(id = R.drawable.fork),
         )
 
         Divider(thickness = 1.dp, color = Color.Black)
 
         TextWithIcon(
-            text = repo.issuesCount.toString(),
+            text = issues,
             imageVector = ImageVector.vectorResource(id = R.drawable.issue),
         )
     }

@@ -45,4 +45,6 @@ dependencies {
 
     implementation(libs.arrow.core)
     implementation(libs.arrow.coroutines)
+
+    implementation(libs.kotlinx.collections)
 }
