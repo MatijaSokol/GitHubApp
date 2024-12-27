@@ -10,6 +10,6 @@ class GetRepoDetailsUseCase @Inject constructor(
     private val repoService: RepoService,
 ) {
 
-    suspend operator fun invoke(repoId: String): Either<NetworkError, Repo> =
-        repoService.fetchRepoDetails(repoId)
+    suspend operator fun invoke(repoFullName: String): Either<NetworkError, Repo> =
+        repoService.fetchRepoDetails(repoFullName)
 }

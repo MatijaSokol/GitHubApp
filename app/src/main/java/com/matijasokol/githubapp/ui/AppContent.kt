@@ -75,9 +75,11 @@ fun AppContent(
                             width = constraints.maxWidth / 2,
                         )
 
-                repoDetail(
-                    width = constraints.maxWidth / 2,
-                )
+                        repoDetail(
+                            width = constraints.maxWidth / 2,
+                        )
+                    }
+                }
             }
         }
     }
@@ -119,7 +121,8 @@ fun NavGraphBuilder.repoList(
         LaunchedEffect(viewModel.actions) {
             viewModel.actions.collect { action ->
                 when (action) {
-                    is NavigateToDetails -> openDetails(modeChecker, navigator, action.repoName, context)
+                    is NavigateToDetails ->
+                        openDetails(modeChecker, navigator, action.authorImageUrl, action.repoFullName, context)
                     is RepoListAction.OpenProfile -> openProfile(action.profileUrl, uriHandler, context)
                     RepoListAction.ScrollToTop -> lazyStaggeredGridState.animateScrollToItem(0)
                     is RepoListAction.ShowMessage -> Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
@@ -173,11 +176,17 @@ fun NavGraphBuilder.repoDetail(
     }
 }
 
-suspend fun openDetails(modeChecker: ModeChecker, navigator: Navigator, repoName: String, context: Context) {
+suspend fun openDetails(
+    modeChecker: ModeChecker,
+    navigator: Navigator,
+    authorImageUrl: String,
+    repoFullName: String,
+    context: Context,
+) {
     when (modeChecker.canNavigateToDetails) {
         true -> navigator.emitDestination(
             NavigationEvent.Destination(
-                route = Destination.RepoDetail(repoName),
+                route = Destination.RepoDetail(repoFullName, authorImageUrl),
             ),
         )
         false -> Toast.makeText(

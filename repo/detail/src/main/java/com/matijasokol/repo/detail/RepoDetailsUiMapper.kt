@@ -13,13 +13,24 @@ class RepoDetailsUiMapper @Inject constructor(
     fun toUiState(
         isLoading: Boolean,
         repoOrError: Either<NetworkError, Repo>,
+        repoFullName: String,
+        authorImageUrl: String,
     ) = when (isLoading) {
-        true -> RepoDetailState.Loading
+        true -> RepoDetailState.Loading(
+            repoFullName = repoFullName,
+            authorImageUrl = authorImageUrl,
+        )
         false -> when (repoOrError) {
             is Either.Left -> RepoDetailState.Error(
-                dictionary.getString(R.string.repo_detail_message_cache_error),
+                errorMessage = dictionary.getString(R.string.repo_detail_message_cache_error),
+                repoFullName = repoFullName,
+                authorImageUrl = authorImageUrl,
             )
-            is Either.Right -> RepoDetailState.Success(repoOrError.value)
+            is Either.Right -> RepoDetailState.Success(
+                repo = repoOrError.value,
+                repoFullName = repoFullName,
+                authorImageUrl = authorImageUrl,
+            )
         }
     }
 }

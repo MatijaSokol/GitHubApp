@@ -3,7 +3,8 @@ package com.matijasokol.repo.list
 sealed interface RepoListAction {
 
     data class NavigateToDetails(
-        val repoName: String,
+        val authorImageUrl: String,
+        val repoFullName: String,
     ) : RepoListAction
 
     data class OpenProfile(

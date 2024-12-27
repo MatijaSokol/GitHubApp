@@ -19,7 +19,8 @@ sealed interface RepoListEvent {
     data object SortMenuOptionsDismissed : RepoListEvent
 
     data class OnItemClick(
-        val repoName: String,
+        val authorImageUrl: String,
+        val repoFullName: String,
     ) : RepoListEvent
 
     data class OnImageClick(

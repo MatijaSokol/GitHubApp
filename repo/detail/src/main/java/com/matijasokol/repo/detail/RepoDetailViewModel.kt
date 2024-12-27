@@ -31,7 +31,7 @@ class RepoDetailViewModel @Inject constructor(
 
     private val repo = fetchTrigger.receiveAsFlow()
         .onStart { emit(Unit) }
-        .map { savedStateHandle.toRoute<Destination.RepoDetail>().repoName }
+        .map { savedStateHandle.toRoute<Destination.RepoDetail>().repoFullName }
         .onEach { isLoading.update { true } }
         .map(getRepoDetails::invoke)
         .onEach { isLoading.update { false } }
@@ -39,10 +39,18 @@ class RepoDetailViewModel @Inject constructor(
     val state = combine(
         isLoading,
         repo,
-        uiMapper::toUiState,
-    ).stateIn(
+    ) { loading, repo ->
+        with(savedStateHandle.toRoute<Destination.RepoDetail>()) {
+            uiMapper.toUiState(loading, repo, repoFullName, authorImageUrl)
+        }
+    }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000L),
-        initialValue = RepoDetailState.Loading,
+        initialValue = with(savedStateHandle.toRoute<Destination.RepoDetail>()) {
+            RepoDetailState.Loading(
+                repoFullName = repoFullName,
+                authorImageUrl = authorImageUrl,
+            )
+        },
     )
 }
