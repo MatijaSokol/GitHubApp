@@ -6,18 +6,17 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.matijasokol.core.dictionary.Dictionary
 import com.matijasokol.coreui.navigation.Destination
+import com.matijasokol.coreui.viewmodel.stateIn
 import com.matijasokol.repo.domain.usecase.GetRepoDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -51,8 +50,6 @@ class RepoDetailViewModel @Inject constructor(
             uiMapper.toUiState(loading, repo, repoFullName, authorImageUrl)
         }
     }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000L),
         initialValue = with(savedStateHandle.toRoute<Destination.RepoDetail>()) {
             RepoDetailState.Loading(
                 repoFullName = repoFullName,

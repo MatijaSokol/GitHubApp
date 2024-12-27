@@ -2,6 +2,7 @@ package com.matijasokol.repo.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.matijasokol.coreui.viewmodel.stateIn
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.domain.model.Repo
@@ -43,11 +44,7 @@ class RepoListViewModel @Inject constructor(
         .distinctUntilChanged()
         .filter(String::isNotEmpty)
         .flatMapLatest(paginator::getData)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = emptyList(),
-        )
+        .stateIn(initialValue = emptyList())
 
     private val sortedItems = combine(
         items,
