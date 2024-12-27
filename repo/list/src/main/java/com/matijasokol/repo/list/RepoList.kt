@@ -5,7 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -31,6 +32,7 @@ import com.matijasokol.repo.domain.Paginator.LoadState.Refresh
 import com.matijasokol.repo.domain.Paginator.LoadState.RefreshError
 import com.matijasokol.repo.list.components.RepoListItem
 import com.matijasokol.repo.list.components.RepoListToolbar
+import com.matijasokol.repo.list.components.ShimmerRepoListItem
 import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
 import kotlinx.collections.immutable.ImmutableList
 
@@ -70,12 +72,7 @@ fun RepoList(
 
         Box(modifier = Modifier.fillMaxSize()) {
             when (state.loadState) {
-                Refresh -> CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .align(Alignment.Center)
-                        .testTag(TAG_LOADING_INDICATOR),
-                )
+                Refresh -> LoadingContent()
                 RefreshError -> RetryContent(
                     modifier = Modifier.align(Alignment.Center),
                     onRetryClick = { onEvent(RepoListEvent.OnRetryClick) },
@@ -147,6 +144,21 @@ private fun RetryContent(
         Text("Something went wrong")
         Button(onClick = onRetryClick) {
             Text(text = "Retry")
+        }
+    }
+}
+
+@Composable
+private fun LoadingContent(
+    modifier: Modifier = Modifier,
+) {
+    LazyVerticalGrid(
+        modifier = modifier.testTag(TAG_LOADING_INDICATOR),
+        columns = GridCells.Fixed(2),
+        userScrollEnabled = false,
+    ) {
+        items(count = 20) {
+            ShimmerRepoListItem()
         }
     }
 }
