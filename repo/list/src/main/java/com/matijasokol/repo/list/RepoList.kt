@@ -19,6 +19,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,16 +43,17 @@ fun RepoList(
     lazyStaggeredGridState: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
     onEvent: (RepoListEvent) -> Unit,
 ) {
-    val shouldStartPaginate = remember {
+    val shouldStartPaginate by remember {
         derivedStateOf {
             with(lazyStaggeredGridState.layoutInfo) {
-                (visibleItemsInfo.lastOrNull()?.index ?: -9) >= (totalItemsCount - 6)
+                val lastVisibleItemIndex = visibleItemsInfo.lastOrNull()?.index ?: return@derivedStateOf false
+                lastVisibleItemIndex >= (totalItemsCount - PREFETCH_DISTANCE)
             }
         }
     }
 
-    LaunchedEffect(key1 = shouldStartPaginate.value) {
-        if (shouldStartPaginate.value) {
+    LaunchedEffect(key1 = shouldStartPaginate) {
+        if (shouldStartPaginate) {
             onEvent(RepoListEvent.LoadMore)
         }
     }
@@ -166,3 +168,5 @@ private fun LoadingContent(
         }
     }
 }
+
+private const val PREFETCH_DISTANCE = 6
