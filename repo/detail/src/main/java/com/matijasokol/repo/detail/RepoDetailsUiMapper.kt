@@ -54,7 +54,7 @@ class RepoDetailsUiMapper @Inject constructor(
             getString(R.string.repo_detail_panel_watchers, repo.watchersCount),
             getString(R.string.repo_detail_panel_issues, repo.issuesCount),
             getString(R.string.repo_detail_panel_forks, repo.forksCount),
-            getString(R.string.repo_detail_panel_starts, repo.starsCount),
+            getString(R.string.repo_detail_panel_stars, repo.starsCount),
             getString(R.string.repo_detail_panel_language, repo.language.orEmpty()),
             getString(R.string.repo_detail_panel_description, repo.description.orEmpty()),
             getString(
