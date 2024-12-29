@@ -34,9 +34,6 @@ import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
 import com.matijasokol.coreui.components.withSharedBounds
 import com.matijasokol.repo.detail.components.RepoDetailPanel
-import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_AUTHOR_AND_NAME
-import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
-import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_ERROR_TEXT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
 
@@ -91,8 +88,7 @@ fun RepoDetail(
                     Text(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .withSharedBounds(key = "${state.authorName}/${state.repoName}")
-                            .testTag(TAG_REPO_DETAIL_AUTHOR_AND_NAME),
+                            .withSharedBounds(key = "${state.authorName}/${state.repoName}"),
                         text = buildAnnotatedString {
                             append("${state.authorName}/")
                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -136,7 +132,6 @@ fun RepoDetail(
                         state.repoUi.reposCountText?.let { Text(it) }
 
                         Button(
-                            modifier = Modifier.testTag(TAG_REPO_DETAIL_BUTTON_REPO_WEB),
                             onClick = {
                                 try {
                                     uriHandler.openUri(repo.repoUrl)
@@ -160,8 +155,7 @@ fun RepoDetail(
             is RepoDetailState.Error -> Text(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(8.dp)
-                    .testTag(TAG_REPO_DETAIL_ERROR_TEXT),
+                    .padding(8.dp),
                 text = state.errorMessage,
                 textAlign = TextAlign.Center,
             )

@@ -1,20 +1,18 @@
 package com.matijasokol.repo.detail.ui
 
 import androidx.compose.runtime.remember
-import androidx.compose.ui.test.assertAny
-import androidx.compose.ui.test.assertTextEquals
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.test.core.app.ApplicationProvider
+import com.matijasokol.coreui.dictionary.DictionaryImpl
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
+import com.matijasokol.repo.detail.R
 import com.matijasokol.repo.detail.RepoDetail
 import com.matijasokol.repo.detail.RepoDetailState
 import com.matijasokol.repo.detail.RepoUi
-import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_BUTTON_REPO_WEB
-import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_ERROR_TEXT
-import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_INFO_TEXT
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
+import kotlinx.collections.immutable.persistentListOf
 import org.junit.Rule
 import org.junit.Test
 
@@ -24,28 +22,34 @@ class RepoDetailTest {
     val composeTestRule = createComposeRule()
 
     private val repoData = serializeRepoResponseData(this::class.java.getResource("/repo_list_valid.json").readText())
+    private val dictionary = DictionaryImpl(ApplicationProvider.getApplicationContext())
 
     @Test
     fun repoDetailShownCorrectly() {
         val repo = repoData.random()
+        val detailsButtonText = dictionary.getString(R.string.repo_detail_btn_repo_details)
+        val infoData = with(dictionary) {
+            persistentListOf(
+                getString(R.string.repo_detail_panel_watchers, repo.watchersCount),
+                getString(R.string.repo_detail_panel_issues, repo.issuesCount),
+                getString(R.string.repo_detail_panel_forks, repo.forksCount),
+                getString(R.string.repo_detail_panel_stars, repo.starsCount),
+            )
+        }
+
         composeTestRule.setContent {
             val state = remember {
                 RepoDetailState.Success(
                     repoFullName = "JetBrains/kotlin",
                     authorImageUrl = "",
-                    detailsButtonText = "Details",
+                    detailsButtonText = detailsButtonText,
                     repoUi = RepoUi(
                         followersCountText = null,
                         reposCountText = null,
                         authorProfileUrl = "",
                         repoUrl = "",
-                        topics = emptyList(),
-                        info = listOf(
-                            "Watchers: ${repo.watchersCount}",
-                            "Issues: ${repo.issuesCount}",
-                            "Forks: ${repo.forksCount}",
-                            "Stars: ${repo.starsCount}",
-                        ),
+                        topics = persistentListOf(),
+                        info = infoData,
                     ),
                 )
             }
@@ -55,14 +59,17 @@ class RepoDetailTest {
             )
         }
 
-        composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_BUTTON_REPO_WEB).assertExists()
-        composeTestRule.onAllNodesWithTag(TAG_REPO_DETAIL_INFO_TEXT)
-            .assertAny(hasText(repo.watchersCount.toString(), true))
+        composeTestRule.onNodeWithText(detailsButtonText, useUnmergedTree = true).assertExists()
+
+        infoData.forEach { infoText ->
+            composeTestRule.onNodeWithText(infoText, useUnmergedTree = true).assertExists()
+        }
     }
 
     @Test
     fun repoDetailErrorShowsErrorMessage() {
-        val errorMessageText = "Error message"
+        val errorMessageText = dictionary.getString(R.string.repo_detail_message_cache_error)
+
         composeTestRule.setContent {
             val state = remember {
                 RepoDetailState.Error(
@@ -78,8 +85,7 @@ class RepoDetailTest {
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_PROGRESS).assertDoesNotExist()
-        composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_ERROR_TEXT).assertExists()
-        composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_ERROR_TEXT).assertTextEquals(errorMessageText)
+        composeTestRule.onNodeWithText(errorMessageText, useUnmergedTree = true).assertExists()
     }
 
     @Test
@@ -98,6 +104,5 @@ class RepoDetailTest {
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_PROGRESS).assertExists()
-        composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_INFO_TEXT).assertDoesNotExist()
     }
 }

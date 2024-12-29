@@ -44,5 +44,5 @@ data class RepoUi(
     val reposCountText: String?,
     val authorProfileUrl: String,
     val repoUrl: String,
-    val topics: List<String>,
+    val topics: ImmutableList<String>,
 )

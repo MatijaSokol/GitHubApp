@@ -11,7 +11,10 @@ data class RepoListState(
     val items: ImmutableList<RepoListItem> = persistentListOf(),
     val query: String = "",
     val sortMenuVisible: Boolean = false,
+    val sortMenuOptions: ImmutableList<Pair<RepoSortType, String>> = persistentListOf(),
     val repoSortType: RepoSortType = RepoSortType.Unknown(),
+    val errorText: String = "",
+    val retryButtonText: String = "",
 )
 
 data class RepoListItem(

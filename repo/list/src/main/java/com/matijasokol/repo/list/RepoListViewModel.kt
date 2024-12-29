@@ -5,22 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.matijasokol.coreui.viewmodel.stateIn
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
-import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.repo.domain.usecase.SortReposUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,6 +24,7 @@ import javax.inject.Inject
 class RepoListViewModel @Inject constructor(
     private val paginator: Paginator,
     private val sortRepos: SortReposUseCase,
+    private val uiMapper: RepoListUiMapper,
 ) : ViewModel() {
 
     private val _actions = Channel<RepoListAction>(capacity = BUFFERED)
@@ -54,16 +50,12 @@ class RepoListViewModel @Inject constructor(
 
     val state = combine(
         paginator.loadState,
-        sortedItems.map { it.map(Repo::toRepoListItem).toPersistentList() },
+        sortedItems,
         query,
         popupVisible,
         sortType,
-        ::RepoListState,
-    ).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000L),
-        initialValue = RepoListState(),
-    )
+        uiMapper::toUiState,
+    ).stateIn(initialValue = RepoListState(query = DEFAULT_QUERY))
 
     fun onEvent(event: RepoListEvent) {
         when (event) {

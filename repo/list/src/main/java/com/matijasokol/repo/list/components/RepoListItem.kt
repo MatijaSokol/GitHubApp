@@ -13,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -24,7 +25,6 @@ import com.matijasokol.coreui.components.RoundedImage
 import com.matijasokol.coreui.components.withSharedBounds
 import com.matijasokol.repo.list.RepoListItem
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
-import com.matijasokol.repo.list.test.TAG_REPO_NAME
 
 @Suppress("ComposableParamOrder")
 @Composable
@@ -37,11 +37,11 @@ fun RepoListItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
             .padding(4.dp)
             .clickable { onItemClick(repo) }
             .testTag(TAG_REPO_LIST_ITEM),
         backgroundColor = MaterialTheme.colors.surface,
-        shape = RoundedCornerShape(12.dp),
         elevation = 8.dp,
     ) {
         Column(
@@ -78,8 +78,7 @@ fun RepoListItem(
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .withSharedBounds(key = "${repo.authorName}/${repo.name}")
-                    .testTag(TAG_REPO_NAME),
+                    .withSharedBounds(key = "${repo.authorName}/${repo.name}"),
                 text = buildAnnotatedString {
                     append("${repo.authorName}/")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {

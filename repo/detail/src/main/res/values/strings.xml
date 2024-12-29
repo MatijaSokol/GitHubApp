@@ -12,7 +12,7 @@
     <string name="repo_detail_panel_watchers">Watchers: %d</string>
     <string name="repo_detail_panel_issues">Issues: %d</string>
     <string name="repo_detail_panel_forks">Forks: %d</string>
-    <string name="repo_detail_panel_starts">Stars: %d</string>
+    <string name="repo_detail_panel_stars">Stars: %d</string>
     <string name="repo_detail_panel_language">Language: %s</string>
     <string name="repo_detail_panel_description">Description: %s</string>
     <string name="repo_detail_panel_updated">Updated: %s</string>
