@@ -28,12 +28,14 @@ class RepoDetailTest {
     fun repoDetailShownCorrectly() {
         val repo = repoData.random()
         val detailsButtonText = dictionary.getString(R.string.repo_detail_btn_repo_details)
-        val infoData = persistentListOf(
-            "Watchers: ${repo.watchersCount}",
-            "Issues: ${repo.issuesCount}",
-            "Forks: ${repo.forksCount}",
-            "Stars: ${repo.starsCount}",
-        )
+        val infoData = with(dictionary) {
+            persistentListOf(
+                getString(R.string.repo_detail_panel_watchers, repo.watchersCount),
+                getString(R.string.repo_detail_panel_issues, repo.issuesCount),
+                getString(R.string.repo_detail_panel_forks, repo.forksCount),
+                getString(R.string.repo_detail_panel_stars, repo.starsCount),
+            )
+        }
 
         composeTestRule.setContent {
             val state = remember {
