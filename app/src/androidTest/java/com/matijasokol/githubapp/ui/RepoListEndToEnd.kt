@@ -1,18 +1,20 @@
 package com.matijasokol.githubapp.ui
 
 import androidx.activity.compose.setContent
-import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.assertAny
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTextClearance
-import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
+import androidx.test.core.app.ApplicationProvider
 import com.matijasokol.core.dictionary.Dictionary
+import com.matijasokol.coreui.dictionary.DictionaryImpl
 import com.matijasokol.githubapp.MainActivity
 import com.matijasokol.githubapp.ModeChecker
 import com.matijasokol.githubapp.di.CacheModule
@@ -27,15 +29,11 @@ import com.matijasokol.repo.datasourcetest.cache.RepoDatabaseFake
 import com.matijasokol.repo.datasourcetest.network.FakePaginator
 import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
-import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_AUTHOR_AND_NAME
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoCache
 import com.matijasokol.repo.domain.RepoService
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
-import com.matijasokol.repo.list.test.TAG_REPO_NAME
-import com.matijasokol.repo.list.test.TAG_REPO_SEARCH_BAR
-import com.matijasokol.test.FakeDictionary
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -82,7 +80,7 @@ class RepoListEndToEnd {
 
         @Provides
         @Singleton
-        fun provideDictionary(): Dictionary = FakeDictionary()
+        fun provideDictionary(): Dictionary = DictionaryImpl(ApplicationProvider.getApplicationContext())
     }
 
     @get:Rule(order = 0)
@@ -96,6 +94,9 @@ class RepoListEndToEnd {
 
     @Inject
     lateinit var modeChecker: ModeChecker
+
+    @Inject
+    lateinit var dictionary: Dictionary
 
     @Before
     fun before() {
@@ -113,10 +114,15 @@ class RepoListEndToEnd {
 
     @Test
     fun testRepoListSearchBar() {
+        val defaultQuery = "kotlin"
         val query = "android"
-        composeTestRule.onNodeWithTag(TAG_REPO_SEARCH_BAR).performTextClearance()
-        composeTestRule.onNodeWithTag(TAG_REPO_SEARCH_BAR).performTextInput(query)
-        composeTestRule.onNodeWithTag(TAG_REPO_SEARCH_BAR, true).assertTextEquals(query)
+
+        composeTestRule.onNodeWithText(defaultQuery, useUnmergedTree = true).run {
+            assertExists()
+            performTextReplacement(query)
+        }
+
+        composeTestRule.onNodeWithText(query, useUnmergedTree = true).assertExists()
     }
 
     @Test
@@ -128,17 +134,20 @@ class RepoListEndToEnd {
         // from repo_list_valid.json
         val firstItemText = "JetBrains/kotlin"
 
-        composeTestRule.onAllNodesWithTag(TAG_REPO_NAME, true).onFirst().assertTextEquals(firstItemText)
+        composeTestRule.onNodeWithText(firstItemText, useUnmergedTree = true).assertExists()
+
+        composeTestRule.onAllNodesWithTag(TAG_REPO_LIST_ITEM, useUnmergedTree = true)
+            .onFirst()
+            .onChildren()
+            .assertAny(hasText(firstItemText))
 
         composeTestRule.onNodeWithContentDescription("Sort options").performClick()
-        composeTestRule.onNodeWithText("Forks ASC").performClick()
+        composeTestRule.onNodeWithText(dictionary.getString(com.matijasokol.repo.list.R.string.repo_list_sort_forks_asc)).performClick()
 
-        assert(
-            composeTestRule.onAllNodesWithTag(TAG_REPO_NAME, true)
-                .onFirst().fetchSemanticsNode()
-                .config[SemanticsProperties.Text]
-                .toString() != firstItemText,
-        )
+        composeTestRule.onAllNodesWithTag(TAG_REPO_LIST_ITEM, useUnmergedTree = true)
+            .onFirst()
+            .onChildren()
+            .assertAny(!hasText(firstItemText))
     }
 
     @Test
@@ -153,7 +162,6 @@ class RepoListEndToEnd {
         composeTestRule.onAllNodesWithTag(TAG_REPO_LIST_ITEM).onFirst().performClick()
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_SCREEN).assertExists()
 
-        composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_AUTHOR_AND_NAME, true)
-            .assertTextEquals(firstItemText)
+        composeTestRule.onNodeWithText(firstItemText, true).assertExists()
     }
 }

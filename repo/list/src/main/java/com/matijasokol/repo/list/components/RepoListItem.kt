@@ -25,7 +25,6 @@ import com.matijasokol.coreui.components.RoundedImage
 import com.matijasokol.coreui.components.withSharedBounds
 import com.matijasokol.repo.list.RepoListItem
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
-import com.matijasokol.repo.list.test.TAG_REPO_NAME
 
 @Suppress("ComposableParamOrder")
 @Composable
@@ -79,8 +78,7 @@ fun RepoListItem(
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .withSharedBounds(key = "${repo.authorName}/${repo.name}")
-                    .testTag(TAG_REPO_NAME),
+                    .withSharedBounds(key = "${repo.authorName}/${repo.name}"),
                 text = buildAnnotatedString {
                     append("${repo.authorName}/")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
