@@ -13,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -37,11 +38,11 @@ fun RepoListItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
             .padding(4.dp)
             .clickable { onItemClick(repo) }
             .testTag(TAG_REPO_LIST_ITEM),
         backgroundColor = MaterialTheme.colors.surface,
-        shape = RoundedCornerShape(12.dp),
         elevation = 8.dp,
     ) {
         Column(
