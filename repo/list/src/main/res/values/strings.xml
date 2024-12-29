@@ -6,4 +6,11 @@
     <string name="repo_list_retry_text">Retry</string>
     <string name="repo_list_message_browser_error">Can not open author profile in browser.</string>
 
+    <string name="repo_list_sort_stars_asc">Stars ASC</string>
+    <string name="repo_list_sort_stars_desc">Stars DESC</string>
+    <string name="repo_list_sort_forks_asc">Forks ASC</string>
+    <string name="repo_list_sort_forks_desc">Forks DESC</string>
+    <string name="repo_list_sort_updated_asc">Updated ASC</string>
+    <string name="repo_list_sort_updated_desc">Updated DESC</string>
+
 </resources>

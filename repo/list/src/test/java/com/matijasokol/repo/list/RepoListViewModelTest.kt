@@ -57,6 +57,7 @@ class RepoListViewModelTest {
 
         sut.state.test {
             awaitItem() // initial state
+            awaitItem() // sort menu options generated
 
             awaitItem().loadState `should be` Paginator.LoadState.Loaded
             awaitItem().items.shouldNotBeEmpty()
@@ -77,6 +78,7 @@ class RepoListViewModelTest {
 
         sut.state.test {
             awaitItem() // initial state
+            awaitItem() // sort menu options generated
 
             // everything is inside this emission since distinctUntilChanged is applied on items
             awaitItem().run {
@@ -100,6 +102,7 @@ class RepoListViewModelTest {
 
         sut.state.test {
             awaitItem() // initial state
+            awaitItem() // sort menu options generated
 
             // everything is inside this emission since distinctUntilChanged is applied on items
             awaitItem().run {
@@ -127,6 +130,7 @@ class RepoListViewModelTest {
 
         sut.state.test {
             awaitItem() // initial state
+            awaitItem() // sort menu options generated
 
             awaitItem().loadState `should be` Paginator.LoadState.Loaded
             awaitItem().items.shouldNotBeEmpty()

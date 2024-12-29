@@ -17,14 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.matijasokol.core.domain.SortOrder
 import com.matijasokol.repo.domain.RepoSortType
+import kotlinx.collections.immutable.ImmutableList
 
 @Suppress("LongParameterList", "ComposableParamOrder")
 @Composable
 fun RepoListToolbar(
     queryValue: String,
     sortMenuVisible: Boolean,
+    options: ImmutableList<Pair<RepoSortType, String>>,
     appliedSortType: RepoSortType,
     modifier: Modifier = Modifier,
     onQueryChanged: (String) -> Unit,
@@ -58,16 +59,7 @@ fun RepoListToolbar(
                     expanded = true,
                     onDismissRequest = onSortMenuDismissed,
                 ) {
-                    val items = listOf(
-                        Pair(RepoSortType.Stars(SortOrder.Ascending), "Stars ASC"),
-                        Pair(RepoSortType.Stars(SortOrder.Descending), "Stars DESC"),
-                        Pair(RepoSortType.Forks(SortOrder.Ascending), "Forks ASC"),
-                        Pair(RepoSortType.Forks(SortOrder.Descending), "Forks DESC"),
-                        Pair(RepoSortType.Updated(SortOrder.Ascending), "Updated ASC"),
-                        Pair(RepoSortType.Updated(SortOrder.Descending), "Updated DESC"),
-                    )
-
-                    items.forEach { item ->
+                    options.forEach { item ->
                         DropdownMenuItem(
                             modifier = Modifier.background(
                                 if (item.first == appliedSortType) {

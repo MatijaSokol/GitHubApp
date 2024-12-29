@@ -62,6 +62,7 @@ fun RepoList(
         RepoListToolbar(
             queryValue = state.query,
             sortMenuVisible = state.sortMenuVisible,
+            options = state.sortMenuOptions,
             appliedSortType = state.repoSortType,
             onQueryChanged = { query -> onEvent(RepoListEvent.OnQueryChanged(query)) },
             onClearClicked = { onEvent(RepoListEvent.OnQueryChanged("")) },
