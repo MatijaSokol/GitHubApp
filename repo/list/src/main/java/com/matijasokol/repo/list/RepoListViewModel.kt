@@ -2,6 +2,8 @@ package com.matijasokol.repo.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.matijasokol.core.flow.OneTimeWhileSubscribed
+import com.matijasokol.coreui.viewmodel.STOP_TIMEOUT_MILLIS
 import com.matijasokol.coreui.viewmodel.stateIn
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
@@ -20,7 +22,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -60,8 +61,7 @@ class RepoListViewModel @Inject constructor(
         sortType,
         ::RepoListState,
     ).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000L),
+        started = SharingStarted.OneTimeWhileSubscribed(STOP_TIMEOUT_MILLIS),
         initialValue = RepoListState(),
     )
 
