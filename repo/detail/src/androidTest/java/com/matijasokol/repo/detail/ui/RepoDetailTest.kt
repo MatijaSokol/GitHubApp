@@ -46,7 +46,7 @@ class RepoDetailTest {
                         reposCountText = null,
                         authorProfileUrl = "",
                         repoUrl = "",
-                        topics = emptyList(),
+                        topics = persistentListOf(),
                         info = infoData,
                     ),
                 )

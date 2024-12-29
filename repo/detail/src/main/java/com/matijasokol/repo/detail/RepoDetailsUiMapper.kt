@@ -7,6 +7,7 @@ import com.matijasokol.repo.domain.DateUtils
 import com.matijasokol.repo.domain.model.Repo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import javax.inject.Inject
 
 class RepoDetailsUiMapper @Inject constructor(
@@ -35,7 +36,7 @@ class RepoDetailsUiMapper @Inject constructor(
                     repoUrl = repoOrError.value.url,
                     info = buildInfoData(repoOrError.value),
                     authorProfileUrl = repoOrError.value.author.profileUrl,
-                    topics = repoOrError.value.topics,
+                    topics = repoOrError.value.topics.toPersistentList(),
                     followersCountText = repoOrError.value.author.followersCount?.let {
                         dictionary.getString(R.string.repo_detail_followers_count_text, it)
                     },
