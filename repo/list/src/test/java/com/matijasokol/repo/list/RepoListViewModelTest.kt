@@ -6,6 +6,7 @@ import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.usecase.SortReposUseCase
+import com.matijasokol.test.FakeDictionary
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.shouldBeEmpty
@@ -17,26 +18,27 @@ import org.junit.jupiter.api.extension.ExtendWith
 class RepoListViewModelTest {
 
     private lateinit var sut: RepoListViewModel
-    private val initialQuery = "kotlin"
+
+    private val sortRepos = SortReposUseCase()
+    private val uiMapper = RepoListUiMapper(dictionary = FakeDictionary())
 
     @Test
     fun `should RETURN REFRESH STATE when query is set`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = SortReposUseCase(),
+            sortRepos = sortRepos,
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
             ),
+            uiMapper = uiMapper,
         )
 
         sut.state.test {
-            awaitItem() // initial state
-
             awaitItem().run {
                 loadState `should be` Paginator.LoadState.Refresh
                 items.shouldBeEmpty()
-                query `should be` initialQuery
+                query `should be` DEFAULT_QUERY
             }
         }
     }
@@ -44,17 +46,17 @@ class RepoListViewModelTest {
     @Test
     fun `should RETURN SUCCESS STATE when request was successful`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = SortReposUseCase(),
+            sortRepos = sortRepos,
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
             ),
+            uiMapper = uiMapper,
         )
 
         sut.state.test {
             awaitItem() // initial state
-            awaitItem() // state when query is set
 
             awaitItem().loadState `should be` Paginator.LoadState.Loaded
             awaitItem().items.shouldNotBeEmpty()
@@ -64,17 +66,17 @@ class RepoListViewModelTest {
     @Test
     fun `should RETURN ERROR STATE when request fails`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = SortReposUseCase(),
+            sortRepos = sortRepos,
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.Http404,
                 ),
             ),
+            uiMapper = uiMapper,
         )
 
         sut.state.test {
             awaitItem() // initial state
-            awaitItem() // state when query is set
 
             // everything is inside this emission since distinctUntilChanged is applied on items
             awaitItem().run {
@@ -87,17 +89,17 @@ class RepoListViewModelTest {
     @Test
     fun `should RETURN APPEND STATE when new page is requested`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = SortReposUseCase(),
+            sortRepos = sortRepos,
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.Http404,
                 ),
             ),
+            uiMapper = uiMapper,
         )
 
         sut.state.test {
             awaitItem() // initial state
-            awaitItem() // state when query is set
 
             // everything is inside this emission since distinctUntilChanged is applied on items
             awaitItem().run {
@@ -114,17 +116,17 @@ class RepoListViewModelTest {
     @Test
     fun `should RETURN REFRESH STATE when retry is clicked after error is received`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = SortReposUseCase(),
+            sortRepos = sortRepos,
             paginator = FakePaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
             ),
+            uiMapper = uiMapper,
         )
 
         sut.state.test {
             awaitItem() // initial state
-            awaitItem() // state when query is set
 
             awaitItem().loadState `should be` Paginator.LoadState.Loaded
             awaitItem().items.shouldNotBeEmpty()

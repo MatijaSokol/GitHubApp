@@ -3,7 +3,7 @@
 
     <!--Repo list-->
     <string name="repo_list_message_error">Error while loading data. Query missing or you run out of free APIs.</string>
-    <string name="repo_list_message_network_error">Error while loading data. Check your internet connection.</string>
+    <string name="repo_list_retry_text">Retry</string>
     <string name="repo_list_message_browser_error">Can not open author profile in browser.</string>
 
 </resources>

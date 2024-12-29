@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 
+// There is an issue in unit tests (value not emitted) when using OneTimeWhileSubscribed
+// For now, WhileSubscribed is used
 class OneTimeWhileSubscribed(
     private val stopTimeout: Long,
     private val replayExpiration: Long = Long.MAX_VALUE,

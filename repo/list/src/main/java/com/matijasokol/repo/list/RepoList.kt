@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.Paginator.LoadState.Append
 import com.matijasokol.repo.domain.Paginator.LoadState.AppendError
 import com.matijasokol.repo.domain.Paginator.LoadState.Loaded
@@ -34,7 +33,6 @@ import com.matijasokol.repo.list.components.RepoListItem
 import com.matijasokol.repo.list.components.RepoListToolbar
 import com.matijasokol.repo.list.components.ShimmerRepoListItem
 import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
-import kotlinx.collections.immutable.ImmutableList
 
 @Suppress("ComposableParamOrder")
 @Composable
@@ -75,11 +73,12 @@ fun RepoList(
                 Refresh -> LoadingContent()
                 RefreshError -> RetryContent(
                     modifier = Modifier.align(Alignment.Center),
+                    errorText = state.errorText,
+                    retryText = state.retryButtonText,
                     onRetryClick = { onEvent(RepoListEvent.OnRetryClick) },
                 )
                 Loaded, Append, AppendError -> ListScreen(
-                    items = state.items,
-                    loadState = state.loadState,
+                    state = state,
                     lazyStaggeredGridState = lazyStaggeredGridState,
                     onItemClick = { onEvent(RepoListEvent.OnItemClick(it.authorImageUrl, it.fullName)) },
                     onImageClick = { profileUrl -> onEvent(RepoListEvent.OnImageClick(profileUrl)) },
@@ -92,8 +91,7 @@ fun RepoList(
 
 @Composable
 private fun ListScreen(
-    items: ImmutableList<RepoListItem>,
-    loadState: Paginator.LoadState,
+    state: RepoListState,
     lazyStaggeredGridState: LazyStaggeredGridState,
     onItemClick: (RepoListItem) -> Unit,
     onImageClick: (String) -> Unit,
@@ -104,7 +102,7 @@ private fun ListScreen(
         state = lazyStaggeredGridState,
     ) {
         items(
-            items = items,
+            items = state.items,
             key = RepoListItem::id,
         ) { repo ->
             RepoListItem(
@@ -114,7 +112,7 @@ private fun ListScreen(
             )
         }
 
-        if (loadState == Append) {
+        if (state.loadState == Append) {
             item(span = StaggeredGridItemSpan.FullLine) {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     CircularProgressIndicator(
@@ -124,9 +122,13 @@ private fun ListScreen(
             }
         }
 
-        if (loadState == AppendError) {
+        if (state.loadState == AppendError) {
             item(span = StaggeredGridItemSpan.FullLine) {
-                RetryContent(onRetryClick)
+                RetryContent(
+                    errorText = state.errorText,
+                    retryText = state.retryButtonText,
+                    onRetryClick = onRetryClick,
+                )
             }
         }
     }
@@ -134,16 +136,18 @@ private fun ListScreen(
 
 @Composable
 private fun RetryContent(
-    onRetryClick: () -> Unit,
+    errorText: String,
+    retryText: String,
     modifier: Modifier = Modifier,
+    onRetryClick: () -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxWidth().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Something went wrong")
+        Text(errorText)
         Button(onClick = onRetryClick) {
-            Text(text = "Retry")
+            Text(text = retryText)
         }
     }
 }

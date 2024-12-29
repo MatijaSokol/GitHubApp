@@ -12,6 +12,8 @@ data class RepoListState(
     val query: String = "",
     val sortMenuVisible: Boolean = false,
     val repoSortType: RepoSortType = RepoSortType.Unknown(),
+    val errorText: String = "",
+    val retryButtonText: String = "",
 )
 
 data class RepoListItem(
