@@ -150,3 +150,11 @@ compose = [
 compose-debug = [
     "compose-tooling",
 ]
+
+test = [
+    "junit",
+    "mockk",
+    "kluent",
+    "turbine",
+    "kotlinx-coroutines-test",
+]

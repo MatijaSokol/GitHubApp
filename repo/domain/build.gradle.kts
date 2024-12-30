@@ -11,11 +11,7 @@ dependencies {
     implementation(libs.arrow.coroutines)
 
     testImplementation(projects.repo.datasourceTest)
-    testImplementation(libs.junit)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockk)
-    testImplementation(libs.kluent)
-    testImplementation(libs.turbine)
+    testImplementation(libs.bundles.test)
 
     testImplementation(project.dependencies.platform(libs.ktor.bom))
     testImplementation(libs.ktor.serialization.kotlinx.json)
