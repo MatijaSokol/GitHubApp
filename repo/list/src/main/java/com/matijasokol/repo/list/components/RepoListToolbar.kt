@@ -24,6 +24,7 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun RepoListToolbar(
     queryValue: String,
+    queryLabel: String,
     sortMenuVisible: Boolean,
     options: ImmutableList<Pair<RepoSortType, String>>,
     appliedSortType: RepoSortType,
@@ -40,6 +41,7 @@ fun RepoListToolbar(
     ) {
         SearchBar(
             value = queryValue,
+            label = queryLabel,
             modifier = Modifier.fillMaxWidth(0.9f),
             onTextChanged = onQueryChanged,
             onClearClicked = onClearClicked,

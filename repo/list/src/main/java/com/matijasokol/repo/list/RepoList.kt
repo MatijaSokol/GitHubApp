@@ -61,6 +61,7 @@ fun RepoList(
     Column(modifier = modifier) {
         RepoListToolbar(
             queryValue = state.query,
+            queryLabel = state.queryLabel,
             sortMenuVisible = state.sortMenuVisible,
             options = state.sortMenuOptions,
             appliedSortType = state.repoSortType,

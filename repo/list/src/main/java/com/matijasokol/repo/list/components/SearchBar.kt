@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SearchBar(
     value: String,
+    label: String,
     modifier: Modifier = Modifier,
     onTextChanged: (String) -> Unit,
     onClearClicked: () -> Unit,
@@ -30,7 +31,7 @@ fun SearchBar(
         modifier = modifier.padding(8.dp),
         value = value,
         onValueChange = onTextChanged,
-        label = { Text(text = "Search") },
+        label = { Text(text = label) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done,

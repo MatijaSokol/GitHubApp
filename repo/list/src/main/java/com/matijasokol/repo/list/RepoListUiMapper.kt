@@ -35,6 +35,7 @@ class RepoListUiMapper @Inject constructor(
         loadState = loadState,
         items = items.map(Repo::toRepoListItem).toPersistentList(),
         query = query,
+        queryLabel = dictionary.getString(R.string.repo_list_query_label),
         sortMenuVisible = sortMenuVisible,
         sortMenuOptions = with(dictionary) {
             persistentListOf(
