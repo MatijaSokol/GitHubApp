@@ -10,6 +10,7 @@ data class RepoListState(
     val loadState: Paginator.LoadState = Paginator.LoadState.Refresh,
     val items: ImmutableList<RepoListItem> = persistentListOf(),
     val query: String = "",
+    val queryLabel: String = "",
     val sortMenuVisible: Boolean = false,
     val sortMenuOptions: ImmutableList<Pair<RepoSortType, String>> = persistentListOf(),
     val repoSortType: RepoSortType = RepoSortType.Unknown(),

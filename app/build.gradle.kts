@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.compose.navigation)
     implementation(libs.material)
 
+    implementation(libs.splash)
+
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
 
