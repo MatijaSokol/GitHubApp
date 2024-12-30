@@ -18,6 +18,7 @@
   - [Compose Navigation](https://developer.android.com/develop/ui/compose/navigation)
   - [Shared Element Transition](https://developer.android.com/develop/ui/compose/animation/shared-elements)
   - [Hilt](https://dagger.dev/hilt/) for dependency injection
+  - [Splash Screen](https://developer.android.com/develop/ui/views/launch/splash-screen)
   
   
 List screen            |  Details screen
