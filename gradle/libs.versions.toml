@@ -27,6 +27,7 @@ composeJunit4 = "1.7.6"
 coil = "3.0.4"
 material = "1.12.0"
 materialIcons = "1.7.6"
+splash = "1.0.1"
 
 sqldelight = "2.0.2"
 ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check https://github.com/InsertKoinIO/koin/pull/1978
@@ -73,6 +74,8 @@ coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", versi
 
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIcons" }
+
+splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
 
 sqldelight-driver-android = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqldelight" }
