@@ -17,7 +17,7 @@ lifecycleViewModel = "2.8.7"
 testRunner = "1.6.2"
 junit = "5.11.4"
 mockk = "1.13.14"
-kluent = "1.72"
+kluent = "1.73"
 turbine = "1.2.0"
 
 composeBom = "2024.12.01"
