@@ -50,7 +50,7 @@ jobs:
           mv app-prod-free-release.apk ${{ steps.name.outputs.name }}
 
       - name: Upload to artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v4.5.0
         with:
           name: ${{ steps.name.outputs.name }}
           path: app/build/outputs/apk/prodFree/release/
