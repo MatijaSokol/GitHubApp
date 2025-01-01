@@ -30,7 +30,7 @@ materialIcons = "1.7.6"
 splash = "1.0.1"
 
 sqldelight = "2.0.2"
-ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check https://github.com/InsertKoinIO/koin/pull/1978
+ktor = "3.0.3" # update to 3.x.x when available (check Koin support), check https://github.com/InsertKoinIO/koin/pull/1978
 
 hilt = "2.53.1"
 javaxInject = "1"
