@@ -17,7 +17,7 @@ lifecycleViewModel = "2.8.7"
 testRunner = "1.6.2"
 junit = "5.11.4"
 mockk = "1.13.14"
-kluent = "1.72"
+kluent = "1.73"
 turbine = "1.2.0"
 
 composeBom = "2024.12.01"
@@ -32,7 +32,7 @@ splash = "1.0.1"
 sqldelight = "2.0.2"
 ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check https://github.com/InsertKoinIO/koin/pull/1978
 
-hilt = "2.53.1"
+hilt = "2.54"
 javaxInject = "1"
 
 arrow = "2.0.0"

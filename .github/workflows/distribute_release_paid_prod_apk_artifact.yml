@@ -18,7 +18,7 @@ jobs:
           chmod +x ./gradlew
 
       - name: Setup Java JDK
-        uses: actions/setup-java@v4.5.0
+        uses: actions/setup-java@v4.6.0
         with:
           java-version: '21'
           distribution: 'temurin'
@@ -50,7 +50,7 @@ jobs:
           mv app-prod-paid-release.apk ${{ steps.name.outputs.name }}
 
       - name: Upload to artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v4.5.0
         with:
           name: ${{ steps.name.outputs.name }}
           path: app/build/outputs/apk/prodPaid/release/
