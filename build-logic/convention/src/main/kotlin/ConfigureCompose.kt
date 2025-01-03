@@ -31,9 +31,9 @@ internal fun Project.configureAndroidCompose(
       ))
 
       // generates compose metrics files
-      // run with ./gradlew assembleRelease -Pgithubapp.enableComposeCompilerReports=true
+      // run with ./gradlew :[modulename]:assembleRelease -Pgithubapp.enableComposeCompilerReports=true
       if (findProperty("githubapp.enableComposeCompilerReports") == "true") {
-        // ../githubapp/build/compose_metrics
+        // ../[modulename]/build/compose_metrics
         val dir = "${layout.buildDirectory.get()}/compose_metrics"
 
         freeCompilerArgs.addAll(listOf(
