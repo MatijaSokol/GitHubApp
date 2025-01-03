@@ -1,11 +1,13 @@
 package com.matijasokol.repo.list
 
+import androidx.compose.runtime.Stable
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.domain.model.Repo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+@Stable
 data class RepoListState(
     val loadState: Paginator.LoadState = Paginator.LoadState.Refresh,
     val items: ImmutableList<RepoListItem> = persistentListOf(),
