@@ -1,6 +1,5 @@
 package com.matijasokol.repo.detail
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,14 +14,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.SpanStyle
@@ -108,16 +105,6 @@ fun RepoDetail(
                                     onClick = {},
                                     modifier = Modifier.padding(horizontal = 2.dp),
                                     enabled = false,
-                                    colors = ChipDefaults.chipColors(
-                                        backgroundColor = when (isSystemInDarkTheme()) {
-                                            true -> Color(50, 50, 50)
-                                            false -> Color(100, 100, 100)
-                                        },
-                                        contentColor = when (isSystemInDarkTheme()) {
-                                            true -> Color.White
-                                            false -> Color.Black
-                                        },
-                                    ),
                                 ) {
                                     Text(text = it)
                                 }

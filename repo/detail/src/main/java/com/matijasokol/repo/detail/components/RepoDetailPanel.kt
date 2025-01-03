@@ -1,7 +1,6 @@
 package com.matijasokol.repo.detail.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,10 +33,7 @@ fun RepoDetailPanel(
             .fillMaxSize()
             .padding(horizontal = 40.dp, vertical = 20.dp)
             .background(
-                color = when (isSystemInDarkTheme()) {
-                    true -> Color(50, 50, 50)
-                    false -> Color(218, 218, 218)
-                },
+                color = MaterialTheme.colors.primaryVariant,
                 shape = RoundedCornerShape(8.dp),
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,10 +43,7 @@ fun RepoDetailPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = when (isSystemInDarkTheme()) {
-                            true -> Color(100, 100, 100)
-                            false -> Color(180, 180, 180)
-                        },
+                        color = MaterialTheme.colors.secondaryVariant,
                         shape = RoundedCornerShape(
                             topStart = 8.dp,
                             topEnd = 8.dp,

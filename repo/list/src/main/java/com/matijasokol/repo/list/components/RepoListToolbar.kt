@@ -2,7 +2,6 @@ package com.matijasokol.repo.list.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +15,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import com.matijasokol.repo.domain.RepoSortType
 import kotlinx.collections.immutable.ImmutableList
 
@@ -61,25 +59,20 @@ fun RepoListToolbar(
                     expanded = true,
                     onDismissRequest = onSortMenuDismissed,
                 ) {
-                    options.forEach { item ->
+                    options.forEach { (type, text) ->
                         DropdownMenuItem(
                             modifier = Modifier.background(
-                                if (item.first == appliedSortType) {
-                                    if (isSystemInDarkTheme()) {
-                                        Color(50, 50, 50)
-                                    } else {
-                                        Color(187, 240, 194)
-                                    }
-                                } else {
-                                    MaterialTheme.colors.surface
+                                when (type == appliedSortType) {
+                                    true -> MaterialTheme.colors.secondaryVariant
+                                    false -> MaterialTheme.colors.surface
                                 },
                             ),
                             onClick = {
-                                onSortTypeClicked(item.first)
+                                onSortTypeClicked(type)
                                 onSortMenuDismissed()
                             },
                         ) {
-                            Text(item.second)
+                            Text(text)
                         }
                     }
                 }
