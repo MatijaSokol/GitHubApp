@@ -1,0 +1,67 @@
+name: Distribute release free prod APK as artifact
+
+on:
+  workflow_dispatch:
+
+jobs:
+  distribute_release_build:
+    runs-on: macos-latest
+    env:
+      GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
+      GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Prepare environment
+        run: |
+          export GRADLE_USER_HOME=`pwd`/.gradle
+          chmod +x ./gradlew
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.6.0
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Assemble
+        run: ./gradlew assembleProdFreeRelease --stacktrace
+
+      - name: Increment patch version
+        run: ./gradlew incrementPatch --stacktrace
+
+      - name: Get version
+        id: version
+        run: |
+          version=$(./gradlew printVersionName --quiet --stacktrace)
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Generate app name
+        id: name
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          transformed=${version//./-}
+          name="app-prod-free-release-${transformed}.apk"
+          echo "name=$name" >> $GITHUB_OUTPUT
+
+      - name: Rename apk file
+        run: |
+          cd app/build/outputs/apk/prodFree/release/
+          mv app-prod-free-release.apk ${{ steps.name.outputs.name }}
+
+      - name: Upload to artifacts
+        uses: actions/upload-artifact@v4.5.0
+        with:
+          name: ${{ steps.name.outputs.name }}
+          path: app/build/outputs/apk/prodFree/release/
+
+      - name: Commit and push version bump
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          cd ./release
+
+          git add version.properties
+          git commit -m "Bump version to ${{ steps.version.outputs.version }}"
+          git push -u origin develop

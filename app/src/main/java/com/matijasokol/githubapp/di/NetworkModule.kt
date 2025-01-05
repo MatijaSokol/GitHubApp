@@ -1,17 +1,14 @@
 package com.matijasokol.githubapp.di
 
-import android.util.Log
+import com.matijasokol.repo.datasource.network.buildHttpClient
+import com.matijasokol.repo.datasource.network.json
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.android.Android
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.client.engine.HttpClientEngineFactory
+import io.ktor.client.engine.okhttp.OkHttp
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
@@ -21,21 +18,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(): HttpClient {
-        return HttpClient(Android) {
-            install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        Log.d("Network", message)
-                    }
-                }
-                level = LogLevel.ALL
-            }
-            install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                })
-            }
-        }
-    }
+    fun provideJson() = json
+
+    @Provides
+    @Singleton
+    fun provideEngine(): HttpClientEngineFactory<*> = OkHttp
+
+    @Provides
+    @Singleton
+    fun provideHttpClient(
+        json: Json,
+        engine: HttpClientEngineFactory<*>,
+    ): HttpClient = buildHttpClient(json, engine)
 }

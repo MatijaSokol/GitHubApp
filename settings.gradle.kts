@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         mavenCentral()
@@ -14,14 +15,19 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "GitHub App"
+rootProject.name = "GitHubApp"
 
-include("app")
-include("core")
-include("components")
-include("repo")
-include("repo:repo-datasource")
-include("repo:repo-datasource-test")
-include("repo:repo-domain")
-include("repo:ui-repoList")
-include("repo:ui-repoDetail")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+include(
+    "app",
+    "core",
+    "core-ui",
+    "repo",
+    "repo:datasource",
+    "repo:datasource-test",
+    "repo:domain",
+    "repo:list",
+    "repo:detail",
+    "test"
+)

@@ -1,40 +1,18 @@
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose.compiler)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+
+    alias(libs.plugins.githubapp.application)
+    alias(libs.plugins.githubapp.application.compose)
 }
+
+val appId = "com.matijasokol.githubapp"
 
 android {
     namespace = "com.matijasokol.githubapp"
-    compileSdk = Android.compileSdk
-
-    defaultConfig {
-        applicationId = Android.appId
-        minSdk = Android.minSdk
-        targetSdk = Android.targetSdk
-        versionCode = Android.versionCode
-        versionName = Android.versionName
-
-        testInstrumentationRunner = "com.matijasokol.githubapp.CustomTestRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-    }
-
-    flavorDimensions += listOf("mode")
-
-    productFlavors {
-        create("free") {
-            dimension = "mode"
-            resValue("string", "app_name", "GitHub App Free")
-            applicationIdSuffix = ".free"
-        }
-        create("paid") {
-            dimension = "mode"
-            resValue("string", "app_name", "GitHub App")
-        }
-    }
 
     sourceSets.getByName("free") {
         java {
@@ -48,72 +26,54 @@ android {
         }
     }
 
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Compose.kotlinCompilerExtensionVersion
-    }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
         }
     }
 }
 
 dependencies {
-    implementation(project(Modules.repoDataSource))
-    implementation(project(Modules.repoDomain))
-    implementation(project(Modules.ui_repoList))
-    implementation(project(Modules.ui_repoDetail))
+    implementation(projects.core)
+    implementation(projects.coreUi)
+    implementation(projects.repo.datasource)
+    implementation(projects.repo.domain)
+    implementation(projects.repo.list)
+    implementation(projects.repo.detail)
 
-    implementation(AndroidX.coreKtx)
-    implementation(AndroidX.appCompat)
-    implementation(AndroidX.lifecycleVmKtx)
+    implementation(libs.coreKtx)
+    implementation(libs.appcompat)
+    implementation(libs.lifecycle.viewmodel)
 
-    implementation(Coil.coil)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network)
 
-    implementation(Accompanist.animations)
+    implementation(libs.activity.compose)
+    implementation(libs.compose.hilt.navigation)
+    implementation(libs.compose.navigation)
+    implementation(libs.material)
 
-    implementation(Compose.activity)
-    implementation(Compose.ui)
-    implementation(Compose.material)
-    implementation(Compose.tooling)
-    implementation(Compose.navigation)
-    implementation(Compose.hiltNavigation)
+    implementation(libs.splash)
 
-    implementation(Google.material)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.compose)
 
-    implementation(Hilt.android)
-    kapt(Hilt.compiler)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
-    implementation(SqlDelight.androidDriver)
+    implementation(libs.sqldelight.driver.android)
 
-    implementation(Ktor.core)
-    implementation(Ktor.clientSerialization)
-    implementation(Ktor.android)
-    implementation(Ktor.contentNegotiation)
-    implementation(Ktor.json)
-    implementation(Ktor.logging)
+    implementation(platform(libs.ktor.bom))
+    implementation(libs.bundles.ktor)
 
-    androidTestImplementation(project(Modules.repoDataSourceTest))
-    androidTestImplementation(AndroidXTest.runner)
-    androidTestImplementation(ComposeTest.uiTestJunit4)
-    debugImplementation(ComposeTest.uiTestManifest)
-    androidTestImplementation(HiltTest.hiltAndroidTesting)
-    kaptAndroidTest(Hilt.compiler)
-    androidTestImplementation(Junit.junit4)
+    androidTestImplementation(testFixtures(projects.test))
+    androidTestImplementation(projects.repo.datasourceTest)
+    androidTestImplementation(libs.test.runner)
+    androidTestImplementation(libs.compose.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    androidTestImplementation(libs.junit)
 }

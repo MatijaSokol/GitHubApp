@@ -1,6 +1,7 @@
-apply {
-    from("$rootDir/library-build.gradle")
+plugins {
+    alias(libs.plugins.githubapp.jvm.library)
 }
 
-
-dependencies {}
+dependencies {
+    implementation(libs.kotlinx.coroutines)
+}

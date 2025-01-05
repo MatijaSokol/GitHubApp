@@ -1,9 +1,10 @@
 package com.matijasokol.githubapp.di
 
 import android.app.Application
-import com.matijasokol.repo_datasource.cache.RepoDatabase
-import com.squareup.sqldelight.android.AndroidSqliteDriver
-import com.squareup.sqldelight.db.SqlDriver
+import app.cash.sqldelight.async.coroutines.synchronous
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import com.matijasokol.repo.datasource.cache.RepoDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,9 +19,9 @@ object CacheModule {
     @Singleton
     fun provideAndroidDriver(application: Application): SqlDriver {
         return AndroidSqliteDriver(
-            schema = RepoDatabase.Schema,
+            schema = RepoDatabase.Schema.synchronous(),
             context = application,
-            name = "repos.db"
+            name = "repos.db",
         )
     }
 
