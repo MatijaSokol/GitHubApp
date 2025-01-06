@@ -6,6 +6,7 @@
  - [Ktor](https://ktor.io/docs/welcome.html): Construct the REST APIs + [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)
  - [SQLDelight](https://sqldelight.github.io/sqldelight/2.0.2/android_sqlite/): Typesafe Kotlin APIs for SQL database
  - [Coil](https://github.com/coil-kt/coil): An image loading library backed by Kotlin Coroutines
+ - [Arrow](https://arrow-kt.io/) for error handling
  - [Gradle convention plugins](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
  - Static analysis ([Ktlint](https://github.com/pinterest/ktlint) and [Detekt](https://github.com/detekt/detekt))
  - Tests: Unit + UI
@@ -19,8 +20,11 @@
   - [Shared Element Transition](https://developer.android.com/develop/ui/compose/animation/shared-elements)
   - [Hilt](https://dagger.dev/hilt/) for dependency injection
   - [Splash Screen](https://developer.android.com/develop/ui/views/launch/splash-screen)
-  
-  
+
+## How to run
+- Find generated .apk file through [workflow](https://github.com/MatijaSokol/GitHubApp/actions/workflows/distribute_release_paid_prod_apk_artifact.yml) or trigger it to create new .apk
+
+## Screenshots
 List screen            |  Details screen
 :-------------------------:|:-------------------------:
 ![](previews/screenshot_list.jpg)  |  ![](previews/screenshot_details.jpg)
