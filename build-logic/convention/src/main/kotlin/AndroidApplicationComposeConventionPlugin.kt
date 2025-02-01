@@ -7,8 +7,15 @@ class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
 
   override fun apply(project: Project) {
     with(project) {
-      pluginManager.apply(libs.plugins.android.application)
+      applyPlugins()
       extensions.configure<ApplicationExtension>(::configureAndroidCompose)
+    }
+  }
+
+  private fun Project.applyPlugins() {
+    with(pluginManager) {
+      apply(libs.plugins.android.application)
+      apply(libs.plugins.kotlin.compose.compiler)
     }
   }
 }

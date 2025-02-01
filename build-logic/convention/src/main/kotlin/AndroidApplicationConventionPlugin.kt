@@ -25,6 +25,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
       apply(libs.plugins.android.application)
       apply(libs.plugins.kotlin.android)
       apply(libs.plugins.ksp)
+      apply(libs.plugins.hilt)
       apply(libs.plugins.githubapp.productflavors)
       apply(libs.plugins.githubapp.buildtypes)
       apply(libs.plugins.githubapp.versioning)

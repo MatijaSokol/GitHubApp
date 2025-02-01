@@ -21,6 +21,8 @@ class JvmLibraryConventionPlugin : Plugin<Project> {
     with(pluginManager) {
       apply(libs.plugins.kotlin.jvm)
       apply(libs.plugins.githubapp.quality)
+      apply(libs.plugins.ksp)
+      apply(libs.plugins.kotlinx.serialization)
     }
   }
 }
