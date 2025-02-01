@@ -6,8 +6,8 @@ plugins {
 }
 
 dependencies {
-    implementation(projects.repo.domain)
     implementation(projects.core)
+    implementation(projects.repo.domain)
 
     implementation(project.dependencies.platform(libs.ktor.bom))
     implementation(libs.bundles.ktor)

@@ -11,10 +11,14 @@ android {
 
 dependencies {
     implementation(projects.core)
+
+    implementation(libs.kotlinx.coroutines)
+
+    implementation(libs.javax.inject)
+
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
-    implementation(libs.javax.inject)
+
     implementation(libs.kotlinx.serialization)
     implementation(libs.lifecycle.viewmodel)
-    implementation(libs.kotlinx.coroutines)
 }
