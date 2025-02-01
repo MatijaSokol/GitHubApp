@@ -3,14 +3,14 @@ compileSdk = "34"
 minSdk = "24"
 targetSdk = "34"
 
-kotlin = "2.1.0"
-ksp = "2.1.0-1.0.29"
+kotlin = "2.1.10"
+ksp = "2.1.10-1.0.29"
 kotlinxCoroutines = "1.10.1"
-kotlinxSerialization = "1.7.3"
+kotlinxSerialization = "1.8.0"
 kotlinxCollections = "0.3.8"
 
-activityCompose = "1.9.3"
-agp = "8.7.2"
+activityCompose = "1.9.3" # newer versions require targetSdk 35
+agp = "8.8.0"
 coreKtx = "1.13.1" # newer versions require targetSdk 35
 appcompat = "1.7.0"
 lifecycleViewModel = "2.8.7"
@@ -20,13 +20,11 @@ mockk = "1.13.14"
 kluent = "1.73"
 turbine = "1.2.0"
 
-composeBom = "2024.12.01"
+composeBom = "2025.01.01"
 composeNavigationHilt = "1.2.0"
-composeNavigation = "2.8.5"
-composeJunit4 = "1.7.6"
+composeNavigation = "2.8.6"
 coil = "3.0.4"
 material = "1.12.0"
-materialIcons = "1.7.6"
 splash = "1.0.1"
 
 sqldelight = "2.0.2"
@@ -35,7 +33,7 @@ ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check htt
 hilt = "2.54"
 javaxInject = "1"
 
-arrow = "2.0.0"
+arrow = "2.0.1"
 
 detekt = "1.23.7"
 detektCompose ="0.0.26"
@@ -64,16 +62,16 @@ compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-material = { group = "androidx.compose.material", name = "material" }
 compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+compose-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+compose-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 
 compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "composeNavigationHilt" }
 compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
-compose-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "composeJunit4" }
 
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIcons" }
 
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
 
@@ -148,6 +146,7 @@ compose = [
     "compose-foundation",
     "compose-ui",
     "compose-material",
+    "compose-icons-extended",
 ]
 
 compose-debug = [

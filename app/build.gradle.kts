@@ -57,9 +57,6 @@ dependencies {
 
     implementation(libs.splash)
 
-    implementation(platform(libs.compose.bom))
-    implementation(libs.bundles.compose)
-
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 

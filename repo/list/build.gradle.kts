@@ -25,7 +25,6 @@ dependencies {
 
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
-    implementation(libs.material.icons)
 
     testImplementation(testFixtures(projects.test))
     testImplementation(projects.repo.datasourceTest)
