@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.githubapp.library)
     alias(libs.plugins.githubapp.library.compose)
-    alias(libs.plugins.ksp)
 }
 
 android {
@@ -21,9 +20,21 @@ dependencies {
     implementation(projects.coreUi)
     implementation(projects.repo.domain)
 
+    implementation(libs.compose.navigation)
+    implementation(libs.activity.compose)
+
+    implementation(libs.kotlinx.collections)
+
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
-    implementation(libs.compose.navigation)
+
+    implementation(libs.arrow.core)
+    implementation(libs.arrow.coroutines)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    debugImplementation(libs.compose.ui.test.manifest)
 
     testImplementation(testFixtures(projects.test))
     testImplementation(projects.repo.datasourceTest)
@@ -32,15 +43,4 @@ dependencies {
     androidTestImplementation(projects.repo.datasourceTest)
     androidTestImplementation(libs.compose.junit4)
     androidTestImplementation(libs.junit)
-    debugImplementation(libs.compose.ui.test.manifest)
-
-    implementation(libs.activity.compose)
-
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    implementation(libs.arrow.core)
-    implementation(libs.arrow.coroutines)
-
-    implementation(libs.kotlinx.collections)
 }

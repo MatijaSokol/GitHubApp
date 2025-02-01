@@ -24,6 +24,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
       apply(libs.plugins.android.library)
       apply(libs.plugins.kotlin.android)
       apply(libs.plugins.githubapp.quality)
+      apply(libs.plugins.ksp)
+      apply(libs.plugins.kotlinx.serialization)
     }
   }
 

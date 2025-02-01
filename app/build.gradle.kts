@@ -1,10 +1,4 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose.compiler)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
-
     alias(libs.plugins.githubapp.application)
     alias(libs.plugins.githubapp.application.compose)
 }
@@ -38,8 +32,8 @@ android {
 dependencies {
     implementation(projects.core)
     implementation(projects.coreUi)
-    implementation(projects.repo.datasource)
     implementation(projects.repo.domain)
+    implementation(projects.repo.datasource)
     implementation(projects.repo.list)
     implementation(projects.repo.detail)
 
@@ -57,9 +51,6 @@ dependencies {
 
     implementation(libs.splash)
 
-    implementation(platform(libs.compose.bom))
-    implementation(libs.bundles.compose)
-
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
@@ -68,12 +59,13 @@ dependencies {
     implementation(platform(libs.ktor.bom))
     implementation(libs.bundles.ktor)
 
+    debugImplementation(libs.compose.ui.test.manifest)
+
     androidTestImplementation(testFixtures(projects.test))
     androidTestImplementation(projects.repo.datasourceTest)
     androidTestImplementation(libs.test.runner)
     androidTestImplementation(libs.compose.junit4)
-    debugImplementation(libs.compose.ui.test.manifest)
+    androidTestImplementation(libs.junit)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
-    androidTestImplementation(libs.junit)
 }
