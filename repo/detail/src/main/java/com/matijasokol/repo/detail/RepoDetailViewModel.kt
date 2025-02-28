@@ -24,8 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RepoDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getRepoDetails: GetRepoDetailsUseCase,
-    private val uiMapper: RepoDetailsUiMapper,
+    getRepoDetails: GetRepoDetailsUseCase,
+    uiMapper: RepoDetailsUiMapper,
     private val dictionary: Dictionary,
 ) : ViewModel() {
 
@@ -35,27 +35,24 @@ class RepoDetailViewModel @Inject constructor(
     private val fetchTrigger = Channel<Unit>()
     private val isLoading = MutableStateFlow(true)
 
+    private val params = savedStateHandle.toRoute<Destination.RepoDetail>()
+
     private val repo = fetchTrigger.receiveAsFlow()
         .onStart { emit(Unit) }
-        .map { savedStateHandle.toRoute<Destination.RepoDetail>().repoFullName }
         .onEach { isLoading.update { true } }
-        .map(getRepoDetails::invoke)
+        .map { getRepoDetails(params.repoFullName) }
         .onEach { isLoading.update { false } }
 
     val state = combine(
         isLoading,
         repo,
     ) { loading, repo ->
-        with(savedStateHandle.toRoute<Destination.RepoDetail>()) {
-            uiMapper.toUiState(loading, repo, repoFullName, authorImageUrl)
-        }
+        uiMapper.toUiState(loading, repo, params.repoFullName, params.authorImageUrl)
     }.stateIn(
-        initialValue = with(savedStateHandle.toRoute<Destination.RepoDetail>()) {
-            RepoDetailState.Loading(
-                repoFullName = repoFullName,
-                authorImageUrl = authorImageUrl,
-            )
-        },
+        initialValue = RepoDetailState.Loading(
+            repoFullName = params.repoFullName,
+            authorImageUrl = params.authorImageUrl,
+        ),
     )
 
     fun onEvent(event: RepoDetailEvent) {
