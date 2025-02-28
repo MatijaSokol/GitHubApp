@@ -86,7 +86,7 @@ fun AppContent(
     }
 }
 
-fun NavGraphBuilder.repoList(
+private fun NavGraphBuilder.repoList(
     navigator: Navigator,
     modeChecker: ModeChecker,
     width: Int,
@@ -143,7 +143,7 @@ fun NavGraphBuilder.repoList(
     }
 }
 
-fun NavGraphBuilder.repoDetail(
+private fun NavGraphBuilder.repoDetail(
     width: Int,
 ) {
     composable<Destination.RepoDetail>(
