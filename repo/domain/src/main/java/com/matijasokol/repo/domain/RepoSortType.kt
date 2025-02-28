@@ -8,37 +8,17 @@ sealed class RepoSortType(
 
     data class Stars(
         override val order: SortOrder = SortOrder.Descending,
-    ) : RepoSortType(order = order) {
-
-        companion object {
-            const val name: String = "Name"
-        }
-    }
+    ) : RepoSortType(order = order)
 
     data class Forks(
         override val order: SortOrder = SortOrder.Descending,
-    ) : RepoSortType(order = order) {
-
-        companion object {
-            const val name: String = "Forks"
-        }
-    }
+    ) : RepoSortType(order = order)
 
     data class Updated(
         override val order: SortOrder = SortOrder.Descending,
-    ) : RepoSortType(order = order) {
-
-        companion object {
-            const val name: String = "Updated"
-        }
-    }
+    ) : RepoSortType(order = order)
 
     data class Unknown(
         override val order: SortOrder = SortOrder.Descending,
-    ) : RepoSortType(order = SortOrder.Descending) {
-
-        companion object {
-            const val name: String = "Unknown"
-        }
-    }
+    ) : RepoSortType(order = order)
 }
