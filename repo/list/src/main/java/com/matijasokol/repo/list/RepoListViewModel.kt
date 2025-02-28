@@ -22,9 +22,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
+    sortRepos: SortReposUseCase,
+    uiMapper: RepoListUiMapper,
     private val paginator: Paginator,
-    private val sortRepos: SortReposUseCase,
-    private val uiMapper: RepoListUiMapper,
 ) : ViewModel() {
 
     private val _actions = Channel<RepoListAction>(capacity = BUFFERED)
@@ -36,7 +36,7 @@ class RepoListViewModel @Inject constructor(
     private val sortType = MutableStateFlow<RepoSortType>(RepoSortType.Unknown())
 
     private val items = query
-        .debounce(500L)
+        .debounce(DEBOUNCE_TIMEOUT)
         .distinctUntilChanged()
         .filter(String::isNotEmpty)
         .flatMapLatest(paginator::getData)
@@ -78,4 +78,5 @@ class RepoListViewModel @Inject constructor(
     }
 }
 
+private const val DEBOUNCE_TIMEOUT = 500L
 const val DEFAULT_QUERY = "kotlin"
