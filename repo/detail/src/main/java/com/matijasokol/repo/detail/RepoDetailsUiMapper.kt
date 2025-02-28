@@ -14,6 +14,18 @@ class RepoDetailsUiMapper @Inject constructor(
     private val dictionary: Dictionary,
 ) {
 
+    private data class DetailsStaticData(
+        val errorMessage: String,
+        val detailsButtonText: String,
+    )
+
+    private val staticData by lazy {
+        DetailsStaticData(
+            errorMessage = dictionary.getString(R.string.repo_detail_message_cache_error),
+            detailsButtonText = dictionary.getString(R.string.repo_detail_btn_repo_details),
+        )
+    }
+
     fun toUiState(
         isLoading: Boolean,
         repoOrError: Either<NetworkError, Repo>,
@@ -26,12 +38,12 @@ class RepoDetailsUiMapper @Inject constructor(
         )
         false -> when (repoOrError) {
             is Either.Left -> RepoDetailState.Error(
-                errorMessage = dictionary.getString(R.string.repo_detail_message_cache_error),
+                errorMessage = staticData.errorMessage,
                 repoFullName = repoFullName,
                 authorImageUrl = authorImageUrl,
             )
             is Either.Right -> RepoDetailState.Success(
-                detailsButtonText = dictionary.getString(R.string.repo_detail_btn_repo_details),
+                detailsButtonText = staticData.detailsButtonText,
                 repoUi = RepoUi(
                     repoUrl = repoOrError.value.url,
                     info = buildInfoData(repoOrError.value),
