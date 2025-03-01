@@ -20,7 +20,7 @@ mockk = "1.13.14"
 kluent = "1.73"
 turbine = "1.2.0"
 
-composeBom = "2025.01.01"
+composeBom = "2025.02.00"
 composeNavigationHilt = "1.2.0"
 composeNavigation = "2.8.6"
 coil = "3.0.4"
