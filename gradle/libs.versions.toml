@@ -35,7 +35,7 @@ javaxInject = "1"
 
 arrow = "2.0.1"
 
-detekt = "1.23.7"
+detekt = "1.23.8"
 detektCompose ="0.0.26"
 ktlint = "0.50.0"
 ktlintGradlePlugin = "11.5.1"
