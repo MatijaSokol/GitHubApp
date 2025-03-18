@@ -49,11 +49,8 @@ class RepoDetailViewModelTest {
         )
 
         sut.state.test {
-            val item = awaitItem()
-            item `should be instance of` RepoDetailState.Loading::class
-
-            val item2 = awaitItem()
-            item2 `should be instance of` RepoDetailState.Success::class
+            awaitItem() `should be instance of` RepoDetailState.Loading::class
+            awaitItem() `should be instance of` RepoDetailState.Success::class
         }
     }
 
@@ -73,11 +70,8 @@ class RepoDetailViewModelTest {
         )
 
         sut.state.test {
-            val item = awaitItem()
-            item `should be instance of` RepoDetailState.Loading::class
-
-            val item2 = awaitItem()
-            item2 `should be instance of` RepoDetailState.Error::class
+            awaitItem() `should be instance of` RepoDetailState.Loading::class
+            awaitItem() `should be instance of` RepoDetailState.Error::class
         }
     }
 
