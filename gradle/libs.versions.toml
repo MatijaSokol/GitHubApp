@@ -20,7 +20,7 @@ mockk = "1.13.14"
 kluent = "1.73"
 turbine = "1.2.0"
 
-composeBom = "2025.01.01"
+composeBom = "2025.03.00"
 composeNavigationHilt = "1.2.0"
 composeNavigation = "2.8.6"
 coil = "3.0.4"
@@ -30,7 +30,7 @@ splash = "1.0.1"
 sqldelight = "2.0.2"
 ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check https://github.com/InsertKoinIO/koin/pull/1978
 
-hilt = "2.54"
+hilt = "2.55"
 javaxInject = "1"
 
 arrow = "2.0.1"
