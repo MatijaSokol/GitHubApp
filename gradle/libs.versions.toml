@@ -1,7 +1,7 @@
 [versions]
-compileSdk = "34"
+compileSdk = "35"
 minSdk = "24"
-targetSdk = "34"
+targetSdk = "35"
 
 kotlin = "2.1.20"
 ksp = "2.1.20-2.0.0"
@@ -9,9 +9,9 @@ kotlinxCoroutines = "1.10.2"
 kotlinxSerialization = "1.8.1"
 kotlinxCollections = "0.3.8"
 
-activityCompose = "1.9.3" # newer versions require targetSdk 35
-agp = "8.8.0"
-coreKtx = "1.13.1" # newer versions require targetSdk 35
+activityCompose = "1.10.1"
+agp = "8.9.1"
+coreKtx = "1.16.0"
 appcompat = "1.7.0"
 lifecycleViewModel = "2.8.7"
 testRunner = "1.6.2"
@@ -23,7 +23,7 @@ turbine = "1.2.0"
 composeBom = "2025.04.00"
 composeNavigationHilt = "1.2.0"
 composeNavigation = "2.8.9"
-coil = "3.0.4" # newer versions require targetSdk 35
+coil = "3.1.0"
 material = "1.12.0"
 splash = "1.0.1"
 
