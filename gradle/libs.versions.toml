@@ -16,7 +16,7 @@ appcompat = "1.7.0"
 lifecycleViewModel = "2.8.7"
 testRunner = "1.6.2"
 junit = "5.11.4"
-mockk = "1.13.14"
+mockk = "1.13.17"
 kluent = "1.73"
 turbine = "1.2.0"
 
