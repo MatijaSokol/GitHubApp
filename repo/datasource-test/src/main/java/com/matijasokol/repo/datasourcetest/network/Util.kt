@@ -9,7 +9,7 @@ import com.matijasokol.repo.domain.model.Author
 import com.matijasokol.repo.domain.model.Repo
 import kotlinx.serialization.json.Json
 
-val json = Json {
+private val json = Json {
     ignoreUnknownKeys = true
 }
 
