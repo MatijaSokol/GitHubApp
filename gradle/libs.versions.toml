@@ -3,10 +3,10 @@ compileSdk = "34"
 minSdk = "24"
 targetSdk = "34"
 
-kotlin = "2.1.10"
-ksp = "2.1.10-1.0.29"
-kotlinxCoroutines = "1.10.1"
-kotlinxSerialization = "1.8.0"
+kotlin = "2.1.20"
+ksp = "2.1.20-2.0.0"
+kotlinxCoroutines = "1.10.2"
+kotlinxSerialization = "1.8.1"
 kotlinxCollections = "0.3.8"
 
 activityCompose = "1.9.3" # newer versions require targetSdk 35
@@ -16,21 +16,21 @@ appcompat = "1.7.0"
 lifecycleViewModel = "2.8.7"
 testRunner = "1.6.2"
 junit = "5.11.4"
-mockk = "1.13.14"
+mockk = "1.14.0"
 kluent = "1.73"
 turbine = "1.2.0"
 
-composeBom = "2025.03.00"
+composeBom = "2025.04.00"
 composeNavigationHilt = "1.2.0"
-composeNavigation = "2.8.6"
-coil = "3.0.4"
+composeNavigation = "2.8.9"
+coil = "3.0.4" # newer versions require targetSdk 35
 material = "1.12.0"
 splash = "1.0.1"
 
 sqldelight = "2.0.2"
 ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check https://github.com/InsertKoinIO/koin/pull/1978
 
-hilt = "2.55"
+hilt = "2.56.1"
 javaxInject = "1"
 
 arrow = "2.0.1"
