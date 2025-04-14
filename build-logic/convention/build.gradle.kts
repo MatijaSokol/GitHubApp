@@ -22,7 +22,6 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.sqldelight.gradlePlugin)
     compileOnly(libs.detekt.gradlePlugin)
-    compileOnly(libs.ktlint.gradlePlugin)
 
     // used for type safe access to version catalog
     compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
