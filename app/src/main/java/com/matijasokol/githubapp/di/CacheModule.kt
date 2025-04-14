@@ -17,17 +17,13 @@ object CacheModule {
 
     @Provides
     @Singleton
-    fun provideAndroidDriver(application: Application): SqlDriver {
-        return AndroidSqliteDriver(
-            schema = RepoDatabase.Schema.synchronous(),
-            context = application,
-            name = "repos.db",
-        )
-    }
+    fun provideAndroidDriver(application: Application): SqlDriver = AndroidSqliteDriver(
+        schema = RepoDatabase.Schema.synchronous(),
+        context = application,
+        name = "repos.db",
+    )
 
     @Provides
     @Singleton
-    fun provideRepoDatabase(sqlDriver: SqlDriver): RepoDatabase {
-        return RepoDatabase(sqlDriver)
-    }
+    fun provideRepoDatabase(sqlDriver: SqlDriver): RepoDatabase = RepoDatabase(sqlDriver)
 }

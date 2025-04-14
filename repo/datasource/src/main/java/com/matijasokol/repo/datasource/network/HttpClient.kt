@@ -14,7 +14,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-fun <T : HttpClientEngineConfig>buildHttpClient(
+fun <T : HttpClientEngineConfig> buildHttpClient(
     json: Json,
     engine: HttpClientEngineFactory<T>,
     config: (HttpClientConfig<T>.() -> Unit)? = null,

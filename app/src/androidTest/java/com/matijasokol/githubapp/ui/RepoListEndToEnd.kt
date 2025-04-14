@@ -142,7 +142,9 @@ class RepoListEndToEnd {
             .assertAny(hasText(firstItemText))
 
         composeTestRule.onNodeWithContentDescription("Sort options").performClick()
-        composeTestRule.onNodeWithText(dictionary.getString(com.matijasokol.repo.list.R.string.repo_list_sort_forks_asc)).performClick()
+        composeTestRule.onNodeWithText(
+            dictionary.getString(com.matijasokol.repo.list.R.string.repo_list_sort_forks_asc),
+        ).performClick()
 
         composeTestRule.onAllNodesWithTag(TAG_REPO_LIST_ITEM, useUnmergedTree = true)
             .onFirst()
