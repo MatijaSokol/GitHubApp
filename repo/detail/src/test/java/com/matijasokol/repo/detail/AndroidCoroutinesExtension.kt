@@ -34,7 +34,9 @@ internal class AndroidCoroutinesExtension(
         ArchTaskExecutor.getInstance().setDelegate(
             object : TaskExecutor() {
                 override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
+
                 override fun postToMainThread(runnable: Runnable) = runnable.run()
+
                 override fun isMainThread(): Boolean = true
             },
         )

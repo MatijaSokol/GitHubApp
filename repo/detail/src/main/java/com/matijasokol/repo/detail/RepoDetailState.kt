@@ -16,26 +16,26 @@ sealed class RepoDetailState(
         override val repoFullName: String,
         override val authorImageUrl: String,
     ) : RepoDetailState(
-        repoFullName = repoFullName,
-        authorImageUrl = authorImageUrl,
-    )
+            repoFullName = repoFullName,
+            authorImageUrl = authorImageUrl,
+        )
 
     data class Error(
         val errorMessage: String,
         override val repoFullName: String,
         override val authorImageUrl: String,
     ) : RepoDetailState(
-        repoFullName = repoFullName,
-        authorImageUrl = authorImageUrl,
-    )
+            repoFullName = repoFullName,
+            authorImageUrl = authorImageUrl,
+        )
 
     data class Loading(
         override val repoFullName: String,
         override val authorImageUrl: String,
     ) : RepoDetailState(
-        repoFullName = repoFullName,
-        authorImageUrl = authorImageUrl,
-    )
+            repoFullName = repoFullName,
+            authorImageUrl = authorImageUrl,
+        )
 }
 
 data class RepoUi(
