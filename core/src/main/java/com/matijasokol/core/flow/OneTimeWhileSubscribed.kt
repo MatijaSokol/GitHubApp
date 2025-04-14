@@ -46,6 +46,7 @@ class OneTimeWhileSubscribed(
             .distinctUntilChanged()
 }
 
+@Suppress("FunctionName")
 fun SharingStarted.Companion.OneTimeWhileSubscribed(
     stopTimeout: Long,
     replayExpiration: Long = Long.MAX_VALUE,

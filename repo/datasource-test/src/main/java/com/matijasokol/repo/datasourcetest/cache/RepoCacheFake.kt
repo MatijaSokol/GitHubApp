@@ -30,13 +30,9 @@ class RepoCacheFake(
         repos.forEach { repo -> insertRepo(repo) }
     }
 
-    override suspend fun getRepo(repoId: Int): Repo {
-        return repoDatabaseFake.repos.first { repo -> repo.id == repoId }
-    }
+    override suspend fun getRepo(repoId: Int): Repo = repoDatabaseFake.repos.first { repo -> repo.id == repoId }
 
-    override suspend fun getAllRepos(): List<Repo> {
-        return repoDatabaseFake.repos
-    }
+    override suspend fun getAllRepos(): List<Repo> = repoDatabaseFake.repos
 
     override suspend fun deleteAll() {
         repoDatabaseFake.repos.clear()

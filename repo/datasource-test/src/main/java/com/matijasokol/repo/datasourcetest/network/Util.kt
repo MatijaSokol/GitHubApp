@@ -9,18 +9,18 @@ import com.matijasokol.repo.domain.model.Author
 import com.matijasokol.repo.domain.model.Repo
 import kotlinx.serialization.json.Json
 
-val json = Json {
+private val json = Json {
     ignoreUnknownKeys = true
 }
 
-fun serializeRepoResponseData(jsonData: String): List<Repo> {
-    return json.decodeFromString<FetchReposResponse>(jsonData).repos.map(RepoDto::toRepo)
-}
+fun serializeRepoResponseData(jsonData: String): List<Repo> = json.decodeFromString<FetchReposResponse>(
+    jsonData,
+).repos.map(RepoDto::toRepo)
 
-fun serializeRepoListData(jsonData: String): List<Repo> {
-    return json.decodeFromString<List<RepoDto>>(jsonData).map(RepoDto::toRepo)
-}
+fun serializeRepoListData(jsonData: String): List<Repo> = json.decodeFromString<List<RepoDto>>(
+    jsonData,
+).map(RepoDto::toRepo)
 
-fun serializeAuthorListData(jsonData: String): List<Author> {
-    return json.decodeFromString<List<AuthorDto>>(jsonData).map(AuthorDto::toAuthor)
-}
+fun serializeAuthorListData(jsonData: String): List<Author> = json.decodeFromString<List<AuthorDto>>(
+    jsonData,
+).map(AuthorDto::toAuthor)

@@ -58,10 +58,8 @@ class RepoCacheImpl @Inject constructor(
         return repoEntity.toRepo(authorEntity)
     }
 
-    override suspend fun getAllRepos(): List<Repo> {
-        return queries.getAllRepos().executeAsList().map {
-            it.toRepo(queries.getAuthor(it.author_id).executeAsOne())
-        }
+    override suspend fun getAllRepos(): List<Repo> = queries.getAllRepos().executeAsList().map {
+        it.toRepo(queries.getAuthor(it.author_id).executeAsOne())
     }
 
     override suspend fun deleteAll() {
