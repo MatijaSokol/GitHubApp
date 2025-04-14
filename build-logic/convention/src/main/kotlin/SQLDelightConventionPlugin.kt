@@ -30,7 +30,7 @@ class SQLDelightConventionPlugin : Plugin<Project> {
       }
 
       dependencies {
-        add("implementation", libs.sqldelight.coroutines)
+        implementation(libs.sqldelight.coroutines)
         // enable driver separately in app module - implementation(libs.sqldelight.android)
       }
     }
