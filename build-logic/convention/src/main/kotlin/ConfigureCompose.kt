@@ -3,6 +3,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 /**
  * Configure Compose-specific options
  */
@@ -12,10 +13,10 @@ internal fun Project.configureAndroidCompose(
   commonExtension.apply {
     dependencies {
       val bom = libs.compose.bom
-      add("implementation", platform(bom))
-      add("implementation", libs.bundles.compose)
-      add("debugImplementation", libs.bundles.compose.debug)
-      add("androidTestImplementation", platform(bom))
+      implementation(platform(bom))
+      implementation(libs.bundles.compose)
+      debugImplementation(libs.bundles.compose.debug)
+      androidTestImplementation(platform(bom))
     }
   }
 
