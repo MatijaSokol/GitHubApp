@@ -61,7 +61,7 @@ jobs:
 
           git add version.properties
           git commit -m "Bump version to ${{ steps.version.outputs.version }}"
-          git push -u origin $BRANCH_NAME
+          git push -f origin $BRANCH_NAME
 
       - name: Create pull request
         run: gh pr create --base develop --title "Bump version" --body "" --reviewer MatijaSokol
