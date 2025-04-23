@@ -64,6 +64,6 @@ jobs:
           git push -u origin $BRANCH_NAME
 
       - name: Create pull request
-        run: gh pr create -B develop -H bump_version_${{ steps.version.outputs.version }} --title 'Bump version' --reviewer MatijaSokol
+        run: gh pr create --base develop --title "Bump version" --body "" --reviewer MatijaSokol
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
