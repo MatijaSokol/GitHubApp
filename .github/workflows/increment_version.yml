@@ -47,13 +47,23 @@ jobs:
           version=$(./gradlew printVersionName --quiet --stacktrace)
           echo "version=$version" >> $GITHUB_OUTPUT
 
-      - name: Commit and push version bump
+      - name: Setup Git
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+
+      - name: Create and push version bump branch
+        run: |
+          BRANCH_NAME=bump_version_${{ steps.version.outputs.version }}
+          git checkout -b $BRANCH_NAME
 
           cd ./release
 
           git add version.properties
           git commit -m "Bump version to ${{ steps.version.outputs.version }}"
-          git push -u origin develop
+          git push -u origin $BRANCH_NAME
+
+      - name: Create pull request
+        run: gh pr create -B develop -H bump_version_${{ steps.version.outputs.version }} --title 'Bump version' --reviewer MatijaSokol
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
