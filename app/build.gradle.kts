@@ -51,6 +51,8 @@ dependencies {
 
     implementation(libs.splash)
 
+    implementation(libs.arrow.core)
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 

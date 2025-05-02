@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.matijasokol.githubapp.navigation.NavigationErrorMapper
 import com.matijasokol.githubapp.navigation.Navigator
 import com.matijasokol.githubapp.ui.AppContent
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
@@ -17,7 +18,7 @@ class MainActivity : ComponentActivity() {
     lateinit var navigator: Navigator
 
     @Inject
-    lateinit var modeChecker: ModeChecker
+    lateinit var navigatorErrorMapper: NavigationErrorMapper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             GitHubAppTheme {
-                AppContent(navigator, modeChecker)
+                AppContent(navigator, navigatorErrorMapper)
             }
         }
     }

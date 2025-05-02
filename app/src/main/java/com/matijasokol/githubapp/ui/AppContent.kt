@@ -32,9 +32,10 @@ import androidx.navigation.compose.rememberNavController
 import com.matijasokol.coreui.components.LocalAnimatedContentScope
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
 import com.matijasokol.coreui.navigation.Destination
-import com.matijasokol.githubapp.ModeChecker
-import com.matijasokol.githubapp.R
+import com.matijasokol.githubapp.navigation.LocalNavigator
+import com.matijasokol.githubapp.navigation.LocalNavigatorErrorMapper
 import com.matijasokol.githubapp.navigation.NavigationEffect
+import com.matijasokol.githubapp.navigation.NavigationErrorMapper
 import com.matijasokol.githubapp.navigation.NavigationEvent
 import com.matijasokol.githubapp.navigation.Navigator
 import com.matijasokol.repo.detail.RepoDetail
@@ -48,37 +49,32 @@ import com.matijasokol.repo.list.RepoListViewModel
 @Composable
 fun AppContent(
     navigator: Navigator,
-    modeChecker: ModeChecker,
+    navigatorErrorMapper: NavigationErrorMapper,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
-    BoxWithConstraints(modifier = modifier) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background,
-        ) {
-            NavigationEffect(
-                navController = navController,
-                navigator = navigator,
-            )
+    CompositionLocalProvider(
+        LocalNavigator provides navigator,
+        LocalNavigatorErrorMapper provides navigatorErrorMapper,
+    ) {
+        BoxWithConstraints(modifier = modifier) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colors.background,
+            ) {
+                NavigationEffect(navController = navController)
 
-            SharedTransitionLayout {
-                CompositionLocalProvider(
-                    LocalSharedTransitionScope provides this,
-                ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = Destination.RepoList,
+                SharedTransitionLayout {
+                    CompositionLocalProvider(
+                        LocalSharedTransitionScope provides this,
                     ) {
-                        repoList(
-                            navigator = navigator,
-                            modeChecker = modeChecker,
-                            width = constraints.maxWidth / 2,
-                        )
-
-                        repoDetail(
-                            width = constraints.maxWidth / 2,
-                        )
+                        NavHost(
+                            navController = navController,
+                            startDestination = Destination.RepoList,
+                        ) {
+                            repoList(width = constraints.maxWidth / 2)
+                            repoDetail(width = constraints.maxWidth / 2)
+                        }
                     }
                 }
             }
@@ -86,11 +82,7 @@ fun AppContent(
     }
 }
 
-private fun NavGraphBuilder.repoList(
-    navigator: Navigator,
-    modeChecker: ModeChecker,
-    width: Int,
-) {
+private fun NavGraphBuilder.repoList(width: Int) {
     composable<Destination.RepoList>(
         exitTransition = {
             slideOutHorizontally(
@@ -116,14 +108,21 @@ private fun NavGraphBuilder.repoList(
 
         val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
+        val navigator = LocalNavigator.current
+        val navigatorErrorMapper = LocalNavigatorErrorMapper.current
 
         val lazyStaggeredGridState = rememberLazyStaggeredGridState()
 
         LaunchedEffect(viewModel.actions) {
             viewModel.actions.collect { action ->
                 when (action) {
-                    is NavigateToDetails ->
-                        openDetails(modeChecker, navigator, action.authorImageUrl, action.repoFullName, context)
+                    is NavigateToDetails -> showDetails(
+                        navigator,
+                        navigatorErrorMapper,
+                        action.authorImageUrl,
+                        action.repoFullName,
+                        context,
+                    )
                     is RepoListAction.OpenProfile -> openProfile(action.profileUrl, uriHandler, context)
                     RepoListAction.ScrollToTop -> lazyStaggeredGridState.animateScrollToItem(0)
                     is RepoListAction.ShowMessage -> Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
@@ -143,9 +142,7 @@ private fun NavGraphBuilder.repoList(
     }
 }
 
-private fun NavGraphBuilder.repoDetail(
-    width: Int,
-) {
+private fun NavGraphBuilder.repoDetail(width: Int) {
     composable<Destination.RepoDetail>(
         enterTransition = {
             slideInHorizontally(
@@ -191,31 +188,24 @@ private fun NavGraphBuilder.repoDetail(
     }
 }
 
-suspend fun openDetails(
-    modeChecker: ModeChecker,
+private suspend fun showDetails(
     navigator: Navigator,
+    navigatorErrorMapper: NavigationErrorMapper,
     authorImageUrl: String,
     repoFullName: String,
     context: Context,
 ) {
-    when (modeChecker.canNavigateToDetails) {
-        true -> navigator.emitDestination(
-            NavigationEvent.Destination(
-                route = Destination.RepoDetail(repoFullName, authorImageUrl),
-            ),
-        )
-        false -> Toast.makeText(
-            context,
-            context.getString(R.string.mode_checker_navigation_disabled_message),
-            Toast.LENGTH_SHORT,
-        ).show()
+    navigator.emitDestination(
+        NavigationEvent.Destination(route = Destination.RepoDetail(repoFullName, authorImageUrl)),
+    ).onLeft {
+        Toast.makeText(context, navigatorErrorMapper.map(it), Toast.LENGTH_SHORT).show()
     }
 }
 
 fun openProfile(profileUrl: String, uriHandler: UriHandler, context: Context) {
     try {
         uriHandler.openUri(profileUrl)
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         Toast.makeText(
             context,
             context.getString(com.matijasokol.repo.list.R.string.repo_list_message_browser_error),

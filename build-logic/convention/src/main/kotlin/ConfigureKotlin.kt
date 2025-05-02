@@ -57,6 +57,7 @@ private fun Project.configureKotlin() {
         "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
         "-opt-in=kotlinx.coroutines.FlowPreview",
         "-Xcontext-receivers",
+        "-Xwhen-guards",
       ))
     }
   }
