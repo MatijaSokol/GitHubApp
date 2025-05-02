@@ -63,6 +63,8 @@ dependencies {
 
     debugImplementation(libs.compose.ui.test.manifest)
 
+    testImplementation(libs.bundles.test)
+
     androidTestImplementation(testFixtures(projects.test))
     androidTestImplementation(projects.repo.datasourceTest)
     androidTestImplementation(libs.test.runner)

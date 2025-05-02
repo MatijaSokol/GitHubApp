@@ -16,12 +16,12 @@ import androidx.test.core.app.ApplicationProvider
 import com.matijasokol.core.dictionary.Dictionary
 import com.matijasokol.coreui.dictionary.DictionaryImpl
 import com.matijasokol.githubapp.MainActivity
-import com.matijasokol.githubapp.ModeChecker
 import com.matijasokol.githubapp.di.CacheModule
 import com.matijasokol.githubapp.di.CoreModule
 import com.matijasokol.githubapp.di.DataSourceModule
 import com.matijasokol.githubapp.di.NetworkModule
 import com.matijasokol.githubapp.di.ViewModelModule
+import com.matijasokol.githubapp.navigation.NavigationErrorMapper
 import com.matijasokol.githubapp.navigation.Navigator
 import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
 import com.matijasokol.repo.datasourcetest.cache.RepoCacheFake
@@ -93,7 +93,7 @@ class RepoListEndToEnd {
     lateinit var navigator: Navigator
 
     @Inject
-    lateinit var modeChecker: ModeChecker
+    lateinit var navigationErrorMapper: NavigationErrorMapper
 
     @Inject
     lateinit var dictionary: Dictionary
@@ -106,7 +106,7 @@ class RepoListEndToEnd {
             GitHubAppTheme {
                 AppContent(
                     navigator = navigator,
-                    modeChecker = modeChecker,
+                    navigatorErrorMapper = navigationErrorMapper,
                 )
             }
         }
