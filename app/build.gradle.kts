@@ -51,6 +51,8 @@ dependencies {
 
     implementation(libs.splash)
 
+    implementation(libs.arrow.core)
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
@@ -60,6 +62,8 @@ dependencies {
     implementation(libs.bundles.ktor)
 
     debugImplementation(libs.compose.ui.test.manifest)
+
+    testImplementation(libs.bundles.test)
 
     androidTestImplementation(testFixtures(projects.test))
     androidTestImplementation(projects.repo.datasourceTest)
