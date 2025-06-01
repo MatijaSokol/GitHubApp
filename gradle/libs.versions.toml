@@ -20,7 +20,7 @@ mockk = "1.14.0"
 kluent = "1.73"
 turbine = "1.2.0"
 
-composeBom = "2025.04.00"
+composeBom = "2025.05.01"
 composeNavigationHilt = "1.2.0"
 composeNavigation = "2.8.9"
 coil = "3.0.4" # newer versions require targetSdk 35
