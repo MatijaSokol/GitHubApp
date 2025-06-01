@@ -32,8 +32,7 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
       - name: Static Analysis
-        run: |
-          ./gradlew ktlintCheck detekt --stacktrace
+        run: ./gradlew ktlintCheck detekt --stacktrace
 
   build_free:
     runs-on: macos-latest
@@ -53,8 +52,7 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
       - name: Assemble
-        run: |
-          ./gradlew assembleProdFreeRelease --stacktrace
+        run: ./gradlew assembleProdFreeRelease --stacktrace
 
   build_paid:
     runs-on: macos-latest
@@ -74,8 +72,7 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
       - name: Assemble
-        run: |
-          ./gradlew assembleProdPaidRelease --stacktrace
+        run: ./gradlew assembleProdPaidRelease --stacktrace
 
   unit_tests:
     runs-on: macos-latest
