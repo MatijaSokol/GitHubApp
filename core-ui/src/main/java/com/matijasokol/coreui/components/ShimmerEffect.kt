@@ -34,7 +34,7 @@ fun Modifier.shimmerEffect(
         label = SHIMMER_TRANSITION_LABEL,
     )
 
-    return this then drawBehind {
+    return drawBehind {
         drawRect(
             brush = Brush.linearGradient(
                 colors = shimmerColors,
