@@ -13,7 +13,7 @@ class VersioningPlugin : Plugin<Project> {
   private fun Project.addTasks(versioning: Versioning) {
     val version = versioning.readVersion()
 
-    task("incrementMajor") {
+    tasks.register("incrementMajor") {
       doLast {
         with(version) {
           versioning.setVersion(major + 1, 0, 0, 1)
@@ -21,7 +21,7 @@ class VersioningPlugin : Plugin<Project> {
       }
     }
 
-    task("incrementMinor") {
+    tasks.register("incrementMinor") {
       doLast {
         with(version) {
           versioning.setVersion(major, minor + 1, 0, 1)
@@ -29,7 +29,7 @@ class VersioningPlugin : Plugin<Project> {
       }
     }
 
-    task("incrementPatch") {
+    tasks.register("incrementPatch") {
       doLast {
         with(version) {
           versioning.setVersion(major, minor, patch + 1, 1)
@@ -37,7 +37,7 @@ class VersioningPlugin : Plugin<Project> {
       }
     }
 
-    task("incrementBuild") {
+    tasks.register("incrementBuild") {
       doLast {
         with(version) {
           versioning.setVersion(major, minor, patch, build + 1)
@@ -45,7 +45,7 @@ class VersioningPlugin : Plugin<Project> {
       }
     }
 
-    task("printVersion") {
+    tasks.register("printVersion") {
       doLast {
         with(version) {
           println(versionName)
@@ -54,7 +54,7 @@ class VersioningPlugin : Plugin<Project> {
       }
     }
 
-    task("printVersionName") {
+    tasks.register("printVersionName") {
       doLast {
         println(versioning.readVersion().versionName)
       }

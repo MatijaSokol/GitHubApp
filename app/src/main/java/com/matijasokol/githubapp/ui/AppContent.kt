@@ -3,17 +3,16 @@ package com.matijasokol.githubapp.ui
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -53,54 +52,52 @@ fun AppContent(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
-    CompositionLocalProvider(
-        LocalNavigator provides navigator,
-        LocalNavigatorErrorMapper provides navigatorErrorMapper,
-    ) {
-        BoxWithConstraints(modifier = modifier) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colors.background,
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets.statusBars,
+    ) { innerPadding ->
+        SharedTransitionLayout(modifier = Modifier.padding(innerPadding)) {
+            CompositionLocalProvider(
+                LocalSharedTransitionScope provides this,
+                LocalNavigator provides navigator,
+                LocalNavigatorErrorMapper provides navigatorErrorMapper,
             ) {
-                NavigationEffect(navController = navController)
-
-                SharedTransitionLayout {
-                    CompositionLocalProvider(
-                        LocalSharedTransitionScope provides this,
-                    ) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = Destination.RepoList,
-                        ) {
-                            repoList(width = constraints.maxWidth / 2)
-                            repoDetail(width = constraints.maxWidth / 2)
-                        }
-                    }
-                }
+                NavigationContent(navController = navController)
             }
         }
     }
 }
 
-private fun NavGraphBuilder.repoList(width: Int) {
+@Composable
+private fun NavigationContent(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+) {
+    NavigationEffect(navController = navController)
+
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = Destination.RepoList,
+    ) {
+        repoList()
+        repoDetail()
+    }
+}
+
+private fun NavGraphBuilder.repoList() {
     composable<Destination.RepoList>(
-        exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -width },
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = FastOutSlowInEasing,
-                ),
-            ) + fadeOut(animationSpec = tween(durationMillis = 300))
-        },
         popEnterTransition = {
             slideInHorizontally(
-                initialOffsetX = { -width },
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = FastOutSlowInEasing,
-                ),
-            ) + fadeIn(animationSpec = tween(durationMillis = 300))
+                animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION),
+                initialOffsetX = { fullWidth -> -fullWidth },
+            ) + fadeIn(animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION))
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION),
+                targetOffsetX = { fullWidth -> -fullWidth },
+            ) + fadeOut(animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION))
         },
     ) {
         val viewModel: RepoListViewModel = hiltViewModel()
@@ -142,25 +139,19 @@ private fun NavGraphBuilder.repoList(width: Int) {
     }
 }
 
-private fun NavGraphBuilder.repoDetail(width: Int) {
+private fun NavGraphBuilder.repoDetail() {
     composable<Destination.RepoDetail>(
         enterTransition = {
             slideInHorizontally(
-                initialOffsetX = { width },
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = FastOutSlowInEasing,
-                ),
-            ) + fadeIn(animationSpec = tween(durationMillis = 300))
+                animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION),
+                initialOffsetX = { fullWidth -> fullWidth },
+            ) + fadeIn(animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION))
         },
         popExitTransition = {
             slideOutHorizontally(
-                targetOffsetX = { width },
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = FastOutSlowInEasing,
-                ),
-            ) + fadeOut(animationSpec = tween(durationMillis = 300))
+                animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION),
+                targetOffsetX = { fullWidth -> fullWidth },
+            ) + fadeOut(animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION))
         },
     ) {
         val viewModel: RepoDetailViewModel = hiltViewModel()
@@ -213,3 +204,5 @@ fun openProfile(profileUrl: String, uriHandler: UriHandler, context: Context) {
         ).show()
     }
 }
+
+private const val NAVIGATION_ANIMATION_DURATION = 300

@@ -11,6 +11,6 @@ plugins {
     alias(libs.plugins.detekt) apply false
 }
 
-task<Delete>("clean") {
+tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

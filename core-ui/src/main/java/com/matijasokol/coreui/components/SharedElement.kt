@@ -8,8 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 
-val LocalAnimatedContentScope = compositionLocalOf<AnimatedContentScope?> { null }
-val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { null }
+val LocalAnimatedContentScope = compositionLocalOf<AnimatedContentScope> { error("AnimatedContentScope not provided") }
+val LocalSharedTransitionScope =
+    compositionLocalOf<SharedTransitionScope> { error("SharedTransitionScope not provided") }
 
 @Composable
 fun Modifier.withSharedElement(
@@ -18,15 +19,11 @@ fun Modifier.withSharedElement(
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedContentScope = LocalAnimatedContentScope.current
 
-    return if (sharedTransitionScope != null && animatedContentScope != null) {
-        with(sharedTransitionScope) {
-            sharedElement(
-                state = rememberSharedContentState(key = key),
-                animatedVisibilityScope = animatedContentScope,
-            )
-        }
-    } else {
-        Modifier
+    return with(sharedTransitionScope) {
+        sharedElement(
+            sharedContentState = rememberSharedContentState(key = key),
+            animatedVisibilityScope = animatedContentScope,
+        )
     }
 }
 
@@ -37,14 +34,10 @@ fun Modifier.withSharedBounds(
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedContentScope = LocalAnimatedContentScope.current
 
-    return this then if (sharedTransitionScope != null && animatedContentScope != null) {
-        with(sharedTransitionScope) {
-            sharedBounds(
-                sharedContentState = rememberSharedContentState(key = key),
-                animatedVisibilityScope = animatedContentScope,
-            )
-        }
-    } else {
-        Modifier
+    return with(sharedTransitionScope) {
+        sharedBounds(
+            sharedContentState = rememberSharedContentState(key = key),
+            animatedVisibilityScope = animatedContentScope,
+        )
     }
 }
