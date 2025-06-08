@@ -27,9 +27,6 @@ jobs:
       - name: Assemble
         run: ./gradlew assembleProdPaidRelease --stacktrace
 
-      - name: Increment patch version
-        run: ./gradlew incrementPatch --stacktrace
-
       - name: Get version
         id: version
         run: |
@@ -54,14 +51,3 @@ jobs:
         with:
           name: ${{ steps.name.outputs.name }}
           path: app/build/outputs/apk/prodPaid/release/
-
-      - name: Commit and push version bump
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-
-          cd ./release
-
-          git add version.properties
-          git commit -m "Bump version to ${{ steps.version.outputs.version }}"
-          git push -u origin develop
