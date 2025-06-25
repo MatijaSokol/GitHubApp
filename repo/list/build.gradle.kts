@@ -37,9 +37,12 @@ dependencies {
 
     testImplementation(testFixtures(projects.test))
     testImplementation(projects.repo.datasourceTest)
+    testImplementation(platform(libs.junit.bom))
     testImplementation(libs.bundles.test)
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     androidTestImplementation(projects.repo.datasourceTest)
     androidTestImplementation(libs.compose.junit4)
-    androidTestImplementation(libs.junit)
+    androidTestImplementation(platform(libs.junit.bom))
+    androidTestImplementation(libs.junit.jupiter)
 }

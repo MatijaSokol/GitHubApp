@@ -47,7 +47,9 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewModel" }
 
 test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
-junit = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
+junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junitBom" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 kluent = { group = "org.amshove.kluent", name = "kluent", version.ref = "kluent" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
@@ -155,7 +157,7 @@ compose-debug = [
 ]
 
 test = [
-    "junit",
+    "junit-jupiter",
     "mockk",
     "kluent",
     "turbine",
