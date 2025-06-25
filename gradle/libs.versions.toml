@@ -3,47 +3,49 @@ compileSdk = "35"
 minSdk = "24"
 targetSdk = "35"
 
-kotlin = "2.1.21"
-ksp = "2.1.21-2.0.1"
+kotlin = "2.2.0"
+ksp = "2.2.0-2.0.2"
 kotlinxCoroutines = "1.10.2"
-kotlinxSerialization = "1.8.1"
-kotlinxCollections = "0.3.8"
+kotlinxSerialization = "1.9.0"
+kotlinxCollections = "0.4.0"
 
 activityCompose = "1.10.1"
-agp = "8.9.3"
+agp = "8.11.1"
 coreKtx = "1.16.0"
 appcompat = "1.7.1"
-lifecycleViewModel = "2.9.1"
-testRunner = "1.6.2"
-junit = "5.11.4"
-mockk = "1.14.2"
-kluent = "1.73"
-turbine = "1.2.0"
+lifecycleViewModel = "2.9.2"
 
-composeBom = "2025.06.00"
+testRunner = "1.7.0"
+junitBom = "5.13.4"
+mockk = "1.14.5"
+kluent = "1.73"
+turbine = "1.2.1"
+
+composeBom = "2025.07.00"
 composeNavigationHilt = "1.2.0"
-composeNavigation = "2.9.0"
-coil = "3.1.0"
+composeNavigation = "2.9.3"
+coil = "3.3.0"
 material = "1.12.0"
 splash = "1.0.1"
 
 sqldelight = "2.1.0"
-ktor = "2.3.12" # update to 3.x.x when available (check Koin support), check https://github.com/InsertKoinIO/koin/pull/1978
+ktor = "3.2.3"
 
-hilt = "2.56.2"
+hilt = "2.57"
 javaxInject = "1"
 
-arrow = "2.0.1"
+arrow = "2.1.2"
 
-detekt = "1.23.7"
+detekt = "1.23.8"
 detektCompose ="0.0.26"
-ktlint = "1.5.0"
+ktlint = "1.6.0"
 
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 coreKtx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewModel" }
+
 test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
 junit = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
