@@ -37,7 +37,7 @@ arrow = "2.0.1"
 
 detekt = "1.23.7"
 detektCompose ="0.0.26"
-ktlint = "1.5.0"
+ktlint = "1.7.1"
 
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
