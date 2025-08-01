@@ -56,7 +56,7 @@ private fun Project.configureKotlin() {
       freeCompilerArgs.addAll(listOf(
         "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
         "-opt-in=kotlinx.coroutines.FlowPreview",
-        "-Xcontext-receivers",
+        "-Xcontext-parameters",
         "-Xwhen-guards",
       ))
     }

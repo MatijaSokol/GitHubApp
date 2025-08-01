@@ -62,13 +62,16 @@ dependencies {
 
     debugImplementation(libs.compose.ui.test.manifest)
 
+    testImplementation(platform(libs.junit.bom))
     testImplementation(libs.bundles.test)
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     androidTestImplementation(testFixtures(projects.test))
     androidTestImplementation(projects.repo.datasourceTest)
     androidTestImplementation(libs.test.runner)
     androidTestImplementation(libs.compose.junit4)
-    androidTestImplementation(libs.junit)
+    androidTestImplementation(platform(libs.junit.bom))
+    androidTestImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
 }
