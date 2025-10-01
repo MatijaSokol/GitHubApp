@@ -31,7 +31,7 @@ splash = "1.0.1"
 sqldelight = "2.1.0"
 ktor = "3.3.0"
 
-hilt = "2.57.1"
+hilt = "2.57.2"
 javaxInject = "1"
 
 arrow = "2.1.2"
