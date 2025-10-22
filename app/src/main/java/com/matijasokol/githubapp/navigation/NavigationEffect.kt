@@ -3,9 +3,9 @@
 package com.matijasokol.githubapp.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavHostController
+import com.matijasokol.coreui.events.ObserveAsEvent
 
 val LocalNavigator = compositionLocalOf<Navigator> { error("Navigator not provided") }
 val LocalNavigatorErrorMapper = compositionLocalOf<NavigationErrorMapper> { error("NavigatorErrorMapper not provided") }
@@ -14,9 +14,8 @@ val LocalNavigatorErrorMapper = compositionLocalOf<NavigationErrorMapper> { erro
 fun NavigationEffect(navController: NavHostController) {
     val navigator = LocalNavigator.current
 
-    LaunchedEffect(navController) {
-        navigator.navigationEvent
-            .collect { executeNavigationRequests(navController, it) }
+    ObserveAsEvent(navigator.navigationEvent, navController) {
+        executeNavigationRequests(navController, it)
     }
 }
 
