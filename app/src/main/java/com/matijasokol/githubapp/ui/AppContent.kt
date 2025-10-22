@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.matijasokol.coreui.components.LocalAnimatedContentScope
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
+import com.matijasokol.coreui.events.ObserveAsEvent
 import com.matijasokol.coreui.navigation.Destination
 import com.matijasokol.githubapp.navigation.LocalNavigator
 import com.matijasokol.githubapp.navigation.LocalNavigatorErrorMapper
@@ -110,20 +110,18 @@ private fun NavGraphBuilder.repoList() {
 
         val lazyStaggeredGridState = rememberLazyStaggeredGridState()
 
-        LaunchedEffect(viewModel.actions) {
-            viewModel.actions.collect { action ->
-                when (action) {
-                    is NavigateToDetails -> showDetails(
-                        navigator,
-                        navigatorErrorMapper,
-                        action.authorImageUrl,
-                        action.repoFullName,
-                        context,
-                    )
-                    is RepoListAction.OpenProfile -> openProfile(action.profileUrl, uriHandler, context)
-                    RepoListAction.ScrollToTop -> lazyStaggeredGridState.animateScrollToItem(0)
-                    is RepoListAction.ShowMessage -> Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
-                }
+        ObserveAsEvent(viewModel.actions) { action ->
+            when (action) {
+                is NavigateToDetails -> showDetails(
+                    navigator,
+                    navigatorErrorMapper,
+                    action.authorImageUrl,
+                    action.repoFullName,
+                    context,
+                )
+                is RepoListAction.OpenProfile -> openProfile(action.profileUrl, uriHandler, context)
+                RepoListAction.ScrollToTop -> lazyStaggeredGridState.animateScrollToItem(0)
+                is RepoListAction.ShowMessage -> Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -159,12 +157,10 @@ private fun NavGraphBuilder.repoDetail() {
 
         val context = LocalContext.current
 
-        LaunchedEffect(viewModel.actions) {
-            viewModel.actions.collect { action ->
-                when (action) {
-                    is RepoDetailAction.ShowMessage ->
-                        Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
-                }
+        ObserveAsEvent(viewModel.actions) { action ->
+            when (action) {
+                is RepoDetailAction.ShowMessage ->
+                    Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
             }
         }
 
