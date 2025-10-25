@@ -30,7 +30,7 @@ internal class AndroidCoroutinesExtension(
     BeforeEachCallback,
     AfterEachCallback {
 
-    override fun beforeEach(context: ExtensionContext?) {
+    override fun beforeEach(context: ExtensionContext) {
         ArchTaskExecutor.getInstance().setDelegate(
             object : TaskExecutor() {
                 override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
@@ -43,7 +43,7 @@ internal class AndroidCoroutinesExtension(
         Dispatchers.setMain(dispatcher)
     }
 
-    override fun afterEach(context: ExtensionContext?) {
+    override fun afterEach(context: ExtensionContext) {
         Dispatchers.resetMain()
         dispatcher.cancelChildren()
         ArchTaskExecutor.getInstance().setDelegate(null)
