@@ -1,10 +1,17 @@
 package com.matijasokol.repo.list.ui
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
+import com.matijasokol.coreui.components.LocalAnimatedContentScope
+import com.matijasokol.coreui.components.LocalSharedTransitionScope
 import com.matijasokol.coreui.dictionary.DictionaryImpl
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.domain.Paginator
@@ -27,6 +34,23 @@ class RepoListTest {
     private val query = "kotlin"
     private val dictionary = DictionaryImpl(ApplicationProvider.getApplicationContext())
 
+    // Workaround to provide required parameters due to shared transition animation
+    // Without this, test will fail. See SharedElement.kt for more details
+    @SuppressLint("UnusedContentLambdaTargetStateParameter")
+    @Composable
+    private fun FakeRootComposable(content: @Composable () -> Unit) {
+        AnimatedContent(Unit) {
+            SharedTransitionLayout {
+                CompositionLocalProvider(
+                    LocalSharedTransitionScope provides this,
+                    LocalAnimatedContentScope provides this@AnimatedContent,
+                ) {
+                    content()
+                }
+            }
+        }
+    }
+
     @Test
     fun repoListSuccessShowData() {
         val errorText = dictionary.getString(R.string.repo_list_message_error)
@@ -41,10 +65,12 @@ class RepoListTest {
         )
 
         composeTestRule.setContent {
-            RepoList(
-                state = state,
-                onEvent = {},
-            )
+            FakeRootComposable {
+                RepoList(
+                    state = state,
+                    onEvent = {},
+                )
+            }
         }
 
         composeTestRule.onNodeWithText(errorText).assertDoesNotExist()
@@ -65,15 +91,17 @@ class RepoListTest {
         val errorText = dictionary.getString(R.string.repo_list_message_error)
 
         composeTestRule.setContent {
-            RepoList(
-                state = RepoListState(
-                    query = query,
-                    items = serializeRepoResponseData(
-                        this::class.java.getResource("/repo_list_empty.json").readText(),
-                    ).map(Repo::toRepoListItem).toPersistentList(),
-                ),
-                onEvent = {},
-            )
+            FakeRootComposable {
+                RepoList(
+                    state = RepoListState(
+                        query = query,
+                        items = serializeRepoResponseData(
+                            this::class.java.getResource("/repo_list_empty.json").readText(),
+                        ).map(Repo::toRepoListItem).toPersistentList(),
+                    ),
+                    onEvent = {},
+                )
+            }
         }
 
         composeTestRule
@@ -89,13 +117,15 @@ class RepoListTest {
     @Test
     fun repoListLoadingShowProgress() {
         composeTestRule.setContent {
-            RepoList(
-                state = RepoListState(
-                    loadState = Paginator.LoadState.Refresh,
-                    query = query,
-                ),
-                onEvent = {},
-            )
+            FakeRootComposable {
+                RepoList(
+                    state = RepoListState(
+                        loadState = Paginator.LoadState.Refresh,
+                        query = query,
+                    ),
+                    onEvent = {},
+                )
+            }
         }
 
         composeTestRule
