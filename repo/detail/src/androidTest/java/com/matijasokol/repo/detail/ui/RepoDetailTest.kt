@@ -1,10 +1,17 @@
 package com.matijasokol.repo.detail.ui
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
+import com.matijasokol.coreui.components.LocalAnimatedContentScope
+import com.matijasokol.coreui.components.LocalSharedTransitionScope
 import com.matijasokol.coreui.dictionary.DictionaryImpl
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.detail.R
@@ -23,6 +30,23 @@ class RepoDetailTest {
 
     private val repoData = serializeRepoResponseData(this::class.java.getResource("/repo_list_valid.json").readText())
     private val dictionary = DictionaryImpl(ApplicationProvider.getApplicationContext())
+
+    // Workaround to provide required parameters due to shared transition animation
+    // Without this, test will fail. See SharedElement.kt for more details
+    @SuppressLint("UnusedContentLambdaTargetStateParameter")
+    @Composable
+    private fun FakeRootComposable(content: @Composable () -> Unit) {
+        AnimatedContent(Unit) {
+            SharedTransitionLayout {
+                CompositionLocalProvider(
+                    LocalSharedTransitionScope provides this,
+                    LocalAnimatedContentScope provides this@AnimatedContent,
+                ) {
+                    content()
+                }
+            }
+        }
+    }
 
     @Test
     fun repoDetailShownCorrectly() {
@@ -53,10 +77,12 @@ class RepoDetailTest {
                     ),
                 )
             }
-            RepoDetail(
-                state = state,
-                onEvent = {},
-            )
+            FakeRootComposable {
+                RepoDetail(
+                    state = state,
+                    onEvent = {},
+                )
+            }
         }
 
         composeTestRule.onNodeWithText(detailsButtonText, useUnmergedTree = true).assertExists()
@@ -78,10 +104,12 @@ class RepoDetailTest {
                     authorImageUrl = "",
                 )
             }
-            RepoDetail(
-                state = state,
-                onEvent = {},
-            )
+            FakeRootComposable {
+                RepoDetail(
+                    state = state,
+                    onEvent = {},
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_PROGRESS).assertDoesNotExist()
@@ -97,10 +125,12 @@ class RepoDetailTest {
                     authorImageUrl = "",
                 )
             }
-            RepoDetail(
-                state = state,
-                onEvent = {},
-            )
+            FakeRootComposable {
+                RepoDetail(
+                    state = state,
+                    onEvent = {},
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_PROGRESS).assertExists()
