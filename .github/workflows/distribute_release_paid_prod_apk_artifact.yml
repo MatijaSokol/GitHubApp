@@ -47,7 +47,7 @@ jobs:
           mv app-prod-paid-release.apk ${{ steps.name.outputs.name }}
 
       - name: Upload to artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.name.outputs.name }}
           path: app/build/outputs/apk/prodPaid/release/
