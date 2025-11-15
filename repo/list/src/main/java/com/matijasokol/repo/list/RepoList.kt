@@ -15,7 +15,10 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -23,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.matijasokol.repo.domain.Paginator.LoadState.Append
@@ -58,21 +62,31 @@ fun RepoList(
         }
     }
 
-    Column(modifier = modifier) {
-        RepoListToolbar(
-            queryValue = state.query,
-            queryLabel = state.queryLabel,
-            sortMenuVisible = state.sortMenuVisible,
-            options = state.sortMenuOptions,
-            appliedSortType = state.repoSortType,
-            onQueryChanged = { query -> onEvent(RepoListEvent.OnQueryChanged(query)) },
-            onClearClicked = { onEvent(RepoListEvent.OnQueryChanged("")) },
-            onSortMenuClicked = { onEvent(RepoListEvent.ToggleSortMenuOptionsVisibility) },
-            onSortTypeClicked = { onEvent(RepoListEvent.UpdateSortType(it)) },
-            onSortMenuDismissed = { onEvent(RepoListEvent.SortMenuOptionsDismissed) },
-        )
+    val toolbarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-        Box(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+        modifier = modifier.nestedScroll(toolbarScrollBehavior.nestedScrollConnection),
+        topBar = {
+            RepoListToolbar(
+                queryValue = state.query,
+                queryLabel = state.queryLabel,
+                sortMenuVisible = state.sortMenuVisible,
+                options = state.sortMenuOptions,
+                appliedSortType = state.repoSortType,
+                scrollBehavior = toolbarScrollBehavior,
+                onQueryChanged = { query -> onEvent(RepoListEvent.OnQueryChanged(query)) },
+                onClearClicked = { onEvent(RepoListEvent.OnQueryChanged("")) },
+                onSortMenuClicked = { onEvent(RepoListEvent.ToggleSortMenuOptionsVisibility) },
+                onSortTypeClicked = { onEvent(RepoListEvent.UpdateSortType(it)) },
+                onSortMenuDismissed = { onEvent(RepoListEvent.SortMenuOptionsDismissed) },
+            )
+        },
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+        ) {
             when (state.loadState) {
                 Refresh -> LoadingContent()
                 RefreshError -> RetryContent(
