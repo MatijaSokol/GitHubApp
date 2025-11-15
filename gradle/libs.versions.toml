@@ -3,38 +3,38 @@ compileSdk = "35"
 minSdk = "24"
 targetSdk = "35"
 
-kotlin = "2.2.20"
-ksp = "2.2.20-2.0.4"
+kotlin = "2.2.21"
+ksp = "2.3.2"
 kotlinxCoroutines = "1.10.2"
 kotlinxSerialization = "1.9.0"
 kotlinxCollections = "0.4.0"
 
 activityCompose = "1.10.1" # newer versions require targetSdk 36
-agp = "8.13.0"
+agp = "8.13.1"
 coreKtx = "1.16.0" # newer versions require targetSdk 36
 appcompat = "1.7.1"
 lifecycleViewModel = "2.9.4"
 
 testRunner = "1.7.0"
-junitBom = "6.0.0"
+junitBom = "6.0.1"
 mockk = "1.14.6"
 kluent = "1.73"
 turbine = "1.2.1"
 
-composeBom = "2025.10.00"
+composeBom = "2025.11.00"
 composeNavigationHilt = "1.3.0"
-composeNavigation = "2.9.5"
+composeNavigation = "2.9.6"
 coil = "3.3.0"
 material = "1.13.0"
-splash = "1.0.1"
+splash = "1.2.0"
 
 sqldelight = "2.1.0"
-ktor = "3.3.1"
+ktor = "3.3.2"
 
 hilt = "2.57.2"
 javaxInject = "1"
 
-arrow = "2.1.2"
+arrow = "2.2.0"
 
 detekt = "1.23.8"
 detektCompose ="0.0.26"
