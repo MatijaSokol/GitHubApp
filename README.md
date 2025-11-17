@@ -25,6 +25,21 @@
 - Find generated .apk file through [workflow](https://github.com/MatijaSokol/GitHubApp/actions/workflows/distribute_release_paid_prod_apk_artifact.yml) or trigger it to create new .apk
 
 ## Screenshots
-List screen            |  Details screen
-:-------------------------:|:-------------------------:
-![](previews/screenshot_list.jpg)  |  ![](previews/screenshot_details.jpg)
+<table width="100%">
+  <tr>
+    <td width="50%" align="center"><b>List screen (light)</b></td>
+    <td width="50%" align="center"><b>Details screen (light)</b></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><img src="previews/screenshot_list_light.jpg"/>
+    <td width="50%" align="center"><img src="previews/screenshot_details_light.jpg"/>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><b>List screen (dark)</b></td>
+    <td width="50%" align="center"><b>Details screen (dark)</b></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><img src="previews/screenshot_list_dark.jpg"/>
+    <td width="50%" align="center"><img src="previews/screenshot_details_dark.jpg"/>
+  </tr>
+</table>
