@@ -14,9 +14,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-class BasicPaginator @Inject constructor(
-    private val repoService: RepoService,
-) : Paginator {
+class BasicPaginator @Inject constructor(private val repoService: RepoService) : Paginator {
 
     override val loadState = MutableStateFlow(Paginator.LoadState.Refresh)
     private val page = MutableStateFlow(INITIAL_PAGE)

@@ -7,9 +7,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
-class RepoCacheImpl @Inject constructor(
-    private val repoDatabase: RepoDatabase,
-) : RepoCache {
+class RepoCacheImpl @Inject constructor(private val repoDatabase: RepoDatabase) : RepoCache {
 
     private val queries = repoDatabase.repoDbQueries
 
