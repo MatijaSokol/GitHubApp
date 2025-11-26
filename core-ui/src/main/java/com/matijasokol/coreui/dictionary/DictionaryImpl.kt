@@ -4,9 +4,7 @@ import android.app.Application
 import com.matijasokol.core.dictionary.Dictionary
 import javax.inject.Inject
 
-class DictionaryImpl @Inject constructor(
-    private val context: Application,
-) : Dictionary {
+class DictionaryImpl @Inject constructor(private val context: Application) : Dictionary {
 
     override fun getString(resId: Int): String = context.getString(resId)
 

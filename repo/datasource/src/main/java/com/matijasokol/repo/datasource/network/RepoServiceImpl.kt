@@ -15,9 +15,7 @@ import io.ktor.http.appendEncodedPathSegments
 import io.ktor.http.path
 import javax.inject.Inject
 
-class RepoServiceImpl @Inject constructor(
-    private val httpClient: HttpClient,
-) : RepoService {
+class RepoServiceImpl @Inject constructor(private val httpClient: HttpClient) : RepoService {
 
     override suspend fun fetchRepos(
         query: String,

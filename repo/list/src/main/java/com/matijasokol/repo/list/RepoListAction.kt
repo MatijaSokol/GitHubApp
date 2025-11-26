@@ -7,13 +7,9 @@ sealed interface RepoListAction {
         val repoFullName: String,
     ) : RepoListAction
 
-    data class OpenProfile(
-        val profileUrl: String,
-    ) : RepoListAction
+    data class OpenProfile(val profileUrl: String) : RepoListAction
 
     data object ScrollToTop : RepoListAction
 
-    data class ShowMessage(
-        val message: String,
-    ) : RepoListAction
+    data class ShowMessage(val message: String) : RepoListAction
 }

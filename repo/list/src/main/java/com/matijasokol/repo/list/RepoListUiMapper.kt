@@ -14,9 +14,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import javax.inject.Inject
 
-class RepoListUiMapper @Inject constructor(
-    private val dictionary: Dictionary,
-) {
+class RepoListUiMapper @Inject constructor(private val dictionary: Dictionary) {
 
     private data class ListStaticData(
         val errorText: String,

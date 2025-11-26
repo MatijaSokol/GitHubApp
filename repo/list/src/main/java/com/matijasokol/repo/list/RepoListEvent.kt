@@ -6,13 +6,9 @@ sealed interface RepoListEvent {
 
     data object LoadMore : RepoListEvent
 
-    data class OnQueryChanged(
-        val query: String,
-    ) : RepoListEvent
+    data class OnQueryChanged(val query: String) : RepoListEvent
 
-    data class UpdateSortType(
-        val repoSortType: RepoSortType,
-    ) : RepoListEvent
+    data class UpdateSortType(val repoSortType: RepoSortType) : RepoListEvent
 
     data object ToggleSortMenuOptionsVisibility : RepoListEvent
 
@@ -23,9 +19,7 @@ sealed interface RepoListEvent {
         val repoFullName: String,
     ) : RepoListEvent
 
-    data class OnImageClick(
-        val profileUrl: String,
-    ) : RepoListEvent
+    data class OnImageClick(val profileUrl: String) : RepoListEvent
 
     data object OnRetryClick : RepoListEvent
 }
