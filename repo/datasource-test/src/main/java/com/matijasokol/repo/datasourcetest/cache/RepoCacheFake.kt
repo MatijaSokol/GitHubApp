@@ -3,9 +3,7 @@ package com.matijasokol.repo.datasourcetest.cache
 import com.matijasokol.repo.domain.RepoCache
 import com.matijasokol.repo.domain.model.Repo
 
-class RepoCacheFake(
-    private val repoDatabaseFake: RepoDatabaseFake,
-) : RepoCache {
+class RepoCacheFake(private val repoDatabaseFake: RepoDatabaseFake) : RepoCache {
 
     override suspend fun insertRepo(repo: Repo) {
         if (repoDatabaseFake.repos.isNotEmpty()) {

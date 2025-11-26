@@ -10,9 +10,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import javax.inject.Inject
 
-class RepoDetailsUiMapper @Inject constructor(
-    private val dictionary: Dictionary,
-) {
+class RepoDetailsUiMapper @Inject constructor(private val dictionary: Dictionary) {
 
     private data class DetailsStaticData(
         val errorMessage: String,
