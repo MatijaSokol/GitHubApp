@@ -28,7 +28,7 @@ coil = "3.3.0"
 material3 = "1.4.0"
 splash = "1.2.0"
 
-sqldelight = "2.1.0"
+sqldelight = "2.2.1"
 ktor = "3.3.2"
 
 hilt = "2.57.2"
