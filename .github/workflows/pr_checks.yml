@@ -20,7 +20,7 @@ jobs:
   static_analysis:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Prepare environment
         run: |
           export GRADLE_USER_HOME=`pwd`/.gradle
@@ -40,7 +40,7 @@ jobs:
       GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
       GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Prepare environment
         run: |
           export GRADLE_USER_HOME=`pwd`/.gradle
@@ -60,7 +60,7 @@ jobs:
       GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
       GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Prepare environment
         run: |
           export GRADLE_USER_HOME=`pwd`/.gradle
@@ -80,7 +80,7 @@ jobs:
       GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
       GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Prepare environment
         run: |
           export GRADLE_USER_HOME=`pwd`/.gradle
