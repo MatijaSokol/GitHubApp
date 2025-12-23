@@ -33,6 +33,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    ksp(libs.kotlin.metadata.jvm)
 
     debugImplementation(libs.compose.ui.test.manifest)
 
