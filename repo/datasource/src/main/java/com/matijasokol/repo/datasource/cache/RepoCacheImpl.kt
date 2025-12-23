@@ -3,7 +3,6 @@ package com.matijasokol.repo.datasource.cache
 import com.matijasokol.repo.datasource.mappers.toRepo
 import com.matijasokol.repo.domain.RepoCache
 import com.matijasokol.repo.domain.model.Repo
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
@@ -27,7 +26,7 @@ class RepoCacheImpl @Inject constructor(private val repoDatabase: RepoDatabase) 
             }
 
             with(repo) {
-                queries.insertRepo(
+                val _ = queries.insertRepo(
                     id = id.toLong(),
                     name = name,
                     fullName = fullName,
@@ -61,12 +60,12 @@ class RepoCacheImpl @Inject constructor(private val repoDatabase: RepoDatabase) 
     }
 
     override suspend fun deleteAll() {
-        queries.removeAllAuthors()
+        val _ = queries.removeAllAuthors()
     }
 
     override suspend fun replaceRepos(repos: List<Repo>) {
         repoDatabase.transaction {
-            queries.removeAllAuthors()
+            val _ = queries.removeAllAuthors()
 
             repos.forEach { repo ->
                 with(repo.author) {
@@ -83,7 +82,7 @@ class RepoCacheImpl @Inject constructor(private val repoDatabase: RepoDatabase) 
                 }
 
                 with(repo) {
-                    queries.insertRepo(
+                    val _ = queries.insertRepo(
                         id = id.toLong(),
                         name = name,
                         fullName = fullName,
@@ -104,10 +103,10 @@ class RepoCacheImpl @Inject constructor(private val repoDatabase: RepoDatabase) 
     }
 
     override suspend fun updateFollowersCount(count: Int, authorId: Int) {
-        queries.updateFollowersCount(count.toLong(), authorId.toLong())
+        val _ = queries.updateFollowersCount(count.toLong(), authorId.toLong())
     }
 
     override suspend fun updateReposCount(count: Int, authorId: Int) {
-        queries.updateReposCount(count.toLong(), authorId.toLong())
+        val _ = queries.updateReposCount(count.toLong(), authorId.toLong())
     }
 }
