@@ -58,6 +58,8 @@ private fun Project.configureKotlin() {
         "-opt-in=kotlinx.coroutines.FlowPreview",
         "-Xcontext-parameters",
         "-Xwhen-guards",
+        "-Xexplicit-backing-fields",
+        "-Xreturn-value-checker=full",
       ))
     }
   }
