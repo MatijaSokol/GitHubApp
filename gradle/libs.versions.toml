@@ -54,6 +54,7 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 kluent = { group = "org.amshove.kluent", name = "kluent", version.ref = "kluent" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
+kotlin-metadata-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
