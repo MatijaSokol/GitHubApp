@@ -31,7 +31,7 @@ splash = "1.2.0"
 sqldelight = "2.1.0"
 ktor = "3.4.0"
 
-hilt = "2.58" # newer versions require AGP 9
+hilt = "2.59.2" # newer versions require AGP 9
 javaxInject = "1"
 
 arrow = "2.2.1.1"
