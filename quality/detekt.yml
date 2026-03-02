@@ -163,7 +163,7 @@ TwitterCompose:
   ViewModelInjection:
     active: false
 
-KoinRuleSet:
+koin-rules:
   active: true
 
 empty-blocks:
