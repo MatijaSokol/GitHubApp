@@ -36,6 +36,7 @@ class QualityConventionPlugin : Plugin<Project> {
     dependencies {
       detektPlugins(libs.detekt.formatting)
       detektPlugins(libs.detekt.formatting.compose)
+      detektPlugins(libs.detekt.rules.koin)
     }
   }
 

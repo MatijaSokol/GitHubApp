@@ -163,6 +163,9 @@ TwitterCompose:
   ViewModelInjection:
     active: false
 
+KoinRuleSet:
+  active: true
+
 empty-blocks:
   active: true
   EmptyCatchBlock:

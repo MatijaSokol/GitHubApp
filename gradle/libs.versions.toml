@@ -38,6 +38,7 @@ arrow = "2.2.1.1"
 
 detekt = "1.23.8"
 detektCompose ="0.0.26"
+detektKoin = "1.0.0"
 ktlint = "1.8.0"
 
 [libraries]
@@ -109,6 +110,7 @@ sqldelight-gradlePlugin = { group = "app.cash.sqldelight", name = "gradle-plugin
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detekt-formatting-compose = { group = "com.twitter.compose.rules", name = "detekt", version.ref = "detektCompose" }
+detekt-rules-koin = { group = "dev.androidbroadcast.rules.koin", name = "detekt-koin4-rules", version.ref = "detektKoin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
