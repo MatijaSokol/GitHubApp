@@ -10,13 +10,13 @@ android {
 
     sourceSets.getByName("free") {
         java {
-            srcDirs("src/free/java")
+            directories.add("src/free/java")
         }
     }
 
     sourceSets.getByName("paid") {
         java {
-            srcDirs("src/paid/java")
+            directories.add("src/paid/java")
         }
     }
 
