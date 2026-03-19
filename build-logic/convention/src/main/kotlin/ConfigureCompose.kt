@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
@@ -7,17 +6,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 /**
  * Configure Compose-specific options
  */
-internal fun Project.configureAndroidCompose(
-  commonExtension: CommonExtension<*, *, *, *, *, *>,
-) {
-  commonExtension.apply {
-    dependencies {
-      val bom = libs.compose.bom
-      implementation(platform(bom))
-      implementation(libs.bundles.compose)
-      debugImplementation(libs.bundles.compose.debug)
-      androidTestImplementation(platform(bom))
-    }
+internal fun Project.configureAndroidCompose() {
+  dependencies {
+    val bom = libs.compose.bom
+    implementation(platform(bom))
+    implementation(libs.bundles.compose)
+    debugImplementation(libs.bundles.compose.debug)
+    androidTestImplementation(platform(bom))
   }
 
   tasks.withType<KotlinCompile>().configureEach {
