@@ -9,8 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.test.core.app.ApplicationProvider
-import com.matijasokol.coreui.components.LocalAnimatedContentScope
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
 import com.matijasokol.coreui.dictionary.DictionaryImpl
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
@@ -40,7 +40,7 @@ class RepoDetailTest {
             SharedTransitionLayout {
                 CompositionLocalProvider(
                     LocalSharedTransitionScope provides this,
-                    LocalAnimatedContentScope provides this@AnimatedContent,
+                    LocalNavAnimatedContentScope provides this@AnimatedContent,
                 ) {
                     content()
                 }

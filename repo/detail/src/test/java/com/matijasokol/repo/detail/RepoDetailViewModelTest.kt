@@ -1,37 +1,21 @@
 package com.matijasokol.repo.detail
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.toRoute
 import app.cash.turbine.test
 import com.matijasokol.coreui.navigation.Destination
 import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
 import com.matijasokol.repo.domain.usecase.GetRepoDetailsUseCase
 import com.matijasokol.test.FakeDictionary
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should be instance of`
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(AndroidCoroutinesExtension::class)
 class RepoDetailViewModelTest {
 
-    private val savedStateHandle = mockk<SavedStateHandle>()
+    private val destination = Destination.RepoDetail(repoFullName = "JetBrains/kotlin", authorImageUrl = "")
     private val uiMapper = RepoDetailsUiMapper(FakeDictionary())
-
-    @BeforeEach
-    fun before() {
-        mockkStatic("androidx.navigation.SavedStateHandleKt")
-        every {
-            savedStateHandle.toRoute<Destination.RepoDetail>()
-        } returns Destination.RepoDetail(repoFullName = "JetBrains/kotlin", authorImageUrl = "")
-    }
 
     @Test
     fun `should RETURN SUCCESS STATE when request was successful`() = runTest {
@@ -42,7 +26,7 @@ class RepoDetailViewModelTest {
         )
 
         val sut = RepoDetailViewModel(
-            savedStateHandle = savedStateHandle,
+            destination = destination,
             getRepoDetails = getRepoDetailsUseCase,
             uiMapper = uiMapper,
             dictionary = FakeDictionary(),
@@ -63,7 +47,7 @@ class RepoDetailViewModelTest {
         )
 
         val sut = RepoDetailViewModel(
-            savedStateHandle = savedStateHandle,
+            destination = destination,
             getRepoDetails = getRepoDetailsUseCase,
             uiMapper = uiMapper,
             dictionary = FakeDictionary(),
@@ -73,10 +57,5 @@ class RepoDetailViewModelTest {
             awaitItem() `should be instance of` RepoDetailState.Loading::class
             awaitItem() `should be instance of` RepoDetailState.Error::class
         }
-    }
-
-    @AfterEach
-    fun after() {
-        unmockkStatic("androidx.navigation.SavedStateHandleKt")
     }
 }

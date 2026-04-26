@@ -17,6 +17,9 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
 
+    api(libs.navigation3.runtime)
+    api(libs.navigation3.ui)
+
     implementation(libs.kotlinx.serialization)
     implementation(libs.lifecycle.viewmodel)
 }

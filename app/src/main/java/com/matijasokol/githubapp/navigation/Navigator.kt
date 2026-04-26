@@ -8,6 +8,4 @@ interface Navigator {
     val navigationEvent: Flow<NavigationEvent>
 
     suspend fun emitDestination(event: NavigationEvent): Either<NavigationError, Unit>
-
-    fun tryEmitDestination(event: NavigationEvent): Either<NavigationError, Unit>
 }
