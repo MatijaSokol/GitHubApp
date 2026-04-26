@@ -20,7 +20,6 @@ dependencies {
     implementation(projects.coreUi)
     implementation(projects.repo.domain)
 
-    implementation(libs.compose.navigation)
     implementation(libs.activity.compose)
 
     implementation(libs.kotlinx.collections)

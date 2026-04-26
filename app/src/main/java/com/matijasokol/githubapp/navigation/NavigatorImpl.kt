@@ -17,10 +17,6 @@ class NavigatorImpl @Inject constructor(private val canShowDetailsUseCase: CanSh
     override suspend fun emitDestination(event: NavigationEvent): Either<NavigationError, Unit> =
         isEligibleDestination(event).onRight { _navigationEvent.send(event) }
 
-    override fun tryEmitDestination(event: NavigationEvent): Either<NavigationError, Unit> =
-        isEligibleDestination(event).onRight { _navigationEvent.trySend(event) }
-
-    @Suppress("DuplicateCaseInWhenExpression")
     private fun isEligibleDestination(event: NavigationEvent): Either<NavigationError, Unit> =
         when (event) {
             is Destination<*> if (event.route is RepoDetail && !canShowDetailsUseCase()) ->

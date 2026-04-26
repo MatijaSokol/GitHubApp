@@ -4,30 +4,28 @@ package com.matijasokol.githubapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
-import androidx.navigation.NavHostController
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import com.matijasokol.coreui.events.ObserveAsEvent
 
 val LocalNavigator = compositionLocalOf<Navigator> { error("Navigator not provided") }
 val LocalNavigatorErrorMapper = compositionLocalOf<NavigationErrorMapper> { error("NavigatorErrorMapper not provided") }
 
 @Composable
-fun NavigationEffect(navController: NavHostController) {
+fun NavigationEffect(backStack: NavBackStack<NavKey>) {
     val navigator = LocalNavigator.current
 
-    ObserveAsEvent(navigator.navigationEvent, navController) {
-        executeNavigationRequests(navController, it)
+    ObserveAsEvent(navigator.navigationEvent, backStack) {
+        executeNavigationRequests(backStack, it)
     }
 }
 
 private fun executeNavigationRequests(
-    navController: NavHostController,
+    backStack: NavBackStack<NavKey>,
     navigationEvent: NavigationEvent,
 ) {
     when (navigationEvent) {
-        is NavigationEvent.Destination<*> -> navController.navigate(
-            route = navigationEvent.route as Any,
-            builder = navigationEvent.builder,
-        )
-        NavigationEvent.NavigateUp -> navController.navigateUp()
+        is NavigationEvent.Destination<*> -> backStack.add(navigationEvent.route)
+        NavigationEvent.GoBack -> backStack.removeLastOrNull()
     }
 }

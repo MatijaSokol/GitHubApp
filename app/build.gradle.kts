@@ -46,7 +46,7 @@ dependencies {
 
     implementation(libs.activity.compose)
     implementation(libs.compose.hilt.navigation)
-    implementation(libs.compose.navigation)
+    implementation(libs.lifecycle.viewmodel.navigation3)
 
     implementation(libs.splash)
 
