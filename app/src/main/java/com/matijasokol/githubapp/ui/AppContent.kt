@@ -2,12 +2,14 @@ package com.matijasokol.githubapp.ui
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -16,18 +18,18 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.matijasokol.coreui.components.LocalAnimatedContentScope
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
 import com.matijasokol.coreui.events.ObserveAsEvent
 import com.matijasokol.coreui.navigation.Destination
@@ -44,13 +46,13 @@ import com.matijasokol.repo.list.RepoList
 import com.matijasokol.repo.list.RepoListAction
 import com.matijasokol.repo.list.RepoListAction.NavigateToDetails
 import com.matijasokol.repo.list.RepoListViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun AppContent(
     navigator: Navigator,
     navigatorErrorMapper: NavigationErrorMapper,
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
 ) {
     Scaffold(
         modifier = modifier,
@@ -62,7 +64,7 @@ fun AppContent(
                 LocalNavigator provides navigator,
                 LocalNavigatorErrorMapper provides navigatorErrorMapper,
             ) {
-                NavigationContent(navController = navController)
+                NavigationContent()
             }
         }
     }
@@ -70,109 +72,94 @@ fun AppContent(
 
 @Composable
 private fun NavigationContent(
-    navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-    NavigationEffect(navController = navController)
+    val backStack = rememberNavBackStack(Destination.RepoList)
+    val scope = rememberCoroutineScope()
+    val navigator = LocalNavigator.current
 
-    NavHost(
+    NavigationEffect(backStack = backStack)
+
+    NavDisplay(
         modifier = modifier,
-        navController = navController,
-        startDestination = Destination.RepoList,
-    ) {
-        repoList()
-        repoDetail()
-    }
+        backStack = backStack,
+        onBack = {
+            scope.launch {
+                navigator.emitDestination(NavigationEvent.GoBack)
+            }
+        },
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
+        transitionSpec = { slideTransition(enterFromLeft = false) },
+        popTransitionSpec = { slideTransition(enterFromLeft = true) },
+        predictivePopTransitionSpec = { slideTransition(enterFromLeft = true) },
+        entryProvider = entryProvider {
+            entry<Destination.RepoList> {
+                RepoListEntry()
+            }
+            entry<Destination.RepoDetail> { key ->
+                RepoDetailEntry(key)
+            }
+        },
+    )
 }
 
-private fun NavGraphBuilder.repoList() {
-    composable<Destination.RepoList>(
-        popEnterTransition = {
-            slideInHorizontally(
-                animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION),
-                initialOffsetX = { fullWidth -> -fullWidth },
-            ) + fadeIn(animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION))
-        },
-        exitTransition = {
-            slideOutHorizontally(
-                animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION),
-                targetOffsetX = { fullWidth -> -fullWidth },
-            ) + fadeOut(animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION))
-        },
-    ) {
-        val viewModel: RepoListViewModel = hiltViewModel()
-        val state by viewModel.state.collectAsStateWithLifecycle()
+@Composable
+private fun RepoListEntry() {
+    val viewModel: RepoListViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-        val context = LocalContext.current
-        val uriHandler = LocalUriHandler.current
-        val navigator = LocalNavigator.current
-        val navigatorErrorMapper = LocalNavigatorErrorMapper.current
+    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+    val navigator = LocalNavigator.current
+    val navigatorErrorMapper = LocalNavigatorErrorMapper.current
 
-        val lazyStaggeredGridState = rememberLazyStaggeredGridState()
+    val lazyStaggeredGridState = rememberLazyStaggeredGridState()
 
-        ObserveAsEvent(viewModel.actions) { action ->
-            when (action) {
-                is NavigateToDetails -> showDetails(
-                    navigator,
-                    navigatorErrorMapper,
-                    action.authorImageUrl,
-                    action.repoFullName,
-                    context,
-                )
-                is RepoListAction.OpenProfile -> openProfile(action.profileUrl, uriHandler, context)
-                RepoListAction.ScrollToTop -> lazyStaggeredGridState.animateScrollToItem(0)
-                is RepoListAction.ShowMessage -> Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        CompositionLocalProvider(
-            LocalAnimatedContentScope provides this,
-        ) {
-            RepoList(
-                state = state,
-                lazyStaggeredGridState = lazyStaggeredGridState,
-                onEvent = viewModel::onEvent,
+    ObserveAsEvent(viewModel.actions) { action ->
+        when (action) {
+            is NavigateToDetails -> showDetails(
+                navigator,
+                navigatorErrorMapper,
+                action.authorImageUrl,
+                action.repoFullName,
+                context,
             )
+            is RepoListAction.OpenProfile -> openProfile(action.profileUrl, uriHandler, context)
+            RepoListAction.ScrollToTop -> lazyStaggeredGridState.animateScrollToItem(0)
+            is RepoListAction.ShowMessage -> Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
         }
     }
+
+    RepoList(
+        state = state,
+        lazyStaggeredGridState = lazyStaggeredGridState,
+        onEvent = viewModel::onEvent,
+    )
 }
 
-private fun NavGraphBuilder.repoDetail() {
-    composable<Destination.RepoDetail>(
-        enterTransition = {
-            slideInHorizontally(
-                animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION),
-                initialOffsetX = { fullWidth -> fullWidth },
-            ) + fadeIn(animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION))
-        },
-        popExitTransition = {
-            slideOutHorizontally(
-                animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION),
-                targetOffsetX = { fullWidth -> fullWidth },
-            ) + fadeOut(animationSpec = tween(durationMillis = NAVIGATION_ANIMATION_DURATION))
-        },
-    ) {
-        val viewModel: RepoDetailViewModel = hiltViewModel()
-        val state by viewModel.state.collectAsStateWithLifecycle()
+@Composable
+private fun RepoDetailEntry(key: Destination.RepoDetail) {
+    val viewModel = hiltViewModel<RepoDetailViewModel, RepoDetailViewModel.Factory>(
+        creationCallback = { factory -> factory.create(key) },
+    )
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-        val context = LocalContext.current
+    val context = LocalContext.current
 
-        ObserveAsEvent(viewModel.actions) { action ->
-            when (action) {
-                is RepoDetailAction.ShowMessage ->
-                    Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        CompositionLocalProvider(
-            LocalAnimatedContentScope provides this,
-        ) {
-            RepoDetail(
-                state = state,
-                onEvent = viewModel::onEvent,
-            )
+    ObserveAsEvent(viewModel.actions) { action ->
+        when (action) {
+            is RepoDetailAction.ShowMessage ->
+                Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
         }
     }
+
+    RepoDetail(
+        state = state,
+        onEvent = viewModel::onEvent,
+    )
 }
 
 private suspend fun showDetails(
@@ -201,4 +188,22 @@ fun openProfile(profileUrl: String, uriHandler: UriHandler, context: Context) {
     }
 }
 
-private const val NAVIGATION_ANIMATION_DURATION = 300
+private fun slideTransition(
+    enterFromLeft: Boolean,
+    durationMillis: Int = NAVIGATION_ANIMATION_DURATION_MILLIS,
+): ContentTransform {
+    val direction = if (enterFromLeft) -1 else 1
+    return (
+        slideInHorizontally(
+            animationSpec = tween(durationMillis = durationMillis),
+            initialOffsetX = { fullWidth -> direction * fullWidth },
+        ) + fadeIn(animationSpec = tween(durationMillis = durationMillis))
+    ) togetherWith (
+        slideOutHorizontally(
+            animationSpec = tween(durationMillis = durationMillis),
+            targetOffsetX = { fullWidth -> -direction * fullWidth },
+        ) + fadeOut(animationSpec = tween(durationMillis = durationMillis))
+    )
+}
+
+private const val NAVIGATION_ANIMATION_DURATION_MILLIS = 300

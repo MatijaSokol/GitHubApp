@@ -2,13 +2,12 @@
 
 package com.matijasokol.coreui.components
 
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 
-val LocalAnimatedContentScope = compositionLocalOf<AnimatedContentScope> { error("AnimatedContentScope not provided") }
 val LocalSharedTransitionScope =
     compositionLocalOf<SharedTransitionScope> { error("SharedTransitionScope not provided") }
 
@@ -17,7 +16,7 @@ fun Modifier.withSharedElement(
     key: Any,
 ): Modifier {
     val sharedTransitionScope = LocalSharedTransitionScope.current
-    val animatedContentScope = LocalAnimatedContentScope.current
+    val animatedContentScope = LocalNavAnimatedContentScope.current
 
     return with(sharedTransitionScope) {
         sharedElement(
@@ -32,7 +31,7 @@ fun Modifier.withSharedBounds(
     key: Any,
 ): Modifier {
     val sharedTransitionScope = LocalSharedTransitionScope.current
-    val animatedContentScope = LocalAnimatedContentScope.current
+    val animatedContentScope = LocalNavAnimatedContentScope.current
 
     return with(sharedTransitionScope) {
         sharedBounds(
