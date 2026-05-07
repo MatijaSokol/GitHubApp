@@ -1,45 +1,242 @@
 # GitHub App
 
-# Tech stack & Open-source libraries
- - Minimum SDK level 24
- - Kotlin based, [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) + [Flow](https://kotlinlang.org/docs/flow.html) for asynchronous
- - [Ktor](https://ktor.io/docs/welcome.html): Construct the REST APIs + [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)
- - [SQLDelight](https://sqldelight.github.io/sqldelight/2.0.2/android_sqlite/): Typesafe Kotlin APIs for SQL database
- - [Coil](https://github.com/coil-kt/coil): An image loading library backed by Kotlin Coroutines
- - [Arrow](https://arrow-kt.io/) for error handling
- - [Gradle convention plugins](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
- - Static analysis ([Ktlint](https://github.com/pinterest/ktlint) and [Detekt](https://github.com/detekt/detekt))
- - Tests: Unit + UI
- - CI/CD: [GitHub Actions](https://github.com/MatijaSokol/GitHubApp/actions)
- - [Versioning](release/version.properties)
-- Jetpack
-  - Lifecycle: Observe Android lifecycles and handle UI states upon the lifecycle changes
-  - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel): Manages UI-related stuff, data holder and lifecycle aware. Allows data to survive configuration changes such as screen rotations
-  - [Compose](https://developer.android.com/compose): Toolkit for building native UI
-  - [Compose Navigation](https://developer.android.com/develop/ui/compose/navigation)
-  - [Shared Element Transition](https://developer.android.com/develop/ui/compose/animation/shared-elements)
-  - [Hilt](https://dagger.dev/hilt/) for dependency injection
-  - [Splash Screen](https://developer.android.com/develop/ui/views/launch/splash-screen)
+GitHub App is a Kotlin Android application for searching and browsing GitHub repositories. It is built with
+Jetpack Compose, Navigation 3, Hilt, Ktor, SQLDelight, and a clean multi-module architecture.
 
-## How to run
-- Find generated .apk file through [workflow](https://github.com/MatijaSokol/GitHubApp/actions/workflows/distribute_release_paid_prod_apk_artifact.yml) or trigger it to create new .apk
+Users can search repositories, paginate through results, sort by stars,
+forks, or last update date, open author profiles in the browser, and view repository details in the paid variant.
+
+## Features
+
+- Repository search powered by the GitHub REST API.
+- Infinite pagination with refresh and append error states.
+- Sort options for stars, forks, and update date.
+- Repository detail screen with author, topic, stats, language, description, and external repository/profile links.
+- Free and paid app modes. The free variant blocks the detail screen; the paid variant enables it.
+- Light and dark theme.
+- Shared element transitions between list and detail surfaces.
+- Predictive back gesture support.
+- SQLDelight database layer and datasource test fakes. Offline/local persistence is still a work in progress.
+- Unit, Android, and Compose UI test coverage around domain logic, navigation, list, and detail flows.
 
 ## Screenshots
+
 <table width="100%">
   <tr>
     <td width="50%" align="center"><b>List screen (light)</b></td>
     <td width="50%" align="center"><b>Details screen (light)</b></td>
   </tr>
   <tr>
-    <td width="50%" align="center"><img src="previews/screenshot_list_light.jpg"/>
-    <td width="50%" align="center"><img src="previews/screenshot_details_light.jpg"/>
+    <td width="50%" align="center">
+      <img src="previews/screenshot_list_light.jpg" alt="Repository list screen in light theme"/>
+    </td>
+    <td width="50%" align="center">
+      <img src="previews/screenshot_details_light.jpg" alt="Repository detail screen in light theme"/>
+    </td>
   </tr>
   <tr>
     <td width="50%" align="center"><b>List screen (dark)</b></td>
     <td width="50%" align="center"><b>Details screen (dark)</b></td>
   </tr>
   <tr>
-    <td width="50%" align="center"><img src="previews/screenshot_list_dark.jpg"/>
-    <td width="50%" align="center"><img src="previews/screenshot_details_dark.jpg"/>
+    <td width="50%" align="center">
+      <img src="previews/screenshot_list_dark.jpg" alt="Repository list screen in dark theme"/>
+    </td>
+    <td width="50%" align="center">
+      <img src="previews/screenshot_details_dark.jpg" alt="Repository detail screen in dark theme"/>
+    </td>
   </tr>
 </table>
+
+## Architecture
+
+The project uses a multi-module setup with a small application module and feature/domain/data modules under `repo`.
+
+```text
+app/                     Application entry point, Hilt setup, mode-specific sources, navigation
+core/                    Shared Kotlin utilities, dictionary contract, errors, app mode
+core-ui/                 Shared Compose components, navigation destination types, UI helpers
+repo/
+  domain/                Repository models, contracts, paginator contract, use cases
+  datasource/            Ktor GitHub API client, network mapping, SQLDelight cache
+  datasource-test/       Fakes and JSON fixtures for tests
+  list/                  Repository list screen, ViewModel, UI tests
+  detail/                Repository detail screen, ViewModel, UI tests
+test/                    Shared test fixtures
+build-logic/             Gradle convention plugins, quality setup, versioning tasks
+```
+
+Domain modules stay free of Android dependencies. Datasource modules implement domain contracts. UI modules depend
+on domain and shared UI helpers. Application wiring happens in `app`.
+
+## Presentation Pattern
+
+Feature screens follow an MVI-style structure:
+
+- `*State` holds stable UI state, using immutable collections where lists are exposed to Compose.
+- `*Event` models user input sent to a ViewModel through `onEvent`.
+- `*Action` models one-shot effects such as navigation, browser launches, scroll requests, or messages.
+- `*ViewModel` exposes state through `StateFlow` and actions through a `Channel.receiveAsFlow()`.
+- `*UiMapper` maps domain/loading/error data into display-ready state and strings.
+
+## Tech Stack
+
+| Category | Technology                                                   |
+|---|--------------------------------------------------------------|
+| Language | Kotlin                                                       |
+| Background work | Coroutines, Flow                                             |
+| UI | Jetpack Compose, Material, Material 3                        |
+| Navigation | Navigation 3, Shared element transitions                     |
+| Networking | Ktor, Kotlinx Serialization                                  |
+| Local storage | SQLDelight (offline/local persistence is work in progress)   |
+| Images | Coil                                                         |
+| Dependency injection | Hilt                                                         |
+| Error handling | Arrow                                                        |
+| Testing | JUnit, MockK, Turbine, Kluent, Compose UI tests              |
+| Quality | Ktlint, Detekt, Compose Detekt rules                         |
+| Build | AGP, Gradle, convention plugins, version catalog, Kotlin DSL |
+
+## Requirements
+
+- Android Studio with JDK 21 configured.
+- Minimum supported Android version: API 24.
+- Target SDK: API 36.
+
+The Gradle wrapper is checked in, so local builds should use `./gradlew`.
+
+## Build Variants
+
+The application has two flavor dimensions:
+
+| Dimension | Flavors |
+|---|---|
+| Environment | `dev`, `prod` |
+| Mode | `free`, `paid` |
+
+Gradle combines dimensions in environment-then-mode order, producing variants such as:
+
+- `devFreeDebug`
+- `prodFreeRelease`
+- `devPaidDebug`
+- `prodPaidRelease`
+
+Mode behavior:
+
+- `free` uses `com.matijasokol.githubapp.free`, shows the app name `GitHub App Free`, and blocks repository details.
+- `paid` uses `com.matijasokol.githubapp`, shows the app name `GitHub App`, and enables repository details.
+
+## Build and Run
+
+Clone the repository and open it in Android Studio:
+
+```bash
+git clone https://github.com/MatijaSokol/GitHubApp.git
+cd GitHubApp
+```
+
+Then sync Gradle and run one of the debug variants, for example `devPaidDebug` or `prodFreeDebug`.
+
+Common Gradle commands:
+
+```bash
+# Build all debug variants
+./gradlew assembleDebug
+
+# Build release variants
+./gradlew assembleRelease
+
+# Build the same release variants used by CI
+./gradlew assembleProdFreeRelease
+./gradlew assembleProdPaidRelease
+
+# Run unit tests
+./gradlew test
+
+# Run app and feature unit tests explicitly
+./gradlew app:test repo:domain:test repo:list:test repo:detail:test
+
+# Static analysis and formatting checks
+./gradlew ktlintCheck detekt
+
+# Format Kotlin sources
+./gradlew ktlintFormat
+```
+
+Release builds use the signing config in `release/` and read these environment variables:
+
+```bash
+export GITHUBAPP_STORE_PASSWORD=...
+export GITHUBAPP_KEY_PASSWORD=...
+```
+
+## Data Notes
+
+Network calls target `https://api.github.com` through Ktor. The current client does not attach a GitHub token,
+so local usage is subject to GitHub's unauthenticated API rate limits. If list loading starts returning errors
+after repeated searches, wait for the limit to reset or add authenticated API support before heavy testing.
+
+The SQLDelight local database layer is present, but offline/local persistence behavior is still being built out.
+
+## Versioning
+
+App version values live in `release/version.properties` and are read by the custom `githubapp.versioning`
+convention plugin.
+
+Available versioning tasks include:
+
+```bash
+./gradlew printVersionName
+./gradlew incrementMajor
+./gradlew incrementMinor
+./gradlew incrementPatch
+./gradlew incrementBuild
+```
+
+## GitHub Actions
+
+The repository uses GitHub Actions for pull request checks, release APK artifact generation, and version bump
+automation.
+
+Important workflows:
+
+- `pr_checks.yml`: runs on pushes and pull requests targeting `master`, `develop`, or `release*`. It runs
+  ktlint, detekt, release builds, and unit tests.
+- `distribute_release_free_prod_apk_artifact.yml`: manual workflow that builds `prodFreeRelease`, renames the APK
+  with the current version, and uploads it as an artifact.
+- `distribute_release_paid_prod_apk_artifact.yml`: manual workflow that builds `prodPaidRelease`, renames the APK
+  with the current version, and uploads it as an artifact.
+- `increment_version.yml`: manual workflow that runs the selected version increment task and opens a pull request
+  into `develop`.
+
+The PR check workflow has four jobs:
+
+- `static_analysis` runs `./gradlew ktlintCheck detekt --stacktrace`.
+- `build_free` runs `./gradlew assembleProdFreeRelease --stacktrace`.
+- `build_paid` runs `./gradlew assembleProdPaidRelease --stacktrace`.
+- `unit_tests` runs unit tests for `app`, `repo:domain`, `repo:detail`, and `repo:list`.
+
+Release artifact workflows require the signing secrets used by Gradle:
+
+- `GITHUBAPP_STORE_PASSWORD`
+- `GITHUBAPP_KEY_PASSWORD`
+
+Dependabot is also configured to check Gradle and GitHub Actions dependencies monthly, with a maximum of five
+open pull requests per ecosystem.
+
+## Project Conventions
+
+- Build configuration belongs in `build-logic/convention/`.
+- Dependency versions belong in `gradle/libs.versions.toml`.
+- Inter-module dependencies should use `projects.*` type-safe accessors.
+- UI strings should go through resources and the `Dictionary` abstraction where they are needed in ViewModels or
+  mappers.
+- Domain modules should remain pure Kotlin/JVM and free of Android, datasource, and UI dependencies.
+
+## Download
+
+Release APKs are published from GitHub Actions artifacts and may also be available on the
+[latest GitHub release](https://github.com/MatijaSokol/GitHubApp/releases/latest).
+
+## License
+
+This project is for educational and demo purposes.
