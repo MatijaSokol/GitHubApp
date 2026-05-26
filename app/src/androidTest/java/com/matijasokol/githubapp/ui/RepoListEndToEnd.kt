@@ -1,6 +1,8 @@
 package com.matijasokol.githubapp.ui
 
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -12,6 +14,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
+import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
 import com.matijasokol.core.dictionary.Dictionary
 import com.matijasokol.coreui.dictionary.DictionaryImpl
@@ -102,11 +105,16 @@ class RepoListEndToEnd {
     fun before() {
         hiltRule.inject()
 
+        setAppContent()
+    }
+
+    private fun setAppContent(modifier: Modifier = Modifier) {
         composeTestRule.activity.setContent {
             GitHubAppTheme {
                 AppContent(
                     navigator = navigator,
                     navigatorErrorMapper = navigationErrorMapper,
+                    modifier = modifier,
                 )
             }
         }
@@ -165,5 +173,19 @@ class RepoListEndToEnd {
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_SCREEN).assertExists()
 
         composeTestRule.onNodeWithText(firstItemText, true).assertExists()
+    }
+
+    @Test
+    fun testAdaptiveNavigationFromListToDetails() {
+        setAppContent(modifier = Modifier.requiredWidth(900.dp))
+
+        composeTestRule.waitUntil(5000) {
+            composeTestRule.onAllNodesWithTag(TAG_REPO_LIST_ITEM).fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeTestRule.onAllNodesWithTag(TAG_REPO_LIST_ITEM).onFirst().performClick()
+
+        composeTestRule.onAllNodesWithTag(TAG_REPO_LIST_ITEM).onFirst().assertExists()
+        composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_SCREEN).assertExists()
     }
 }

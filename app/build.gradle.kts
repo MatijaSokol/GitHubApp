@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.coil.network)
 
     implementation(libs.activity.compose)
+    implementation(libs.compose.material3.adaptive.navigation3)
     implementation(libs.compose.hilt.navigation)
     implementation(libs.lifecycle.viewmodel.navigation3)
 

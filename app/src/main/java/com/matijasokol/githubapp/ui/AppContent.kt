@@ -3,6 +3,7 @@ package com.matijasokol.githubapp.ui
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -15,6 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
+import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior.Companion
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -26,6 +32,7 @@ import androidx.compose.ui.platform.UriHandler
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
@@ -64,14 +71,16 @@ fun AppContent(
                 LocalNavigator provides navigator,
                 LocalNavigatorErrorMapper provides navigatorErrorMapper,
             ) {
-                NavigationContent()
+                NavigationContent(sharedTransitionScope = this)
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun NavigationContent(
+    sharedTransitionScope: SharedTransitionScope,
     modifier: Modifier = Modifier,
 ) {
     val backStack = rememberNavBackStack(Destination.RepoList)
@@ -79,6 +88,9 @@ private fun NavigationContent(
     val navigator = LocalNavigator.current
 
     NavigationEffect(backStack = backStack)
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(
+        backNavigationBehavior = BackNavigationBehavior.PopUntilContentChange,
+    )
 
     NavDisplay(
         modifier = modifier,
@@ -92,14 +104,20 @@ private fun NavigationContent(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
         ),
+        sceneStrategies = listOf(listDetailStrategy),
+        sharedTransitionScope = sharedTransitionScope,
         transitionSpec = { slideTransition(enterFromLeft = false) },
         popTransitionSpec = { slideTransition(enterFromLeft = true) },
         predictivePopTransitionSpec = { slideTransition(enterFromLeft = true) },
         entryProvider = entryProvider {
-            entry<Destination.RepoList> {
+            entry<Destination.RepoList>(
+                metadata = ListDetailSceneStrategy.listPane(),
+            ) {
                 RepoListEntry()
             }
-            entry<Destination.RepoDetail> { key ->
+            entry<Destination.RepoDetail>(
+                metadata = ListDetailSceneStrategy.detailPane(),
+            ) { key ->
                 RepoDetailEntry(key)
             }
         },

@@ -1,6 +1,7 @@
 package com.matijasokol.repo.list
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.matijasokol.repo.domain.Paginator.LoadState.Append
 import com.matijasokol.repo.domain.Paginator.LoadState.AppendError
@@ -82,13 +84,15 @@ fun RepoList(
             )
         },
     ) { innerPadding ->
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
+            val columns = maxWidth.repoListColumnCount()
+
             when (state.loadState) {
-                Refresh -> LoadingContent()
+                Refresh -> LoadingContent(columns = columns)
                 RefreshError -> RetryContent(
                     modifier = Modifier.align(Alignment.Center),
                     errorText = state.errorText,
@@ -97,6 +101,7 @@ fun RepoList(
                 )
                 Loaded, Append, AppendError -> ListScreen(
                     state = state,
+                    columns = columns,
                     lazyStaggeredGridState = lazyStaggeredGridState,
                     onItemClick = { onEvent(RepoListEvent.OnItemClick(it.authorImageUrl, it.fullName)) },
                     onImageClick = { profileUrl -> onEvent(RepoListEvent.OnImageClick(profileUrl)) },
@@ -110,13 +115,14 @@ fun RepoList(
 @Composable
 private fun ListScreen(
     state: RepoListState,
+    columns: Int,
     lazyStaggeredGridState: LazyStaggeredGridState,
     onItemClick: (RepoListItem) -> Unit,
     onImageClick: (String) -> Unit,
     onRetryClick: () -> Unit,
 ) {
     LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2),
+        columns = StaggeredGridCells.Fixed(columns),
         state = lazyStaggeredGridState,
     ) {
         items(
@@ -172,17 +178,25 @@ private fun RetryContent(
 
 @Composable
 private fun LoadingContent(
+    columns: Int,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
         modifier = modifier.testTag(TAG_LOADING_INDICATOR),
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(columns),
         userScrollEnabled = false,
     ) {
         items(count = 20) {
             ShimmerRepoListItem()
         }
     }
+}
+
+private fun Dp.repoListColumnCount(): Int = when {
+    this < 600.dp -> 2
+    this < 840.dp -> 3
+    this < 1200.dp -> 4
+    else -> 5
 }
 
 private const val PREFETCH_DISTANCE = 6
