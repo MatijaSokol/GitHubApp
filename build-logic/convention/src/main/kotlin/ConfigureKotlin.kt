@@ -97,8 +97,6 @@ private fun Project.configureKotlin() {
       freeCompilerArgs.addAll(listOf(
         "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
         "-opt-in=kotlinx.coroutines.FlowPreview",
-        "-Xcontext-parameters",
-        "-Xexplicit-backing-fields",
         "-Xreturn-value-checker=full",
       ))
     }
