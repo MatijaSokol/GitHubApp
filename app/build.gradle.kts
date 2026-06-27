@@ -57,6 +57,7 @@ dependencies {
     ksp(libs.kotlin.metadata.jvm)
 
     implementation(libs.sqldelight.driver.android)
+    implementation(libs.sqldelight.async.extensions)
 
     implementation(platform(libs.ktor.bom))
     implementation(libs.bundles.ktor)
