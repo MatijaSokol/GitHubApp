@@ -16,7 +16,7 @@ appcompat = "1.7.1"
 lifecycleViewModel = "2.10.0" # newer versions require targetSdk 37
 
 testRunner = "1.7.0"
-junitBom = "6.1.0"
+junitBom = "6.1.1"
 mockk = "1.14.11"
 kluent = "1.73"
 turbine = "1.2.1"
