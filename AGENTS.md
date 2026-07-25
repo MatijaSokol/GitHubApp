@@ -7,8 +7,8 @@ This file provides instructions and context for AI coding agents working on the 
 GitHubApp is an Android application for browsing GitHub repositories, built with Kotlin and Jetpack Compose following clean architecture and multi-module design principles.
 
 - **Package name:** `com.matijasokol.githubapp`
-- **Min SDK:** 24 | **Target/Compile SDK:** 36
-- **Kotlin:** 2.3 | **AGP:** 9.2
+- **Min SDK:** 24 | **Target/Compile SDK:** 37
+- **Kotlin:** 2.4.10 | **AGP:** 9.3.1
 - **Product flavors:** `free`, `paid`
 
 ## Architecture
@@ -41,7 +41,7 @@ app/                     → Application module (entry point, DI setup, navigati
 
 | Layer           | Technology |
 |-----------------|---|
-| Language        | Kotlin 2.3 with Coroutines + Flow |
+| Language        | Kotlin 2.4.10 with Coroutines + Flow |
 | UI              | Jetpack Compose with Material |
 | Navigation      | Navigation 3 with Shared Element Transitions |
 | Networking      | Ktor + Kotlinx Serialization |

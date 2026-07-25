@@ -100,7 +100,8 @@ Feature screens follow an MVI-style structure:
 
 - Android Studio with JDK 21 configured.
 - Minimum supported Android version: API 24.
-- Target SDK: API 36.
+- Compile SDK: API 37.
+- Target SDK: API 37.
 
 The Gradle wrapper is checked in, so local builds should use `./gradlew`.
 
