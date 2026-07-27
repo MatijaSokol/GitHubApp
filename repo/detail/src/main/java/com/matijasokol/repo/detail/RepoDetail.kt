@@ -12,11 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.Chip
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -101,18 +101,17 @@ fun RepoDetail(
                                 items = repo.topics,
                                 key = { it },
                             ) {
-                                Chip(
+                                AssistChip(
                                     onClick = {},
                                     modifier = Modifier.padding(horizontal = 2.dp),
                                     enabled = false,
-                                ) {
-                                    Text(text = it)
-                                }
+                                    label = { Text(text = it) },
+                                )
                             }
                         }
 
                         Spacer(modifier = Modifier.height(2.dp))
-                        Divider()
+                        HorizontalDivider()
                         Spacer(modifier = Modifier.height(2.dp))
 
                         state.repoUi.followersCountText?.let { Text(text = it) }

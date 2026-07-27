@@ -3,27 +3,31 @@ package com.matijasokol.repo.list.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.minimumInteractiveComponentSize
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.matijasokol.repo.list.R
 
 @Suppress("ComposableParamOrder")
 @Composable
@@ -37,16 +41,18 @@ fun SearchBar(
 ) {
     Surface(
         modifier = modifier,
-        elevation = elevation,
+        color = MaterialTheme.colorScheme.surfaceColorAtElevation(elevation),
+        tonalElevation = elevation,
+        shadowElevation = elevation,
         shape = RoundedCornerShape(32.dp),
     ) {
         BasicTextField(
             value = text,
             onValueChange = onTextChanged,
             textStyle = LocalTextStyle.current.copy(
-                color = MaterialTheme.colors.onSurface,
+                color = MaterialTheme.colorScheme.onSurface,
             ),
-            cursorBrush = SolidColor(value = MaterialTheme.colors.onSurface),
+            cursorBrush = SolidColor(value = MaterialTheme.colorScheme.onSurface),
             decorationBox = { innerTextField ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -57,8 +63,8 @@ fun SearchBar(
                         modifier = Modifier.weight(1f),
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "Search",
+                            imageVector = ImageVector.vectorResource(id = R.drawable.search),
+                            contentDescription = stringResource(R.string.repo_list_search_content_description),
                             // Added to be same size as IconButton, but without ripple effect
                             modifier = Modifier.minimumInteractiveComponentSize(),
                         )
@@ -78,13 +84,24 @@ fun SearchBar(
                     }
 
                     if (text.isNotEmpty()) {
-                        IconButton(
+                        Surface(
+                            modifier = Modifier.size(48.dp),
                             onClick = onClearClicked,
+                            shape = CircleShape,
+                            color = Color.Transparent,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.Clear,
-                                contentDescription = "Clear",
-                            )
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.clear),
+                                    contentDescription = stringResource(
+                                        R.string.repo_list_clear_search_content_description,
+                                    ),
+                                )
+                            }
                         }
                     }
                 }
