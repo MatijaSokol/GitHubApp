@@ -28,10 +28,10 @@ forks, or last update date, open author profiles in the browser, and view reposi
   </tr>
   <tr>
     <td width="50%" align="center">
-      <img src="previews/screenshot_list_light.jpg" alt="Repository list screen in light theme"/>
+      <img src="previews/screenshot_list_light.png" alt="Repository list screen in light theme"/>
     </td>
     <td width="50%" align="center">
-      <img src="previews/screenshot_details_light.jpg" alt="Repository detail screen in light theme"/>
+      <img src="previews/screenshot_details_light.png" alt="Repository detail screen in light theme"/>
     </td>
   </tr>
   <tr>
@@ -40,10 +40,10 @@ forks, or last update date, open author profiles in the browser, and view reposi
   </tr>
   <tr>
     <td width="50%" align="center">
-      <img src="previews/screenshot_list_dark.jpg" alt="Repository list screen in dark theme"/>
+      <img src="previews/screenshot_list_dark.png" alt="Repository list screen in dark theme"/>
     </td>
     <td width="50%" align="center">
-      <img src="previews/screenshot_details_dark.jpg" alt="Repository detail screen in dark theme"/>
+      <img src="previews/screenshot_details_dark.png" alt="Repository detail screen in dark theme"/>
     </td>
   </tr>
 </table>
@@ -85,7 +85,7 @@ Feature screens follow an MVI-style structure:
 |---|--------------------------------------------------------------|
 | Language | Kotlin                                                       |
 | Background work | Coroutines, Flow                                             |
-| UI | Jetpack Compose, Material, Material 3                        |
+| UI | Jetpack Compose, Material 3                                  |
 | Navigation | Navigation 3, Shared element transitions                     |
 | Networking | Ktor, Kotlinx Serialization                                  |
 | Local storage | SQLDelight (offline/local persistence is work in progress)   |
@@ -229,8 +229,8 @@ open pull requests per ecosystem.
 - Build configuration belongs in `build-logic/convention/`.
 - Dependency versions belong in `gradle/libs.versions.toml`.
 - Inter-module dependencies should use `projects.*` type-safe accessors.
-- UI strings should go through resources and the `Dictionary` abstraction where they are needed in ViewModels or
-  mappers.
+- UI strings should go through resources. Use `stringResource` in composables and the `Dictionary` abstraction where
+  strings are needed in ViewModels or mappers.
 - Domain modules should remain pure Kotlin/JVM and free of Android, datasource, and UI dependencies.
 
 ## Download

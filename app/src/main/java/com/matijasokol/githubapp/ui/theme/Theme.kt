@@ -1,9 +1,9 @@
 package com.matijasokol.githubapp.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 @Composable
@@ -15,20 +15,22 @@ fun GitHubAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
     }
 
     MaterialTheme(
-        colors = colors,
+        colorScheme = colors,
         typography = Typography,
         shapes = Shapes,
         content = content,
     )
 }
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     primary = primaryLight,
     onPrimary = onPrimaryLight,
-    primaryVariant = primaryVariantLight,
+    primaryContainer = primaryVariantLight,
+    onPrimaryContainer = onSurfaceLight,
     secondary = secondaryLight,
     onSecondary = onSecondaryLight,
-    secondaryVariant = secondaryVariantLight,
+    secondaryContainer = secondaryVariantLight,
+    onSecondaryContainer = onSurfaceLight,
     error = errorLight,
     onError = onErrorLight,
     background = backgroundLight,
@@ -37,13 +39,15 @@ private val LightColorPalette = lightColors(
     onSurface = onSurfaceLight,
 )
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     primary = primaryDark,
     onPrimary = onPrimaryDark,
-    primaryVariant = primaryVariantDark,
+    primaryContainer = primaryVariantDark,
+    onPrimaryContainer = onSurfaceDark,
     secondary = secondaryDark,
     onSecondary = onSecondaryDark,
-    secondaryVariant = secondaryVariantDark,
+    secondaryContainer = secondaryVariantDark,
+    onSecondaryContainer = onSurfaceDark,
     error = errorDark,
     onError = onErrorDark,
     background = backgroundDark,

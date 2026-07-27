@@ -3,7 +3,7 @@ package com.matijasokol.repo.list.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,14 +35,14 @@ fun RepoInfoPanel(
             imageVector = ImageVector.vectorResource(id = R.drawable.watch),
         )
 
-        Divider(thickness = 1.dp, color = Color.Black)
+        HorizontalDivider(thickness = 1.dp, color = Color.Black)
 
         TextWithIcon(
             text = forks,
             imageVector = ImageVector.vectorResource(id = R.drawable.fork),
         )
 
-        Divider(thickness = 1.dp, color = Color.Black)
+        HorizontalDivider(thickness = 1.dp, color = Color.Black)
 
         TextWithIcon(
             text = issues,

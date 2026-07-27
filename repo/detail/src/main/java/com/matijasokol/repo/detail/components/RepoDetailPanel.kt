@@ -7,14 +7,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,7 +34,7 @@ fun RepoDetailPanel(
             .fillMaxSize()
             .padding(horizontal = 40.dp, vertical = 20.dp)
             .background(
-                color = MaterialTheme.colors.primaryVariant,
+                color = MaterialTheme.colorScheme.primaryContainer,
                 shape = RoundedCornerShape(8.dp),
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,7 +44,7 @@ fun RepoDetailPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = MaterialTheme.colors.secondaryVariant,
+                        color = MaterialTheme.colorScheme.secondaryContainer,
                         shape = RoundedCornerShape(
                             topStart = 8.dp,
                             topEnd = 8.dp,
@@ -52,7 +53,7 @@ fun RepoDetailPanel(
                         ),
                     )
                     .padding(16.dp),
-                text = context.getString(R.string.repo_detail_panel_stats),
+                text = stringResource(R.string.repo_detail_panel_stats),
                 fontSize = 20.sp,
             )
         }
@@ -66,7 +67,7 @@ fun RepoDetailPanel(
             )
 
             if (stats.indexOf(it) != stats.lastIndex) {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     color = Color.White,
                 )

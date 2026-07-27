@@ -42,7 +42,7 @@ app/                     → Application module (entry point, DI setup, navigati
 | Layer           | Technology |
 |-----------------|---|
 | Language        | Kotlin 2.4.10 with Coroutines + Flow |
-| UI              | Jetpack Compose with Material |
+| UI              | Jetpack Compose with Material 3 |
 | Navigation      | Navigation 3 with Shared Element Transitions |
 | Networking      | Ktor + Kotlinx Serialization |
 | Local Database  | SQLDelight |
@@ -129,7 +129,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 ### Don't
 
 - ❌ Don't add Android framework dependencies to `domain` or `core` modules.
-- ❌ Don't hardcode strings in UI — use the `Dictionary` abstraction for testability.
+- ❌ Don't hardcode strings in UI — use `stringResource` in composables and the `Dictionary` abstraction in ViewModels or mappers.
 - ❌ Don't use `LiveData` — use `StateFlow` and `Channel` exclusively.
 - ❌ Don't use `mutableStateOf` in ViewModels — use `MutableStateFlow`.
 - ❌ Don't put business logic in Composables or ViewModels — extract to use cases.
