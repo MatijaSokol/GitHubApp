@@ -97,3 +97,4 @@ jobs:
           ./gradlew repo:domain:test --stacktrace
           ./gradlew repo:detail:test --stacktrace
           ./gradlew repo:list:test --stacktrace
+          ./gradlew konsist:test --stacktrace

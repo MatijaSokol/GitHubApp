@@ -20,6 +20,7 @@ junitBom = "6.1.2"
 mockk = "1.14.11"
 kluent = "1.73"
 turbine = "1.2.1"
+konsist = "0.17.3"
 
 composeBom = "2026.06.01"
 composeNavigationHilt = "1.4.0"
@@ -54,6 +55,7 @@ junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 kluent = { group = "org.amshove.kluent", name = "kluent", version.ref = "kluent" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+konsist = { group = "com.lemonappdev", name = "konsist", version.ref = "konsist" }
 
 kotlin-metadata-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
