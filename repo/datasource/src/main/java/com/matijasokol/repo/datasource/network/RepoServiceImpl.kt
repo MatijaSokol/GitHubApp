@@ -3,7 +3,7 @@ package com.matijasokol.repo.datasource.network
 import arrow.core.Either
 import com.matijasokol.core.error.NetworkError
 import com.matijasokol.repo.datasource.mappers.toRepo
-import com.matijasokol.repo.datasource.network.model.FetchReposResponse
+import com.matijasokol.repo.datasource.network.model.FetchReposResponseDto
 import com.matijasokol.repo.datasource.network.model.RepoDto
 import com.matijasokol.repo.domain.RepoService
 import com.matijasokol.repo.domain.model.Repo
@@ -29,7 +29,7 @@ class RepoServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
                 parameter(PARAM_PER_PAGE, perPage)
                 parameter(PARAM_PAGE, page)
             }
-        }.body<FetchReposResponse>().repos.map(RepoDto::toRepo)
+        }.body<FetchReposResponseDto>().repos.map(RepoDto::toRepo)
     }
 
     override suspend fun fetchRepoDetails(repoName: String): Either<NetworkError, Repo> = safeNetworkCall {

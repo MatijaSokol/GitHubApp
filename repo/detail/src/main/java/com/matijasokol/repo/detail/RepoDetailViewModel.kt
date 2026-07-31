@@ -12,7 +12,9 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -35,7 +37,7 @@ class RepoDetailViewModel @AssistedInject constructor(
     }
 
     private val _actions = Channel<RepoDetailAction>(capacity = BUFFERED)
-    val actions = _actions.receiveAsFlow()
+    val actions: Flow<RepoDetailAction> = _actions.receiveAsFlow()
 
     private val fetchTrigger = Channel<Unit>()
     private val isLoading = MutableStateFlow(true)
@@ -46,7 +48,7 @@ class RepoDetailViewModel @AssistedInject constructor(
         .map { getRepoDetails(destination.repoFullName) }
         .onEach { isLoading.update { false } }
 
-    val state = combine(
+    val state: StateFlow<RepoDetailState> = combine(
         isLoading,
         repo,
     ) { loading, repo ->

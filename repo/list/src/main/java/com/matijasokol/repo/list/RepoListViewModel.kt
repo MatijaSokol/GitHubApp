@@ -9,7 +9,9 @@ import com.matijasokol.repo.domain.usecase.SortReposUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -28,7 +30,7 @@ class RepoListViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _actions = Channel<RepoListAction>(capacity = BUFFERED)
-    val actions = _actions.receiveAsFlow()
+    val actions: Flow<RepoListAction> = _actions.receiveAsFlow()
 
     private val query = MutableStateFlow(DEFAULT_QUERY)
 
@@ -48,7 +50,7 @@ class RepoListViewModel @Inject constructor(
         sortRepos::invoke,
     )
 
-    val state = combine(
+    val state: StateFlow<RepoListState> = combine(
         paginator.loadState,
         sortedItems,
         query,

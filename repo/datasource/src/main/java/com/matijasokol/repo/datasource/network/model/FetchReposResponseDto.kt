@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FetchReposResponse(
+data class FetchReposResponseDto(
     @SerialName("items")
     val repos: List<RepoDto>,
 )

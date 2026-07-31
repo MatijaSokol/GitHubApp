@@ -25,6 +25,7 @@ app/                     → Application module (entry point, DI setup, navigati
 │   ├── datasource-test/ → Test doubles for the data layer
 │   ├── list/            → Repository list screen (UI + ViewModel)
 │   └── detail/          → Repository detail screen (UI + ViewModel)
+├── konsist/             → Project-wide architecture and naming rules (Konsist tests)
 ├── test/                → Shared test fixtures
 └── build-logic/         → Gradle convention plugins
 ```
@@ -50,8 +51,8 @@ app/                     → Application module (entry point, DI setup, navigati
 | Image Loading   | Coil 3 |
 | DI              | Hilt |
 | Error Handling  | Arrow |
-| Static Analysis | Ktlint + Detekt |
 | Testing         | JUnit 6, MockK, Turbine, Kluent |
+| Quality         | Ktlint, Detekt, Konsist architecture tests |
 | Build           | Gradle convention plugins + Version Catalog (`gradle/libs.versions.toml`) |
 
 ## Code Conventions
@@ -110,6 +111,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - Use **fakes** (preferred over mocks) for data layer tests (`RepoServiceFake`, `FakePaginator`).
 - Coroutine tests use `runTest` with a custom `AndroidCoroutinesExtension` (JUnit 6 extension).
 - Compose UI tests use `compose-junit4` with test tags defined in `**/test/TestTags.kt`.
+- Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and run with `./gradlew konsist:test`. They enforce package boundaries, MVI/ViewModel conventions, immutable UI state collections, DTO naming/serialization, Compose placement, and related project structure rules.
 - Test file naming: `<ClassUnderTest>Test.kt`.
 - Test method naming: backtick-style descriptive names (e.g., `` `should RETURN SUCCESS STATE when request was successful`() ``).
 
@@ -124,7 +126,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - ✅ Use `ImmutableList` for list properties in state classes.
 - ✅ Write unit tests for ViewModels and use cases.
 - ✅ Use `combine` to derive state from multiple flows.
-- ✅ Run `./gradlew detekt` and `./gradlew ktlintCheck` before submitting changes.
+- ✅ Run `./gradlew konsist:test`, `./gradlew detekt`, and `./gradlew ktlintCheck` before submitting changes.
 
 ### Don't
 
@@ -148,6 +150,9 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 
 # Run unit tests
 ./gradlew test
+
+# Run Konsist architecture and naming tests
+./gradlew konsist:test
 
 # Run detekt static analysis
 ./gradlew detekt
