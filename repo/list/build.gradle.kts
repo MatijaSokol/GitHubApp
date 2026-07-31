@@ -31,7 +31,6 @@ dependencies {
     implementation(libs.arrow.coroutines)
 
     implementation(libs.hilt.android)
-    ksp(libs.kotlin.metadata.jvm)
     ksp(libs.hilt.android.compiler)
 
     debugImplementation(libs.compose.ui.test.manifest)

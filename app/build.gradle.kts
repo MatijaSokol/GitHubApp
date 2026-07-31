@@ -53,7 +53,6 @@ dependencies {
     implementation(libs.arrow.core)
 
     implementation(libs.hilt.android)
-    ksp(libs.kotlin.metadata.jvm)
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.sqldelight.driver.android)
