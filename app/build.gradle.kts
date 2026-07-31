@@ -53,14 +53,11 @@ dependencies {
     implementation(libs.arrow.core)
 
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
     ksp(libs.kotlin.metadata.jvm)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.sqldelight.driver.android)
     implementation(libs.sqldelight.async.extensions)
-
-    implementation(platform(libs.ktor.bom))
-    implementation(libs.bundles.ktor)
 
     debugImplementation(libs.compose.ui.test.manifest)
 
@@ -75,5 +72,5 @@ dependencies {
     androidTestImplementation(platform(libs.junit.bom))
     androidTestImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
+    kspAndroidTest(libs.hilt.android.compiler)
 }

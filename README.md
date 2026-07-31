@@ -53,7 +53,7 @@ forks, or last update date, open author profiles in the browser, and view reposi
 The project uses a multi-module setup with a small application module and feature/domain/data modules under `repo`.
 
 ```text
-app/                     Application entry point, Hilt setup, mode-specific sources, navigation
+app/                     Application entry point, app-level Hilt setup, mode-specific sources, navigation
 core/                    Shared Kotlin utilities, dictionary contract, errors, app mode
 core-ui/                 Shared Compose components, navigation destination types, UI helpers
 repo/
@@ -67,8 +67,10 @@ test/                    Shared test fixtures
 build-logic/             Gradle convention plugins, quality setup, versioning tasks
 ```
 
-Domain modules stay free of Android dependencies. Datasource modules implement domain contracts. UI modules depend
-on domain and shared UI helpers. Application wiring happens in `app`.
+Domain modules stay free of Android dependencies. Datasource modules implement domain contracts and can own DI
+bindings for their implementations when the binding fits the module's platform and Hilt component. UI modules depend
+on domain and shared UI helpers. Application-level setup, Android context providers, Android-specific Hilt components,
+and composition decisions stay in `app`.
 
 ## Presentation Pattern
 

@@ -13,5 +13,8 @@ dependencies {
     implementation(libs.arrow.core)
     implementation(libs.arrow.coroutines)
 
+    implementation(libs.hilt.core)
+    ksp(libs.hilt.compiler)
+
     implementation(libs.javax.inject)
 }

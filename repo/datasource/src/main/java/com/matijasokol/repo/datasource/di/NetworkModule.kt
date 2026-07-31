@@ -1,4 +1,4 @@
-package com.matijasokol.githubapp.di
+package com.matijasokol.repo.datasource.di
 
 import com.matijasokol.repo.datasource.network.buildHttpClient
 import com.matijasokol.repo.datasource.network.json
@@ -18,7 +18,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideJson() = json
+    fun provideJson(): Json = json
 
     @Provides
     @Singleton
