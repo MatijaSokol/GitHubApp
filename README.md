@@ -62,6 +62,7 @@ repo/
   datasource-test/       Fakes and JSON fixtures for tests
   list/                  Repository list screen, ViewModel, UI tests
   detail/                Repository detail screen, ViewModel, UI tests
+konsist/                 Project-wide Konsist architecture and naming tests
 test/                    Shared test fixtures
 build-logic/             Gradle convention plugins, quality setup, versioning tasks
 ```
@@ -93,7 +94,7 @@ Feature screens follow an MVI-style structure:
 | Dependency injection | Hilt                                                         |
 | Error handling | Arrow                                                        |
 | Testing | JUnit, MockK, Turbine, Kluent, Compose UI tests              |
-| Quality | Ktlint, Detekt, Compose Detekt rules                         |
+| Quality | Ktlint, Detekt, Compose Detekt rules, Konsist architecture tests |
 | Build | AGP, Gradle, convention plugins, version catalog, Kotlin DSL |
 
 ## Requirements
@@ -154,7 +155,10 @@ Common Gradle commands:
 ./gradlew test
 
 # Run app and feature unit tests explicitly
-./gradlew app:test repo:domain:test repo:list:test repo:detail:test
+./gradlew app:test repo:domain:test repo:list:test repo:detail:test konsist:test
+
+# Run Konsist architecture tests
+./gradlew konsist:test
 
 # Static analysis and formatting checks
 ./gradlew ktlintCheck detekt
@@ -214,7 +218,7 @@ The PR check workflow has four jobs:
 - `static_analysis` runs `./gradlew ktlintCheck detekt --stacktrace`.
 - `build_free` runs `./gradlew assembleProdFreeRelease --stacktrace`.
 - `build_paid` runs `./gradlew assembleProdPaidRelease --stacktrace`.
-- `unit_tests` runs unit tests for `app`, `repo:domain`, `repo:detail`, and `repo:list`.
+- `unit_tests` runs unit tests for `app`, `repo:domain`, `repo:detail`, `repo:list`, and Konsist architecture tests.
 
 Release artifact workflows require the signing secrets used by Gradle:
 
@@ -232,6 +236,17 @@ open pull requests per ecosystem.
 - UI strings should go through resources. Use `stringResource` in composables and the `Dictionary` abstraction where
   strings are needed in ViewModels or mappers.
 - Domain modules should remain pure Kotlin/JVM and free of Android, datasource, and UI dependencies.
+
+## Konsist Architecture Checks
+
+Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and inspect production sources with
+`Konsist.scopeFromProduction()`. The current rules cover package layer dependencies, domain and datasource boundaries,
+package naming and path matching, use case and ViewModel conventions, MVI companion declarations, UI model immutable
+collections, datasource DTO naming/serialization, Compose placement, data class immutability, and wildcard imports.
+
+When adding or changing a rule, prefer a focused test class and avoid checks that duplicate ktlint or detekt unless
+Konsist adds project-specific value. Run `./gradlew konsist:test` locally, or `./gradlew test` to include Konsist with
+the rest of the unit test lifecycle.
 
 ## Download
 
