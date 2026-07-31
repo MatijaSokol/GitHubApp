@@ -22,8 +22,4 @@ object CacheModule {
         context = application,
         name = "repos.db",
     )
-
-    @Provides
-    @Singleton
-    fun provideRepoDatabase(sqlDriver: SqlDriver): RepoDatabase = RepoDatabase(sqlDriver)
 }
