@@ -16,7 +16,7 @@ GitHubApp is an Android application for browsing GitHub repositories, built with
 The project follows a **multi-module architecture** with clear separation of concerns:
 
 ```
-app/                     → Application module (entry point, DI setup, navigation)
+app/                     → Application module (entry point, app-level DI setup, navigation)
 ├── core/                → Shared utilities, base classes, error types (pure Kotlin/JVM)
 ├── core-ui/             → Reusable Compose UI components, theming, navigation helpers
 ├── repo/                → Feature: GitHub repositories
@@ -35,7 +35,7 @@ app/                     → Application module (entry point, DI setup, navigati
 - **domain** modules must NOT depend on Android, data, or UI layers.
 - **datasource** depends on **domain** (implements interfaces defined there).
 - **UI/feature** modules (list, detail) depend on **domain** and **core-ui**.
-- **app** module wires everything together with Hilt DI.
+- **app** module owns application-level Hilt setup, Android-specific bindings, and composition decisions, while feature/data modules own DI bindings for implementations they define when the binding fits that module's platform and component scope.
 - Use `projects.*` typesafe accessors for inter-module dependencies (e.g., `projects.repo.domain`).
 
 ## Tech Stack
@@ -93,6 +93,8 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 ### Dependency Injection
 
 - Use Hilt `@Module` / `@Provides` / `@Binds` for wiring.
+- Place DI bindings in the module that owns the implementation when the choice is not app-specific and the target Hilt component is available to that module.
+- Keep bindings in `app` when the application composes or selects between implementations, such as flavor-specific, fake-vs-real, Android application setup, Android context providers, or Android-specific Hilt components.
 - ViewModels use `@HiltViewModel` with `@Inject constructor`.
 - Use cases and mappers use `@Inject constructor` directly (no module needed).
 

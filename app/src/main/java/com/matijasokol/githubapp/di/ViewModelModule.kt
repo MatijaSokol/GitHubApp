@@ -14,5 +14,5 @@ abstract class ViewModelModule {
 
     @Binds
     @ViewModelScoped
-    abstract fun provideBasicPaginator(basicPaginator: BasicPaginator): Paginator
+    abstract fun bindPaginator(basicPaginator: BasicPaginator): Paginator
 }
