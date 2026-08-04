@@ -10,10 +10,6 @@ sealed interface RepoListEvent {
 
     data class UpdateSortType(val repoSortType: RepoSortType) : RepoListEvent
 
-    data object ToggleSortMenuOptionsVisibility : RepoListEvent
-
-    data object SortMenuOptionsDismissed : RepoListEvent
-
     data class OnItemClick(
         val authorImageUrl: String,
         val repoFullName: String,

@@ -43,7 +43,7 @@ app/                     → Application module (entry point, app-level DI setup
 | Layer           | Technology |
 |-----------------|---|
 | Language        | Kotlin 2.4.10 with Coroutines + Flow |
-| UI              | Jetpack Compose with Material 3 |
+| UI              | Jetpack Compose with Material 3 and Backdrop |
 | Navigation      | Navigation 3 with Shared Element Transitions |
 | Networking      | Ktor + Kotlinx Serialization |
 | Local Database  | SQLDelight |

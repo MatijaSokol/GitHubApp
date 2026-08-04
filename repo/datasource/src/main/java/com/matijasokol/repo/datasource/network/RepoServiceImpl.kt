@@ -11,7 +11,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.http.appendEncodedPathSegments
 import io.ktor.http.path
 import javax.inject.Inject
 
@@ -35,9 +34,7 @@ class RepoServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
     override suspend fun fetchRepoDetails(repoName: String): Either<NetworkError, Repo> = safeNetworkCall {
         httpClient.get {
             url {
-                path(DETAILS_ENDPOINT)
-                // repositoryName can have special characters so encoding is enabled
-                appendEncodedPathSegments(repoName)
+                path(DETAILS_ENDPOINT, repoName.substringBefore("/"), repoName.substringAfter("/"))
             }
         }.body<RepoDto>().toRepo()
     }

@@ -34,7 +34,6 @@ class RepoListViewModel @Inject constructor(
 
     private val query = MutableStateFlow(DEFAULT_QUERY)
 
-    private val popupVisible = MutableStateFlow(false)
     private val sortType = MutableStateFlow<RepoSortType>(RepoSortType.Unknown())
 
     private val items = query
@@ -54,7 +53,6 @@ class RepoListViewModel @Inject constructor(
         paginator.loadState,
         sortedItems,
         query,
-        popupVisible,
         sortType,
         uiMapper::toUiState,
     ).stateIn(initialValue = RepoListState(query = DEFAULT_QUERY))
@@ -67,8 +65,6 @@ class RepoListViewModel @Inject constructor(
                 sortType.update { event.repoSortType }
                 _actions.send(RepoListAction.ScrollToTop)
             }
-            RepoListEvent.SortMenuOptionsDismissed -> popupVisible.update { false }
-            RepoListEvent.ToggleSortMenuOptionsVisibility -> popupVisible.update { !it }
             is RepoListEvent.OnItemClick -> viewModelScope.launch {
                 _actions.send(RepoListAction.NavigateToDetails(event.authorImageUrl, event.repoFullName))
             }

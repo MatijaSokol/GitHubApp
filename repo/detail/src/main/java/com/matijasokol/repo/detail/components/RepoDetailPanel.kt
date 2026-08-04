@@ -1,25 +1,18 @@
 package com.matijasokol.repo.detail.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.matijasokol.repo.detail.R
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -27,51 +20,112 @@ fun RepoDetailPanel(
     stats: ImmutableList<String>,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 40.dp, vertical = 20.dp)
-            .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(8.dp),
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Column(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        stickyHeader {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(
-                            topStart = 8.dp,
-                            topEnd = 8.dp,
-                            bottomStart = 0.dp,
-                            bottomEnd = 0.dp,
-                        ),
-                    )
-                    .padding(16.dp),
-                text = stringResource(R.string.repo_detail_panel_stats),
-                fontSize = 20.sp,
-            )
+        stats.take(4).chunked(2).forEach { rowStats ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                rowStats.forEach { stat ->
+                    MetricCard(stat = stat, modifier = Modifier.weight(1f))
+                }
+            }
         }
 
-        items(stats) {
-            Text(
-                modifier = Modifier.padding(16.dp),
-                text = it,
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center,
-            )
-
-            if (stats.indexOf(it) != stats.lastIndex) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    color = Color.White,
-                )
+        if (stats.size > UPDATED_INDEX) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                MetadataCard(stats[LANGUAGE_INDEX], Modifier.weight(1f))
+                MetadataCard(stats[UPDATED_INDEX], Modifier.weight(1f))
             }
+        }
+
+        stats.getOrNull(DESCRIPTION_INDEX)?.let { DescriptionCard(it) }
+    }
+}
+
+@Composable
+private fun MetricCard(stat: String, modifier: Modifier = Modifier) {
+    val (label, value) = stat.toLabelAndValue()
+    Surface(
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        shape = RoundedCornerShape(24.dp),
+    ) {
+        Column(modifier = Modifier.padding(18.dp)) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Black,
+            )
+            Text(
+                text = label,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                style = MaterialTheme.typography.labelLarge,
+            )
         }
     }
 }
+
+@Composable
+private fun MetadataCard(stat: String, modifier: Modifier = Modifier) {
+    val (label, value) = stat.toLabelAndValue()
+    Surface(
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shape = RoundedCornerShape(20.dp),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = label,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.labelMedium,
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
+}
+
+@Composable
+private fun DescriptionCard(stat: String) {
+    val (label, value) = stat.toLabelAndValue()
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        shape = RoundedCornerShape(24.dp),
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                modifier = Modifier.padding(top = 8.dp),
+                text = value,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+    }
+}
+
+private fun String.toLabelAndValue(): Pair<String, String> =
+    when (val separator = indexOf(':')) {
+        -1 -> "" to this
+        else -> substring(0, separator) to substring(separator + 1).trim()
+    }
+
+private const val LANGUAGE_INDEX = 4
+private const val DESCRIPTION_INDEX = 5
+private const val UPDATED_INDEX = 6

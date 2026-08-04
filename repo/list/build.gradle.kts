@@ -24,6 +24,8 @@ dependencies {
 
     implementation(libs.kotlinx.collections)
 
+    implementation(libs.backdrop)
+
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
 
