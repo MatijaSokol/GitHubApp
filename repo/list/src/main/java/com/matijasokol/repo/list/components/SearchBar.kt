@@ -16,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,34 +24,31 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.matijasokol.repo.list.R
 
-@Suppress("ComposableParamOrder")
 @Composable
 fun SearchBar(
     text: String,
     placeholderText: String,
-    elevation: Dp,
-    modifier: Modifier = Modifier,
     onTextChanged: (String) -> Unit,
     onClearClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier = modifier,
-        color = MaterialTheme.colorScheme.surfaceColorAtElevation(elevation),
-        tonalElevation = elevation,
-        shadowElevation = elevation,
-        shape = RoundedCornerShape(32.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shape = RoundedCornerShape(20.dp),
     ) {
         BasicTextField(
             value = text,
             onValueChange = onTextChanged,
             textStyle = LocalTextStyle.current.copy(
                 color = MaterialTheme.colorScheme.onSurface,
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
             ),
             cursorBrush = SolidColor(value = MaterialTheme.colorScheme.onSurface),
+            singleLine = true,
             decorationBox = { innerTextField ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -65,8 +61,8 @@ fun SearchBar(
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.search),
                             contentDescription = stringResource(R.string.repo_list_search_content_description),
-                            // Added to be same size as IconButton, but without ripple effect
                             modifier = Modifier.minimumInteractiveComponentSize(),
+                            tint = MaterialTheme.colorScheme.primary,
                         )
 
                         Spacer(modifier = Modifier.width(4.dp))
@@ -77,7 +73,7 @@ fun SearchBar(
                             if (text.isEmpty()) {
                                 Text(
                                     text = placeholderText,
-                                    color = Color.Gray.copy(alpha = 0.5f),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                                 )
                             }
                         }
@@ -106,7 +102,6 @@ fun SearchBar(
                     }
                 }
             },
-            singleLine = true,
         )
     }
 }

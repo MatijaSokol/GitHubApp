@@ -3,30 +3,34 @@ package com.matijasokol.repo.detail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
 import com.matijasokol.coreui.components.withSharedBounds
@@ -34,123 +38,202 @@ import com.matijasokol.repo.detail.components.RepoDetailPanel
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
 
-@Suppress("LongMethod")
 @Composable
 fun RepoDetail(
     state: RepoDetailState,
     modifier: Modifier = Modifier,
     onEvent: (RepoDetailEvent) -> Unit,
 ) {
-    Box(
-        modifier = modifier.fillMaxSize(),
+    val uriHandler = LocalUriHandler.current
+
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .testTag(TAG_REPO_DETAIL_SCREEN),
+        contentPadding = PaddingValues(bottom = 32.dp),
     ) {
-        val uriHandler = LocalUriHandler.current
-
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(16.dp)
-                    .testTag(TAG_REPO_DETAIL_SCREEN),
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(0.4f),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    RoundedImage(
-                        modifier = Modifier.withSharedBounds(key = "${state.authorImageUrl}/${state.repoFullName}"),
-                        imageUrl = state.authorImageUrl,
-                        contentDescription = state.authorName,
-                        size = 160.dp,
-                        enabled = state is RepoDetailState.Success,
-                        onClick = {
-                            try {
-                                (state as? RepoDetailState.Success)?.repoUi?.authorProfileUrl?.let(uriHandler::openUri)
-                            } catch (e: Exception) {
-                                onEvent(RepoDetailEvent.OpenProfileWebError)
-                            }
-                        },
-                    )
-                }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .withSharedBounds(key = "${state.authorName}/${state.repoName}"),
-                        text = buildAnnotatedString {
-                            append("${state.authorName}/")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(state.repoName)
-                            }
-                        },
-                        textAlign = TextAlign.Center,
-                    )
-
-                    (state as? RepoDetailState.Success)?.repoUi?.let { repo ->
-                        LazyRow {
-                            items(
-                                items = repo.topics,
-                                key = { it },
-                            ) {
-                                AssistChip(
-                                    onClick = {},
-                                    modifier = Modifier.padding(horizontal = 2.dp),
-                                    enabled = false,
-                                    label = { Text(text = it) },
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(2.dp))
-                        HorizontalDivider()
-                        Spacer(modifier = Modifier.height(2.dp))
-
-                        state.repoUi.followersCountText?.let { Text(text = it) }
-                        state.repoUi.reposCountText?.let { Text(it) }
-
-                        Button(
-                            onClick = {
-                                try {
-                                    uriHandler.openUri(repo.repoUrl)
-                                } catch (e: Exception) {
-                                    onEvent(RepoDetailEvent.OpenRepoWebError)
-                                }
-                            },
-                        ) {
-                            Text(text = state.detailsButtonText)
-                        }
+        item {
+            RepoHero(
+                state = state,
+                onProfileClick = {
+                    try {
+                        (state as? RepoDetailState.Success)?.repoUi?.authorProfileUrl?.let(uriHandler::openUri)
+                    } catch (_: Exception) {
+                        onEvent(RepoDetailEvent.OpenProfileWebError)
                     }
-                }
-            }
-
-            (state as? RepoDetailState.Success)?.repoUi?.info?.let { info ->
-                RepoDetailPanel(stats = info)
-            }
+                },
+            )
         }
 
         when (state) {
-            is RepoDetailState.Error -> Text(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(8.dp),
-                text = state.errorMessage,
+            is RepoDetailState.Error -> item {
+                Text(
+                    modifier = Modifier.fillMaxWidth().padding(32.dp),
+                    text = state.errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            is RepoDetailState.Loading -> item {
+                Box(modifier = Modifier.fillMaxWidth().padding(64.dp)) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center).testTag(TAG_REPO_DETAIL_PROGRESS),
+                    )
+                }
+            }
+            is RepoDetailState.Success -> {
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    ) {
+                        if (state.repoUi.topics.isNotEmpty()) {
+                            SectionLabel(stringResource(R.string.repo_detail_topics_label))
+                            LazyRow(
+                                contentPadding = PaddingValues(horizontal = 20.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                items(state.repoUi.topics, key = { it }) { topic ->
+                                    AssistChip(onClick = {}, label = { Text(topic) })
+                                }
+                            }
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            state.repoUi.followersCountText?.let { ProfileMetric(it, Modifier.weight(1f)) }
+                            state.repoUi.reposCountText?.let { ProfileMetric(it, Modifier.weight(1f)) }
+                        }
+
+                        RepositoryLinkCard(
+                            title = state.detailsButtonText,
+                            subtitle = stringResource(R.string.repo_detail_btn_repo_details_supporting),
+                            onClick = {
+                                try {
+                                    uriHandler.openUri(state.repoUi.repoUrl)
+                                } catch (_: Exception) {
+                                    onEvent(RepoDetailEvent.OpenRepoWebError)
+                                }
+                            },
+                        )
+
+                        SectionLabel(
+                            text = stringResource(R.string.repo_detail_overview_label),
+                            modifier = Modifier.padding(top = 24.dp),
+                        )
+                        RepoDetailPanel(stats = state.repoUi.info)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RepoHero(state: RepoDetailState, onProfileClick: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth().padding(20.dp),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        shape = RoundedCornerShape(32.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            RoundedImage(
+                modifier = Modifier.withSharedBounds(key = "${state.authorImageUrl}/${state.repoFullName}"),
+                imageUrl = state.authorImageUrl,
+                contentDescription = state.authorName,
+                size = 116.dp,
+                borderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.16f),
+                borderWidth = 3.dp,
+                enabled = state is RepoDetailState.Success,
+                onClick = onProfileClick,
+            )
+            Spacer(modifier = Modifier.height(22.dp))
+            Text(
+                modifier = Modifier.withSharedBounds(key = "${state.authorName}/${state.repoName}"),
+                text = state.repoFullName,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
             )
-            is RepoDetailState.Loading -> CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .testTag(TAG_REPO_DETAIL_PROGRESS),
+            Text(
+                text = stringResource(R.string.repo_detail_profile_label, state.authorName),
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.72f),
+                style = MaterialTheme.typography.bodyLarge,
             )
-            is RepoDetailState.Success -> Unit
+        }
+    }
+}
+
+@Composable
+private fun SectionLabel(text: String, modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+        text = text,
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold,
+    )
+}
+
+@Composable
+private fun ProfileMetric(text: String, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shape = RoundedCornerShape(18.dp),
+    ) {
+        Text(
+            modifier = Modifier.padding(14.dp),
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+private fun RepositoryLinkCard(
+    title: String,
+    subtitle: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 20.dp),
+        onClick = onClick,
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        shape = RoundedCornerShape(24.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 17.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = subtitle,
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.76f),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            Surface(
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.14f),
+                shape = RoundedCornerShape(14.dp),
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.external_link),
+                    contentDescription = null,
+                    modifier = Modifier.padding(11.dp).size(22.dp),
+                )
+            }
         }
     }
 }
