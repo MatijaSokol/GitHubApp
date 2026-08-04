@@ -29,6 +29,7 @@ navigation3Lifecycle = "2.11.0"
 coil = "3.5.0"
 material3 = "1.4.0"
 splash = "1.2.0"
+backdrop = "2.0.0"
 
 sqldelight = "2.3.2"
 ktor = "3.5.1"
@@ -79,6 +80,7 @@ coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref 
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
+backdrop = { group = "io.github.kyant0", name = "backdrop", version.ref = "backdrop" }
 
 sqldelight-driver-android = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqldelight" }

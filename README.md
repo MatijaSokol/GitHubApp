@@ -88,7 +88,7 @@ Feature screens follow an MVI-style structure:
 |---|--------------------------------------------------------------|
 | Language | Kotlin                                                       |
 | Background work | Coroutines, Flow                                             |
-| UI | Jetpack Compose, Material 3                                  |
+| UI | Jetpack Compose, Material 3, Backdrop                        |
 | Navigation | Navigation 3, Shared element transitions                     |
 | Networking | Ktor, Kotlinx Serialization                                  |
 | Local storage | SQLDelight (offline/local persistence is work in progress)   |
