@@ -71,6 +71,7 @@ import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import com.matijasokol.coreui.R as CoreUiR
 
 @Composable
 fun RepoList(
@@ -294,7 +295,7 @@ private fun RetryContent(
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.cloud_off),
+                        imageVector = ImageVector.vectorResource(CoreUiR.drawable.cloud_off),
                         contentDescription = null,
                         modifier = Modifier.size(30.dp),
                     )
@@ -328,7 +329,7 @@ private fun RetryButton(
 ) {
     FilledTonalButton(onClick = onClick, modifier = modifier) {
         Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.refresh),
+            imageVector = ImageVector.vectorResource(CoreUiR.drawable.refresh),
             contentDescription = null,
             modifier = Modifier.size(18.dp),
         )
