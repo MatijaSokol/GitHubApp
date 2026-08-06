@@ -13,7 +13,9 @@ import javax.inject.Inject
 class RepoDetailsUiMapper @Inject constructor(private val dictionary: Dictionary) {
 
     private data class DetailsStaticData(
+        val errorTitle: String,
         val loadErrorMessage: String,
+        val retryButtonText: String,
         val repositoryLinkTitle: String,
         val repositoryLinkSubtitle: String,
         val topicsSectionTitle: String,
@@ -24,7 +26,9 @@ class RepoDetailsUiMapper @Inject constructor(private val dictionary: Dictionary
 
     private val staticData by lazy {
         DetailsStaticData(
+            errorTitle = dictionary.getString(R.string.repo_detail_error_title),
             loadErrorMessage = dictionary.getString(R.string.repo_detail_message_cache_error),
+            retryButtonText = dictionary.getString(R.string.repo_detail_retry_text),
             repositoryLinkTitle = dictionary.getString(R.string.repo_detail_btn_repo_details),
             repositoryLinkSubtitle = dictionary.getString(R.string.repo_detail_btn_repo_details_supporting),
             topicsSectionTitle = dictionary.getString(R.string.repo_detail_topics_label),
@@ -43,7 +47,9 @@ class RepoDetailsUiMapper @Inject constructor(private val dictionary: Dictionary
         true -> loadingState(repoFullName, authorImageUrl)
         false -> when (repoOrError) {
             is Either.Left -> RepoDetailState.Error(
+                errorTitle = staticData.errorTitle,
                 loadErrorMessage = staticData.loadErrorMessage,
+                retryButtonText = staticData.retryButtonText,
                 repoFullName = repoFullName,
                 authorImageUrl = authorImageUrl,
                 profileSupportingText = profileSupportingText(repoFullName),
@@ -82,6 +88,7 @@ class RepoDetailsUiMapper @Inject constructor(private val dictionary: Dictionary
         message = when (event) {
             RepoDetailEvent.OpenProfileWebError -> staticData.profileBrowserErrorMessage
             RepoDetailEvent.OpenRepoWebError -> staticData.repoBrowserErrorMessage
+            RepoDetailEvent.OnRetryClick -> error("Retry does not produce a UI action")
         },
     )
 

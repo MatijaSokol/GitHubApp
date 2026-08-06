@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
 import com.matijasokol.coreui.components.withSharedBounds
+import com.matijasokol.repo.detail.components.RepoDetailError
 import com.matijasokol.repo.detail.components.RepoDetailPanel
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
@@ -71,11 +72,11 @@ fun RepoDetail(
 
         when (state) {
             is RepoDetailState.Error -> item {
-                Text(
-                    modifier = Modifier.fillMaxWidth().padding(32.dp),
-                    text = state.loadErrorMessage,
-                    color = MaterialTheme.colorScheme.error,
-                    textAlign = TextAlign.Center,
+                RepoDetailError(
+                    title = state.errorTitle,
+                    message = state.loadErrorMessage,
+                    retryText = state.retryButtonText,
+                    onRetryClick = { onEvent(RepoDetailEvent.OnRetryClick) },
                 )
             }
             is RepoDetailState.Loading -> item {

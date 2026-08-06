@@ -54,6 +54,11 @@ class RepoDetailViewModelTest {
         sut.state.test {
             awaitItem() `should be instance of` RepoDetailState.Loading::class
             awaitItem() `should be instance of` RepoDetailState.Error::class
+
+            sut.onEvent(RepoDetailEvent.OnRetryClick)
+
+            awaitItem() `should be instance of` RepoDetailState.Loading::class
+            awaitItem() `should be instance of` RepoDetailState.Error::class
         }
     }
 }

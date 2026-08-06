@@ -23,7 +23,9 @@ sealed interface RepoDetailState {
     ) : RepoDetailState
 
     data class Error(
+        val errorTitle: String,
         val loadErrorMessage: String,
+        val retryButtonText: String,
         override val repoFullName: String,
         override val authorImageUrl: String,
         override val profileSupportingText: String,
