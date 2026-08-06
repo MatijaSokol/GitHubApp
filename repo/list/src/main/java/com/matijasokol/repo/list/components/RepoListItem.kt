@@ -28,6 +28,9 @@ import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
 @Composable
 fun RepoListItem(
     repo: RepoListItem,
+    watchersContentDescription: String,
+    forksContentDescription: String,
+    issuesContentDescription: String,
     onItemClick: (RepoListItem) -> Unit,
     onImageClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -79,6 +82,9 @@ fun RepoListItem(
                 watchers = repo.watchers,
                 forks = repo.forks,
                 issues = repo.issues,
+                watchersContentDescription = watchersContentDescription,
+                forksContentDescription = forksContentDescription,
+                issuesContentDescription = issuesContentDescription,
                 modifier = Modifier.fillMaxWidth(),
             )
         }

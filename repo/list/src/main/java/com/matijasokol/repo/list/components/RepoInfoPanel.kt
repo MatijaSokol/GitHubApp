@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.matijasokol.repo.list.R
@@ -21,6 +20,9 @@ fun RepoInfoPanel(
     watchers: String,
     forks: String,
     issues: String,
+    watchersContentDescription: String,
+    forksContentDescription: String,
+    issuesContentDescription: String,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -30,17 +32,17 @@ fun RepoInfoPanel(
         RepoStat(
             text = watchers,
             icon = ImageVector.vectorResource(R.drawable.watch),
-            contentDescription = stringResource(R.string.repo_list_watchers_content_description),
+            contentDescription = watchersContentDescription,
         )
         RepoStat(
             text = forks,
             icon = ImageVector.vectorResource(R.drawable.fork),
-            contentDescription = stringResource(R.string.repo_list_forks_content_description),
+            contentDescription = forksContentDescription,
         )
         RepoStat(
             text = issues,
             icon = ImageVector.vectorResource(R.drawable.issue),
-            contentDescription = stringResource(R.string.repo_list_issues_content_description),
+            contentDescription = issuesContentDescription,
         )
     }
 }

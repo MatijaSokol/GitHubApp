@@ -19,6 +19,7 @@
     <string name="repo_list_sort_updated">Updated</string>
     <string name="repo_list_sort_ascending">Ascending</string>
     <string name="repo_list_sort_descending">Descending</string>
+    <string name="repo_list_sort_direction_content_description">%1$s %2$s</string>
 
     <string name="repo_list_query_label">Search</string>
 

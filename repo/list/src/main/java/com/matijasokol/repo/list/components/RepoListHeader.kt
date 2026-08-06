@@ -9,15 +9,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.matijasokol.repo.list.R
+import com.matijasokol.repo.list.RepoListText
 
 @Composable
 fun RepoListHeader(
+    text: RepoListText,
     queryValue: String,
-    queryLabel: String,
     onQueryChanged: (String) -> Unit,
     onClearClicked: () -> Unit,
     modifier: Modifier = Modifier,
@@ -28,19 +27,21 @@ fun RepoListHeader(
             .padding(horizontal = 20.dp, vertical = 12.dp),
     ) {
         Text(
-            text = stringResource(R.string.repo_list_title),
+            text = text.headerTitle,
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Black,
         )
         Text(
-            text = stringResource(R.string.repo_list_subtitle),
+            text = text.headerSubtitle,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyLarge,
         )
         Spacer(modifier = Modifier.height(16.dp))
         SearchBar(
             text = queryValue,
-            placeholderText = queryLabel,
+            placeholderText = text.searchPlaceholder,
+            searchContentDescription = text.searchIconContentDescription,
+            clearSearchContentDescription = text.clearSearchButtonContentDescription,
             onTextChanged = onQueryChanged,
             onClearClicked = onClearClicked,
         )

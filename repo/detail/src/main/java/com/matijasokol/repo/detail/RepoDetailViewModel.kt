@@ -2,7 +2,6 @@ package com.matijasokol.repo.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.matijasokol.core.dictionary.Dictionary
 import com.matijasokol.coreui.navigation.Destination
 import com.matijasokol.coreui.viewmodel.stateIn
 import com.matijasokol.repo.domain.usecase.GetRepoDetailsUseCase
@@ -27,8 +26,7 @@ import kotlinx.coroutines.launch
 class RepoDetailViewModel @AssistedInject constructor(
     @Assisted private val destination: Destination.RepoDetail,
     getRepoDetails: GetRepoDetailsUseCase,
-    uiMapper: RepoDetailsUiMapper,
-    private val dictionary: Dictionary,
+    private val uiMapper: RepoDetailsUiMapper,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -54,28 +52,13 @@ class RepoDetailViewModel @AssistedInject constructor(
     ) { loading, repo ->
         uiMapper.toUiState(loading, repo, destination.repoFullName, destination.authorImageUrl)
     }.stateIn(
-        initialValue = RepoDetailState.Loading(
-            repoFullName = destination.repoFullName,
-            authorImageUrl = destination.authorImageUrl,
-        ),
+        initialValue = uiMapper.loadingState(destination.repoFullName, destination.authorImageUrl),
     )
 
     fun onEvent(event: RepoDetailEvent) {
         when (event) {
-            RepoDetailEvent.OpenProfileWebError -> viewModelScope.launch {
-                _actions.send(
-                    RepoDetailAction.ShowMessage(
-                        dictionary.getString(R.string.repo_detail_message_profile_browser_error),
-                    ),
-                )
-            }
-            RepoDetailEvent.OpenRepoWebError -> viewModelScope.launch {
-                _actions.send(
-                    RepoDetailAction.ShowMessage(
-                        dictionary.getString(R.string.repo_detail_message_repo_browser_error),
-                    ),
-                )
-            }
+            RepoDetailEvent.OpenProfileWebError, RepoDetailEvent.OpenRepoWebError ->
+                viewModelScope.launch { _actions.send(uiMapper.toAction(event)) }
         }
     }
 }

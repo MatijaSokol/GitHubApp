@@ -13,14 +13,24 @@ import javax.inject.Inject
 class RepoDetailsUiMapper @Inject constructor(private val dictionary: Dictionary) {
 
     private data class DetailsStaticData(
-        val errorMessage: String,
-        val detailsButtonText: String,
+        val loadErrorMessage: String,
+        val repositoryLinkTitle: String,
+        val repositoryLinkSubtitle: String,
+        val topicsSectionTitle: String,
+        val overviewSectionTitle: String,
+        val profileBrowserErrorMessage: String,
+        val repoBrowserErrorMessage: String,
     )
 
     private val staticData by lazy {
         DetailsStaticData(
-            errorMessage = dictionary.getString(R.string.repo_detail_message_cache_error),
-            detailsButtonText = dictionary.getString(R.string.repo_detail_btn_repo_details),
+            loadErrorMessage = dictionary.getString(R.string.repo_detail_message_cache_error),
+            repositoryLinkTitle = dictionary.getString(R.string.repo_detail_btn_repo_details),
+            repositoryLinkSubtitle = dictionary.getString(R.string.repo_detail_btn_repo_details_supporting),
+            topicsSectionTitle = dictionary.getString(R.string.repo_detail_topics_label),
+            overviewSectionTitle = dictionary.getString(R.string.repo_detail_overview_label),
+            profileBrowserErrorMessage = dictionary.getString(R.string.repo_detail_message_profile_browser_error),
+            repoBrowserErrorMessage = dictionary.getString(R.string.repo_detail_message_repo_browser_error),
         )
     }
 
@@ -30,18 +40,19 @@ class RepoDetailsUiMapper @Inject constructor(private val dictionary: Dictionary
         repoFullName: String,
         authorImageUrl: String,
     ) = when (isLoading) {
-        true -> RepoDetailState.Loading(
-            repoFullName = repoFullName,
-            authorImageUrl = authorImageUrl,
-        )
+        true -> loadingState(repoFullName, authorImageUrl)
         false -> when (repoOrError) {
             is Either.Left -> RepoDetailState.Error(
-                errorMessage = staticData.errorMessage,
+                loadErrorMessage = staticData.loadErrorMessage,
                 repoFullName = repoFullName,
                 authorImageUrl = authorImageUrl,
+                profileSupportingText = profileSupportingText(repoFullName),
             )
             is Either.Right -> RepoDetailState.Success(
-                detailsButtonText = staticData.detailsButtonText,
+                repositoryLinkTitle = staticData.repositoryLinkTitle,
+                repositoryLinkSubtitle = staticData.repositoryLinkSubtitle,
+                topicsSectionTitle = staticData.topicsSectionTitle,
+                overviewSectionTitle = staticData.overviewSectionTitle,
                 repoUi = RepoUi(
                     repoUrl = repoOrError.value.url,
                     info = buildInfoData(repoOrError.value),
@@ -56,9 +67,28 @@ class RepoDetailsUiMapper @Inject constructor(private val dictionary: Dictionary
                 ),
                 repoFullName = repoFullName,
                 authorImageUrl = authorImageUrl,
+                profileSupportingText = profileSupportingText(repoFullName),
             )
         }
     }
+
+    fun loadingState(repoFullName: String, authorImageUrl: String) = RepoDetailState.Loading(
+        repoFullName = repoFullName,
+        authorImageUrl = authorImageUrl,
+        profileSupportingText = profileSupportingText(repoFullName),
+    )
+
+    fun toAction(event: RepoDetailEvent) = RepoDetailAction.ShowMessage(
+        message = when (event) {
+            RepoDetailEvent.OpenProfileWebError -> staticData.profileBrowserErrorMessage
+            RepoDetailEvent.OpenRepoWebError -> staticData.repoBrowserErrorMessage
+        },
+    )
+
+    private fun profileSupportingText(repoFullName: String) = dictionary.getString(
+        R.string.repo_detail_profile_label,
+        repoFullName.substringBefore("/"),
+    )
 
     private fun buildInfoData(repo: Repo): ImmutableList<String> = with(dictionary) {
         persistentListOf(

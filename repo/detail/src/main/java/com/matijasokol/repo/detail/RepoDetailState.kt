@@ -2,40 +2,38 @@ package com.matijasokol.repo.detail
 
 import kotlinx.collections.immutable.ImmutableList
 
-sealed class RepoDetailState(
-    open val repoFullName: String,
-    open val authorImageUrl: String,
-) {
+sealed interface RepoDetailState {
+
+    val repoFullName: String
+    val authorImageUrl: String
+    val profileSupportingText: String
 
     val authorName: String get() = repoFullName.substringBefore("/")
     val repoName: String get() = repoFullName.substringAfter("/")
 
     data class Success(
         val repoUi: RepoUi,
-        val detailsButtonText: String,
+        val repositoryLinkTitle: String,
+        val repositoryLinkSubtitle: String,
+        val topicsSectionTitle: String,
+        val overviewSectionTitle: String,
         override val repoFullName: String,
         override val authorImageUrl: String,
-    ) : RepoDetailState(
-            repoFullName = repoFullName,
-            authorImageUrl = authorImageUrl,
-        )
+        override val profileSupportingText: String,
+    ) : RepoDetailState
 
     data class Error(
-        val errorMessage: String,
+        val loadErrorMessage: String,
         override val repoFullName: String,
         override val authorImageUrl: String,
-    ) : RepoDetailState(
-            repoFullName = repoFullName,
-            authorImageUrl = authorImageUrl,
-        )
+        override val profileSupportingText: String,
+    ) : RepoDetailState
 
     data class Loading(
         override val repoFullName: String,
         override val authorImageUrl: String,
-    ) : RepoDetailState(
-            repoFullName = repoFullName,
-            authorImageUrl = authorImageUrl,
-        )
+        override val profileSupportingText: String,
+    ) : RepoDetailState
 }
 
 data class RepoUi(

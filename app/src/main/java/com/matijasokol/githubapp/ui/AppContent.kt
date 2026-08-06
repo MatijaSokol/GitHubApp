@@ -127,7 +127,12 @@ private fun RepoListEntry() {
                 action.repoFullName,
                 context,
             )
-            is RepoListAction.OpenProfile -> openProfile(action.profileUrl, uriHandler, context)
+            is RepoListAction.OpenProfile -> openProfile(
+                profileUrl = action.profileUrl,
+                errorMessage = state.text.profileBrowserErrorMessage,
+                uriHandler = uriHandler,
+                context = context,
+            )
             RepoListAction.ScrollToTop -> lazyStaggeredGridState.animateScrollToItem(0)
             is RepoListAction.ShowMessage -> Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
         }
@@ -176,13 +181,13 @@ private suspend fun showDetails(
     }
 }
 
-fun openProfile(profileUrl: String, uriHandler: UriHandler, context: Context) {
+fun openProfile(profileUrl: String, errorMessage: String, uriHandler: UriHandler, context: Context) {
     try {
         uriHandler.openUri(profileUrl)
     } catch (_: Exception) {
         Toast.makeText(
             context,
-            context.getString(com.matijasokol.repo.list.R.string.repo_list_message_browser_error),
+            errorMessage,
             Toast.LENGTH_SHORT,
         ).show()
     }

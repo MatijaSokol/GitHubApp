@@ -29,7 +29,6 @@ class RepoDetailViewModelTest {
             destination = destination,
             getRepoDetails = getRepoDetailsUseCase,
             uiMapper = uiMapper,
-            dictionary = FakeDictionary(),
         )
 
         sut.state.test {
@@ -50,7 +49,6 @@ class RepoDetailViewModelTest {
             destination = destination,
             getRepoDetails = getRepoDetailsUseCase,
             uiMapper = uiMapper,
-            dictionary = FakeDictionary(),
         )
 
         sut.state.test {
