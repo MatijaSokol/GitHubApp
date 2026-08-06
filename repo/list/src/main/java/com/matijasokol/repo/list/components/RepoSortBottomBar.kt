@@ -27,7 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -42,11 +41,13 @@ import com.kyant.backdrop.effects.vibrancy
 import com.matijasokol.core.domain.SortOrder
 import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.list.R
+import com.matijasokol.repo.list.RepoSortText
 import kotlinx.coroutines.launch
 
 @Composable
 fun RepoSortBottomBar(
     appliedSortType: RepoSortType,
+    text: RepoSortText,
     backdrop: Backdrop,
     modifier: Modifier = Modifier,
     onSortTypeClicked: (RepoSortType) -> Unit,
@@ -54,7 +55,6 @@ fun RepoSortBottomBar(
     val scope = rememberCoroutineScope()
     val pressProgress = remember { Animatable(0f) }
     val containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.62f)
-    val contentDescription = stringResource(R.string.repo_list_sort_options_content_description)
 
     Row(
         modifier = modifier
@@ -83,27 +83,33 @@ fun RepoSortBottomBar(
             }
             .height(64.dp)
             .fillMaxWidth()
-            .semantics { this.contentDescription = contentDescription }
+            .semantics { contentDescription = text.sortOptionsContentDescription }
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SortOption(
-            label = stringResource(R.string.repo_list_sort_stars),
+            label = text.starsOption.displayLabel,
+            ascendingContentDescription = text.starsOption.ascendingActionContentDescription,
+            descendingContentDescription = text.starsOption.descendingActionContentDescription,
             selected = appliedSortType is RepoSortType.Stars,
             order = appliedSortType.order,
             modifier = Modifier.weight(1f).fillMaxHeight(),
             onOrderClick = { onSortTypeClicked(RepoSortType.Stars(it)) },
         )
         SortOption(
-            label = stringResource(R.string.repo_list_sort_forks),
+            label = text.forksOption.displayLabel,
+            ascendingContentDescription = text.forksOption.ascendingActionContentDescription,
+            descendingContentDescription = text.forksOption.descendingActionContentDescription,
             selected = appliedSortType is RepoSortType.Forks,
             order = appliedSortType.order,
             modifier = Modifier.weight(1f).fillMaxHeight(),
             onOrderClick = { onSortTypeClicked(RepoSortType.Forks(it)) },
         )
         SortOption(
-            label = stringResource(R.string.repo_list_sort_updated),
+            label = text.updatedOption.displayLabel,
+            ascendingContentDescription = text.updatedOption.ascendingActionContentDescription,
+            descendingContentDescription = text.updatedOption.descendingActionContentDescription,
             selected = appliedSortType is RepoSortType.Updated,
             order = appliedSortType.order,
             modifier = Modifier.weight(1f).fillMaxHeight(),
@@ -115,6 +121,8 @@ fun RepoSortBottomBar(
 @Composable
 private fun SortOption(
     label: String,
+    ascendingContentDescription: String,
+    descendingContentDescription: String,
     selected: Boolean,
     order: SortOrder,
     modifier: Modifier = Modifier,
@@ -132,14 +140,14 @@ private fun SortOption(
     ) {
         Row(modifier = Modifier.matchParentSize()) {
             DirectionAction(
-                label = label,
+                contentDescription = ascendingContentDescription,
                 order = SortOrder.Ascending,
                 selected = selected && order == SortOrder.Ascending,
                 modifier = Modifier.weight(1f).fillMaxHeight(),
                 onClick = { onOrderClick(SortOrder.Ascending) },
             )
             DirectionAction(
-                label = label,
+                contentDescription = descendingContentDescription,
                 order = SortOrder.Descending,
                 selected = selected && order == SortOrder.Descending,
                 modifier = Modifier.weight(1f).fillMaxHeight(),
@@ -157,18 +165,12 @@ private fun SortOption(
 
 @Composable
 private fun DirectionAction(
-    label: String,
+    contentDescription: String,
     order: SortOrder,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
-    val direction = stringResource(
-        when (order) {
-            SortOrder.Ascending -> R.string.repo_list_sort_ascending
-            SortOrder.Descending -> R.string.repo_list_sort_descending
-        },
-    )
     val contentColor = when (selected) {
         true -> MaterialTheme.colorScheme.primary
         false -> MaterialTheme.colorScheme.onSurfaceVariant
@@ -187,7 +189,7 @@ private fun DirectionAction(
                 .size(36.dp)
                 .clip(RoundedCornerShape(18.dp))
                 .clickable(onClick = onClick)
-                .semantics { contentDescription = "$label $direction" },
+                .semantics { this.contentDescription = contentDescription },
             contentAlignment = Alignment.Center,
         ) {
             Icon(

@@ -12,10 +12,8 @@ data class RepoListState(
     val loadState: Paginator.LoadState = Paginator.LoadState.Refresh,
     val items: ImmutableList<RepoListItem> = persistentListOf(),
     val query: String = "",
-    val queryLabel: String = "",
     val repoSortType: RepoSortType = RepoSortType.Unknown(),
-    val errorText: String = "",
-    val retryButtonText: String = "",
+    val text: RepoListText = RepoListText(),
 )
 
 data class RepoListItem(
@@ -28,6 +26,35 @@ data class RepoListItem(
     val watchers: String,
     val forks: String,
     val issues: String,
+)
+
+data class RepoListText(
+    val headerTitle: String = "",
+    val headerSubtitle: String = "",
+    val searchPlaceholder: String = "",
+    val searchIconContentDescription: String = "",
+    val clearSearchButtonContentDescription: String = "",
+    val refreshErrorTitle: String = "",
+    val loadErrorMessage: String = "",
+    val profileBrowserErrorMessage: String = "",
+    val retryButtonText: String = "",
+    val sortOptions: RepoSortText = RepoSortText(),
+    val watchersIconContentDescription: String = "",
+    val forksIconContentDescription: String = "",
+    val issuesIconContentDescription: String = "",
+)
+
+data class RepoSortText(
+    val sortOptionsContentDescription: String = "",
+    val starsOption: RepoSortOptionText = RepoSortOptionText(),
+    val forksOption: RepoSortOptionText = RepoSortOptionText(),
+    val updatedOption: RepoSortOptionText = RepoSortOptionText(),
+)
+
+data class RepoSortOptionText(
+    val displayLabel: String = "",
+    val ascendingActionContentDescription: String = "",
+    val descendingActionContentDescription: String = "",
 )
 
 fun Repo.toRepoListItem() = RepoListItem(

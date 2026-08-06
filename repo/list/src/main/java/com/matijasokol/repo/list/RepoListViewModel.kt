@@ -55,7 +55,7 @@ class RepoListViewModel @Inject constructor(
         query,
         sortType,
         uiMapper::toUiState,
-    ).stateIn(initialValue = RepoListState(query = DEFAULT_QUERY))
+    ).stateIn(initialValue = uiMapper.initialState(query = DEFAULT_QUERY))
 
     fun onEvent(event: RepoListEvent) {
         when (event) {

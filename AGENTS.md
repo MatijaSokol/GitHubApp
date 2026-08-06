@@ -61,7 +61,7 @@ app/                     → Application module (entry point, app-level DI setup
 
 - Use Kotlin idioms: `data class`, `sealed interface`, extension functions, `when` expressions.
 - Prefer immutable data (`val`, `ImmutableList` from kotlinx-collections-immutable).
-- Use `@Stable` annotation on Compose state classes.
+- Let the Compose compiler infer stability. Add `@Stable` only when a state type contains fields Compose treats as unstable and the stability contract is valid; do not annotate immutable text or value models unnecessarily.
 - Do NOT use `var` in state classes; use `MutableStateFlow` + `.update {}` in ViewModels.
 - Keep functions small and single-purpose.
 
@@ -69,7 +69,7 @@ app/                     → Application module (entry point, app-level DI setup
 
 Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 
-- **`*State`** — `@Stable data class` holding all UI state, using `ImmutableList` for collections.
+- **`*State`** — Immutable `data class` holding all UI state, using `ImmutableList` for collections. Use `@Stable` only when stability cannot be inferred safely.
 - **`*Event`** — `sealed interface` representing user intents/interactions sent TO the ViewModel.
 - **`*Action`** — `sealed interface` representing one-shot actions sent FROM the ViewModel to the UI (navigation, messages). Delivered via `Channel`.
 - **`*ViewModel`** — `@HiltViewModel` class exposing:
@@ -77,6 +77,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
   - `val actions: Flow<*Action>` (from `Channel.receiveAsFlow()`)
   - `fun onEvent(event: *Event)` as the single entry point for UI interactions.
 - **`*UiMapper`** — Separate class to map domain state to UI state (injected into ViewModel).
+- Screen composables may consume UI state. Child composables needing up to three text values should receive individual strings; when more than three text arguments are required, pass the relevant text state/model directly. Do not pass the entire screen state.
 
 ### Domain Layer
 
@@ -133,7 +134,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 ### Don't
 
 - ❌ Don't add Android framework dependencies to `domain` or `core` modules.
-- ❌ Don't hardcode strings in UI — use `stringResource` in composables and the `Dictionary` abstraction in ViewModels or mappers.
+- ❌ Don't hardcode or resolve strings in composables. Use `strings.xml` → `Dictionary` → `UiMapper` → UI state/model → composable, including formatted and accessibility text.
 - ❌ Don't use `LiveData` — use `StateFlow` and `Channel` exclusively.
 - ❌ Don't use `mutableStateOf` in ViewModels — use `MutableStateFlow`.
 - ❌ Don't put business logic in Composables or ViewModels — extract to use cases.
