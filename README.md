@@ -235,8 +235,12 @@ open pull requests per ecosystem.
 - Build configuration belongs in `build-logic/convention/`.
 - Dependency versions belong in `gradle/libs.versions.toml`.
 - Inter-module dependencies should use `projects.*` type-safe accessors.
-- UI strings should go through resources. Use `stringResource` in composables and the `Dictionary` abstraction where
-  strings are needed in ViewModels or mappers.
+- Resolve visible, formatted, and accessibility strings through `Dictionary` in UI mappers, then expose plain strings
+  through UI state or UI models. Composables must not access string resources directly.
+- At the screen boundary, pass child composables individual strings when they need up to three text values. Components
+  needing more than three may receive the relevant text state/model, but should not receive the entire screen state.
+- Let Compose infer stability for immutable state and UI models. Use `@Stable` only when inference is insufficient and
+  the type genuinely satisfies the stability contract.
 - Domain modules should remain pure Kotlin/JVM and free of Android, datasource, and UI dependencies.
 
 ## Konsist Architecture Checks
@@ -244,7 +248,8 @@ open pull requests per ecosystem.
 Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and inspect production sources with
 `Konsist.scopeFromProduction()`. The current rules cover package layer dependencies, domain and datasource boundaries,
 package naming and path matching, use case and ViewModel conventions, MVI companion declarations, UI model immutable
-collections, datasource DTO naming/serialization, Compose placement, data class immutability, and wildcard imports.
+collections, datasource DTO naming/serialization, Compose placement, localized string access, data class immutability,
+and wildcard imports.
 
 When adding or changing a rule, prefer a focused test class and avoid checks that duplicate ktlint or detekt unless
 Konsist adds project-specific value. Run `./gradlew konsist:test` locally, or `./gradlew test` to include Konsist with

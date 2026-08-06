@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,7 +53,12 @@ fun RepoDetail(
     ) {
         item {
             RepoHero(
-                state = state,
+                repoFullName = state.repoFullName,
+                authorImageUrl = state.authorImageUrl,
+                authorName = state.authorName,
+                repoName = state.repoName,
+                profileSupportingText = state.profileSupportingText,
+                profileEnabled = state is RepoDetailState.Success,
                 onProfileClick = {
                     try {
                         (state as? RepoDetailState.Success)?.repoUi?.authorProfileUrl?.let(uriHandler::openUri)
@@ -69,7 +73,7 @@ fun RepoDetail(
             is RepoDetailState.Error -> item {
                 Text(
                     modifier = Modifier.fillMaxWidth().padding(32.dp),
-                    text = state.errorMessage,
+                    text = state.loadErrorMessage,
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center,
                 )
@@ -87,7 +91,7 @@ fun RepoDetail(
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     ) {
                         if (state.repoUi.topics.isNotEmpty()) {
-                            SectionLabel(stringResource(R.string.repo_detail_topics_label))
+                            SectionLabel(state.topicsSectionTitle)
                             LazyRow(
                                 contentPadding = PaddingValues(horizontal = 20.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -107,8 +111,8 @@ fun RepoDetail(
                         }
 
                         RepositoryLinkCard(
-                            title = state.detailsButtonText,
-                            subtitle = stringResource(R.string.repo_detail_btn_repo_details_supporting),
+                            title = state.repositoryLinkTitle,
+                            subtitle = state.repositoryLinkSubtitle,
                             onClick = {
                                 try {
                                     uriHandler.openUri(state.repoUi.repoUrl)
@@ -119,7 +123,7 @@ fun RepoDetail(
                         )
 
                         SectionLabel(
-                            text = stringResource(R.string.repo_detail_overview_label),
+                            text = state.overviewSectionTitle,
                             modifier = Modifier.padding(top = 24.dp),
                         )
                         RepoDetailPanel(stats = state.repoUi.info)
@@ -131,7 +135,16 @@ fun RepoDetail(
 }
 
 @Composable
-private fun RepoHero(state: RepoDetailState, onProfileClick: () -> Unit) {
+@Suppress("LongParameterList")
+private fun RepoHero(
+    repoFullName: String,
+    authorImageUrl: String,
+    authorName: String,
+    repoName: String,
+    profileSupportingText: String,
+    profileEnabled: Boolean,
+    onProfileClick: () -> Unit,
+) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(20.dp),
         color = MaterialTheme.colorScheme.primaryContainer,
@@ -142,25 +155,25 @@ private fun RepoHero(state: RepoDetailState, onProfileClick: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             RoundedImage(
-                modifier = Modifier.withSharedBounds(key = "${state.authorImageUrl}/${state.repoFullName}"),
-                imageUrl = state.authorImageUrl,
-                contentDescription = state.authorName,
+                modifier = Modifier.withSharedBounds(key = "$authorImageUrl/$repoFullName"),
+                imageUrl = authorImageUrl,
+                contentDescription = authorName,
                 size = 116.dp,
                 borderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.16f),
                 borderWidth = 3.dp,
-                enabled = state is RepoDetailState.Success,
+                enabled = profileEnabled,
                 onClick = onProfileClick,
             )
             Spacer(modifier = Modifier.height(22.dp))
             Text(
-                modifier = Modifier.withSharedBounds(key = "${state.authorName}/${state.repoName}"),
-                text = state.repoFullName,
+                modifier = Modifier.withSharedBounds(key = "$authorName/$repoName"),
+                text = repoFullName,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
             )
             Text(
-                text = stringResource(R.string.repo_detail_profile_label, state.authorName),
+                text = profileSupportingText,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.72f),
                 style = MaterialTheme.typography.bodyLarge,
             )

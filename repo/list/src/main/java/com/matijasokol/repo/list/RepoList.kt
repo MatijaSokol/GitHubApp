@@ -51,13 +51,13 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
+import com.matijasokol.repo.domain.Paginator.LoadState
 import com.matijasokol.repo.domain.Paginator.LoadState.Append
 import com.matijasokol.repo.domain.Paginator.LoadState.AppendError
 import com.matijasokol.repo.domain.Paginator.LoadState.Loaded
@@ -68,6 +68,7 @@ import com.matijasokol.repo.list.components.RepoListItem
 import com.matijasokol.repo.list.components.RepoSortBottomBar
 import com.matijasokol.repo.list.components.ShimmerRepoListItem
 import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 
@@ -127,8 +128,8 @@ fun RepoList(
                 .layerBackdrop(backdrop),
         ) {
             RepoListHeader(
+                text = state.text,
                 queryValue = state.query,
-                queryLabel = state.queryLabel,
                 onQueryChanged = { onEvent(RepoListEvent.OnQueryChanged(it)) },
                 onClearClicked = { onEvent(RepoListEvent.OnQueryChanged("")) },
             )
@@ -138,13 +139,15 @@ fun RepoList(
                     Refresh -> LoadingContent()
                     RefreshError -> RetryContent(
                         modifier = Modifier.align(Alignment.Center),
-                        title = stringResource(R.string.repo_list_refresh_error_title),
-                        errorText = state.errorText,
-                        retryText = state.retryButtonText,
+                        title = state.text.refreshErrorTitle,
+                        errorText = state.text.loadErrorMessage,
+                        retryText = state.text.retryButtonText,
                         onRetryClick = { onEvent(RepoListEvent.OnRetryClick) },
                     )
                     Loaded, Append, AppendError -> ListScreen(
-                        state = state,
+                        repos = state.items,
+                        loadState = state.loadState,
+                        text = state.text,
                         lazyStaggeredGridState = lazyStaggeredGridState,
                         onItemClick = { onEvent(RepoListEvent.OnItemClick(it.authorImageUrl, it.fullName)) },
                         onImageClick = { onEvent(RepoListEvent.OnImageClick(it)) },
@@ -165,6 +168,7 @@ fun RepoList(
         ) {
             RepoSortBottomBar(
                 appliedSortType = state.repoSortType,
+                text = state.text.sortOptions,
                 backdrop = backdrop,
                 onSortTypeClicked = {
                     onEvent(RepoListEvent.UpdateSortType(it))
@@ -175,8 +179,11 @@ fun RepoList(
 }
 
 @Composable
+@Suppress("LongParameterList")
 private fun ListScreen(
-    state: RepoListState,
+    repos: ImmutableList<RepoListItem>,
+    loadState: LoadState,
+    text: RepoListText,
     lazyStaggeredGridState: LazyStaggeredGridState,
     onItemClick: (RepoListItem) -> Unit,
     onImageClick: (String) -> Unit,
@@ -196,21 +203,28 @@ private fun ListScreen(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalItemSpacing = 12.dp,
     ) {
-        items(items = state.items, key = RepoListItem::id) { repo ->
-            RepoListItem(repo = repo, onItemClick = onItemClick, onImageClick = onImageClick)
+        items(items = repos, key = RepoListItem::id) { repo ->
+            RepoListItem(
+                repo = repo,
+                watchersContentDescription = text.watchersIconContentDescription,
+                forksContentDescription = text.forksIconContentDescription,
+                issuesContentDescription = text.issuesIconContentDescription,
+                onItemClick = onItemClick,
+                onImageClick = onImageClick,
+            )
         }
-        if (state.loadState == Append) {
+        if (loadState == Append) {
             item(span = StaggeredGridItemSpan.FullLine) {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).padding(16.dp))
                 }
             }
         }
-        if (state.loadState == AppendError) {
+        if (loadState == AppendError) {
             item(span = StaggeredGridItemSpan.FullLine) {
                 AppendRetryContent(
-                    errorText = state.errorText,
-                    retryText = state.retryButtonText,
+                    errorText = text.loadErrorMessage,
+                    retryText = text.retryButtonText,
                     onRetryClick = onRetryClick,
                 )
             }

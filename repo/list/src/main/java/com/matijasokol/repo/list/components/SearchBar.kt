@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.matijasokol.repo.list.R
@@ -31,6 +30,8 @@ import com.matijasokol.repo.list.R
 fun SearchBar(
     text: String,
     placeholderText: String,
+    searchContentDescription: String,
+    clearSearchContentDescription: String,
     onTextChanged: (String) -> Unit,
     onClearClicked: () -> Unit,
     modifier: Modifier = Modifier,
@@ -60,7 +61,7 @@ fun SearchBar(
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.search),
-                            contentDescription = stringResource(R.string.repo_list_search_content_description),
+                            contentDescription = searchContentDescription,
                             modifier = Modifier.minimumInteractiveComponentSize(),
                             tint = MaterialTheme.colorScheme.primary,
                         )
@@ -93,9 +94,7 @@ fun SearchBar(
                             ) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.clear),
-                                    contentDescription = stringResource(
-                                        R.string.repo_list_clear_search_content_description,
-                                    ),
+                                    contentDescription = clearSearchContentDescription,
                                 )
                             }
                         }

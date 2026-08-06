@@ -16,9 +16,9 @@ import com.matijasokol.coreui.dictionary.DictionaryImpl
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.model.Repo
-import com.matijasokol.repo.list.R
 import com.matijasokol.repo.list.RepoList
 import com.matijasokol.repo.list.RepoListState
+import com.matijasokol.repo.list.RepoListUiMapper
 import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
 import com.matijasokol.repo.list.toRepoListItem
@@ -33,6 +33,7 @@ class RepoListTest {
 
     private val query = "kotlin"
     private val dictionary = DictionaryImpl(ApplicationProvider.getApplicationContext())
+    private val testText = RepoListUiMapper(dictionary).initialState(query).text
 
     // Workaround to provide required parameters due to shared transition animation
     // Without this, test will fail. See SharedElement.kt for more details
@@ -53,7 +54,7 @@ class RepoListTest {
 
     @Test
     fun repoListSuccessShowData() {
-        val errorText = dictionary.getString(R.string.repo_list_message_error)
+        val errorText = testText.loadErrorMessage
 
         val state = RepoListState(
             loadState = Paginator.LoadState.Loaded,
@@ -61,7 +62,7 @@ class RepoListTest {
             items = serializeRepoResponseData(
                 this::class.java.getResource("/repo_list_valid.json").readText(),
             ).map(Repo::toRepoListItem).toPersistentList(),
-            errorText = errorText,
+            text = testText,
         )
 
         composeTestRule.setContent {
@@ -88,13 +89,14 @@ class RepoListTest {
 
     @Test
     fun repoListEmptyShowErrorMessage() {
-        val errorText = dictionary.getString(R.string.repo_list_message_error)
+        val errorText = testText.loadErrorMessage
 
         composeTestRule.setContent {
             FakeRootComposable {
                 RepoList(
                     state = RepoListState(
                         query = query,
+                        text = testText,
                         items = serializeRepoResponseData(
                             this::class.java.getResource("/repo_list_empty.json").readText(),
                         ).map(Repo::toRepoListItem).toPersistentList(),
@@ -122,6 +124,7 @@ class RepoListTest {
                     state = RepoListState(
                         loadState = Paginator.LoadState.Refresh,
                         query = query,
+                        text = testText,
                     ),
                     onEvent = {},
                 )
