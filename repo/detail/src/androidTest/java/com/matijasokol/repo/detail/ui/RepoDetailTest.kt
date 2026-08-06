@@ -95,6 +95,7 @@ class RepoDetailTest {
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_PROGRESS).assertDoesNotExist()
+        composeTestRule.onNodeWithText(state.errorTitle, useUnmergedTree = true).assertExists()
         composeTestRule.onNodeWithText(state.loadErrorMessage, useUnmergedTree = true).assertExists()
     }
 
