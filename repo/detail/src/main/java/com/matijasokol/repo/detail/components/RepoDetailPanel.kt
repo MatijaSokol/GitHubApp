@@ -13,6 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.matijasokol.coreui.preview.GitHubAppPreviewContent
+import com.matijasokol.coreui.preview.GitHubAppThemePreviews
+import com.matijasokol.repo.detail.RepoDetailPreviewFixtures
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -125,6 +128,17 @@ private fun String.toLabelAndValue(): Pair<String, String> =
         -1 -> "" to this
         else -> substring(0, separator) to substring(separator + 1).trim()
     }
+
+@GitHubAppThemePreviews
+@Composable
+private fun RepoDetailPanelPreview() {
+    GitHubAppPreviewContent {
+        RepoDetailPanel(
+            stats = RepoDetailPreviewFixtures.success.repoUi.info,
+            modifier = Modifier.padding(vertical = 20.dp),
+        )
+    }
+}
 
 private const val LANGUAGE_INDEX = 4
 private const val DESCRIPTION_INDEX = 5
