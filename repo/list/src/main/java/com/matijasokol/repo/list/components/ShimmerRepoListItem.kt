@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.shimmerEffect
+import com.matijasokol.coreui.preview.GitHubAppPreviewContent
+import com.matijasokol.coreui.preview.GitHubAppThemePreviews
 
 @Composable
 fun ShimmerRepoListItem(modifier: Modifier = Modifier) {
@@ -44,5 +46,13 @@ fun ShimmerRepoListItem(modifier: Modifier = Modifier) {
                 Box(modifier = Modifier.size(width = 28.dp, height = 18.dp).shimmerEffect())
             }
         }
+    }
+}
+
+@GitHubAppThemePreviews
+@Composable
+private fun ShimmerRepoListItemPreview() {
+    GitHubAppPreviewContent {
+        ShimmerRepoListItem(modifier = Modifier.padding(12.dp))
     }
 }

@@ -30,9 +30,17 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
 import com.matijasokol.coreui.components.withSharedBounds
+import com.matijasokol.coreui.preview.GitHubAppDevicePreviews
+import com.matijasokol.coreui.preview.GitHubAppLargeFontPreview
+import com.matijasokol.coreui.preview.GitHubAppPreviewContent
+import com.matijasokol.coreui.preview.GitHubAppThemePreviews
+import com.matijasokol.coreui.preview.STANDARD_PHONE_PREVIEW_HEIGHT_DP
+import com.matijasokol.coreui.preview.STANDARD_PHONE_PREVIEW_WIDTH_DP
 import com.matijasokol.repo.detail.components.RepoDetailError
 import com.matijasokol.repo.detail.components.RepoDetailPanel
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
@@ -250,4 +258,43 @@ private fun RepositoryLinkCard(
             }
         }
     }
+}
+
+@Preview(
+    name = "States",
+    group = "States",
+    widthDp = STANDARD_PHONE_PREVIEW_WIDTH_DP,
+    heightDp = STANDARD_PHONE_PREVIEW_HEIGHT_DP,
+    showBackground = true,
+)
+@Composable
+private fun RepoDetailStatesPreview(
+    @PreviewParameter(RepoDetailStatePreviewParameterProvider::class) state: RepoDetailState,
+) {
+    GitHubAppPreviewContent { RepoDetail(state = state, onEvent = {}) }
+}
+
+@GitHubAppDevicePreviews
+@Composable
+private fun RepoDetailDevicesPreview() {
+    GitHubAppPreviewContent { RepoDetail(state = RepoDetailPreviewFixtures.success, onEvent = {}) }
+}
+
+@GitHubAppThemePreviews
+@Composable
+private fun RepoDetailThemesPreview() {
+    GitHubAppPreviewContent(
+        modifier = Modifier.size(
+            width = STANDARD_PHONE_PREVIEW_WIDTH_DP.dp,
+            height = STANDARD_PHONE_PREVIEW_HEIGHT_DP.dp,
+        ),
+    ) {
+        RepoDetail(state = RepoDetailPreviewFixtures.success, onEvent = {})
+    }
+}
+
+@GitHubAppLargeFontPreview
+@Composable
+private fun RepoDetailLargeFontPreview() {
+    GitHubAppPreviewContent { RepoDetail(state = RepoDetailPreviewFixtures.longContent, onEvent = {}) }
 }

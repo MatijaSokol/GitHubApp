@@ -15,13 +15,13 @@ import androidx.compose.ui.test.performTextReplacement
 import androidx.test.core.app.ApplicationProvider
 import com.matijasokol.core.dictionary.Dictionary
 import com.matijasokol.coreui.dictionary.DictionaryImpl
+import com.matijasokol.coreui.theme.GitHubAppTheme
 import com.matijasokol.githubapp.MainActivity
 import com.matijasokol.githubapp.di.CacheModule
 import com.matijasokol.githubapp.di.CoreModule
 import com.matijasokol.githubapp.di.ViewModelModule
 import com.matijasokol.githubapp.navigation.NavigationErrorMapper
 import com.matijasokol.githubapp.navigation.Navigator
-import com.matijasokol.githubapp.ui.theme.GitHubAppTheme
 import com.matijasokol.repo.datasource.di.DataSourceModule
 import com.matijasokol.repo.datasource.di.NetworkModule
 import com.matijasokol.repo.datasourcetest.cache.RepoCacheFake

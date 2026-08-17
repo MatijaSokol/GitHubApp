@@ -2,6 +2,7 @@ package com.matijasokol.repo.list.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -39,8 +40,11 @@ import com.kyant.backdrop.effects.blur
 import com.kyant.backdrop.effects.lens
 import com.kyant.backdrop.effects.vibrancy
 import com.matijasokol.core.domain.SortOrder
+import com.matijasokol.coreui.preview.GitHubAppPreviewContent
+import com.matijasokol.coreui.preview.GitHubAppThemePreviews
 import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.list.R
+import com.matijasokol.repo.list.RepoListPreviewFixtures
 import com.matijasokol.repo.list.RepoSortText
 import kotlinx.coroutines.launch
 
@@ -56,7 +60,9 @@ fun RepoSortBottomBar(
     val pressProgress = remember { Animatable(0f) }
     val containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.62f)
 
-    Row(
+    RepoSortBottomBarContent(
+        appliedSortType = appliedSortType,
+        text = text,
         modifier = modifier
             .drawBackdrop(
                 backdrop = backdrop,
@@ -80,7 +86,20 @@ fun RepoSortBottomBar(
                     waitForUpOrCancellation()
                     scope.launch { pressProgress.animateTo(0f, spring(0.5f, 300f, 0.001f)) }
                 }
-            }
+            },
+        onSortTypeClicked = onSortTypeClicked,
+    )
+}
+
+@Composable
+private fun RepoSortBottomBarContent(
+    appliedSortType: RepoSortType,
+    text: RepoSortText,
+    modifier: Modifier = Modifier,
+    onSortTypeClicked: (RepoSortType) -> Unit,
+) {
+    Row(
+        modifier = modifier
             .height(64.dp)
             .fillMaxWidth()
             .semantics { contentDescription = text.sortOptionsContentDescription }
@@ -199,6 +218,24 @@ private fun DirectionAction(
                     .size(if (selected) 24.dp else 18.dp)
                     .rotate(if (order == SortOrder.Ascending) 0f else 180f),
                 tint = contentColor,
+            )
+        }
+    }
+}
+
+@GitHubAppThemePreviews
+@Composable
+private fun RepoSortBottomBarPreview() {
+    GitHubAppPreviewContent {
+        Box(modifier = Modifier.padding(12.dp)) {
+            RepoSortBottomBarContent(
+                appliedSortType = RepoListPreviewFixtures.loaded.repoSortType,
+                text = RepoListPreviewFixtures.text.sortOptions,
+                modifier = Modifier.background(
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(30.dp),
+                ),
+                onSortTypeClicked = {},
             )
         }
     }

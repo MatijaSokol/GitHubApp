@@ -11,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.matijasokol.coreui.preview.GitHubAppPreviewContent
+import com.matijasokol.coreui.preview.GitHubAppThemePreviews
+import com.matijasokol.repo.list.RepoListPreviewFixtures
 import com.matijasokol.repo.list.RepoListText
 
 @Composable
@@ -44,6 +47,19 @@ fun RepoListHeader(
             clearSearchContentDescription = text.clearSearchButtonContentDescription,
             onTextChanged = onQueryChanged,
             onClearClicked = onClearClicked,
+        )
+    }
+}
+
+@GitHubAppThemePreviews
+@Composable
+private fun RepoListHeaderPreview() {
+    GitHubAppPreviewContent {
+        RepoListHeader(
+            text = RepoListPreviewFixtures.text,
+            queryValue = "",
+            onQueryChanged = {},
+            onClearClicked = {},
         )
     }
 }
