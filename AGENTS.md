@@ -79,6 +79,13 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - **`*UiMapper`** — Separate class to map domain state to UI state (injected into ViewModel).
 - Screen composables may consume UI state. Child composables needing up to three text values should receive individual strings; when more than three text arguments are required, pass the relevant text state/model directly. Do not pass the entire screen state.
 
+### Compose Previews
+
+- Wrap previews in `GitHubAppPreviewContent` from `core-ui` so they receive the app theme and required composition locals.
+- Use a direct `@Preview` with a `PreviewParameterProvider` for screen state variants. Use the shared `GitHubAppDevicePreviews`, `GitHubAppThemePreviews`, and `GitHubAppLargeFontPreview` annotations for focused configuration checks; do not create a Cartesian product of states and configurations.
+- Keep preview functions private and suffix their names with `Preview`.
+- Keep deterministic preview fixtures in the owning feature. Do not initialize ViewModels, navigation, network access, or runtime services from previews.
+
 ### Domain Layer
 
 - Use cases are classes with `operator fun invoke(...)` (injectable via `@Inject constructor`).

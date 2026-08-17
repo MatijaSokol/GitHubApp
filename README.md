@@ -241,6 +241,11 @@ open pull requests per ecosystem.
   needing more than three may receive the relevant text state/model, but should not receive the entire screen state.
 - Let Compose infer stability for immutable state and UI models. Use `@Stable` only when inference is insufficient and
   the type genuinely satisfies the stability contract.
+- Wrap Compose previews in `GitHubAppPreviewContent` from `core-ui`. Use a direct `@Preview` with a
+  `PreviewParameterProvider` for screen state variants, and the shared device, theme, and large-font annotations for
+  focused configuration checks rather than combining every state and configuration. Keep preview functions private,
+  suffix their names with `Preview`, and use deterministic feature-owned fixtures instead of ViewModels, navigation,
+  network access, or runtime services.
 - Domain modules should remain pure Kotlin/JVM and free of Android, datasource, and UI dependencies.
 
 ## Konsist Architecture Checks

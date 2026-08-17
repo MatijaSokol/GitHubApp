@@ -54,9 +54,17 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
+import com.matijasokol.coreui.preview.GitHubAppDevicePreviews
+import com.matijasokol.coreui.preview.GitHubAppLargeFontPreview
+import com.matijasokol.coreui.preview.GitHubAppPreviewContent
+import com.matijasokol.coreui.preview.GitHubAppThemePreviews
+import com.matijasokol.coreui.preview.STANDARD_PHONE_PREVIEW_HEIGHT_DP
+import com.matijasokol.coreui.preview.STANDARD_PHONE_PREVIEW_WIDTH_DP
 import com.matijasokol.repo.domain.Paginator.LoadState
 import com.matijasokol.repo.domain.Paginator.LoadState.Append
 import com.matijasokol.repo.domain.Paginator.LoadState.AppendError
@@ -353,6 +361,45 @@ private fun LoadingContent(modifier: Modifier = Modifier) {
     ) {
         items(12) { ShimmerRepoListItem() }
     }
+}
+
+@Preview(
+    name = "States",
+    group = "States",
+    widthDp = STANDARD_PHONE_PREVIEW_WIDTH_DP,
+    heightDp = STANDARD_PHONE_PREVIEW_HEIGHT_DP,
+    showBackground = true,
+)
+@Composable
+private fun RepoListStatesPreview(
+    @PreviewParameter(RepoListStatePreviewParameterProvider::class) state: RepoListState,
+) {
+    GitHubAppPreviewContent { RepoList(state = state, onEvent = {}) }
+}
+
+@GitHubAppDevicePreviews
+@Composable
+private fun RepoListDevicesPreview() {
+    GitHubAppPreviewContent { RepoList(state = RepoListPreviewFixtures.loaded, onEvent = {}) }
+}
+
+@GitHubAppThemePreviews
+@Composable
+private fun RepoListThemesPreview() {
+    GitHubAppPreviewContent(
+        modifier = Modifier.size(
+            width = STANDARD_PHONE_PREVIEW_WIDTH_DP.dp,
+            height = STANDARD_PHONE_PREVIEW_HEIGHT_DP.dp,
+        ),
+    ) {
+        RepoList(state = RepoListPreviewFixtures.loaded, onEvent = {})
+    }
+}
+
+@GitHubAppLargeFontPreview
+@Composable
+private fun RepoListLargeFontPreview() {
+    GitHubAppPreviewContent { RepoList(state = RepoListPreviewFixtures.longContent, onEvent = {}) }
 }
 
 private const val PREFETCH_DISTANCE = 6

@@ -22,7 +22,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.components.RoundedImage
 import com.matijasokol.coreui.components.withSharedBounds
+import com.matijasokol.coreui.preview.GitHubAppPreviewContent
+import com.matijasokol.coreui.preview.GitHubAppThemePreviews
 import com.matijasokol.repo.list.RepoListItem
+import com.matijasokol.repo.list.RepoListPreviewFixtures
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
 
 @Composable
@@ -88,5 +91,21 @@ fun RepoListItem(
                 modifier = Modifier.fillMaxWidth(),
             )
         }
+    }
+}
+
+@GitHubAppThemePreviews
+@Composable
+private fun RepoListItemPreview() {
+    GitHubAppPreviewContent {
+        RepoListItem(
+            repo = RepoListPreviewFixtures.longItem,
+            watchersContentDescription = "Watchers",
+            forksContentDescription = "Forks",
+            issuesContentDescription = "Issues",
+            onItemClick = {},
+            onImageClick = {},
+            modifier = Modifier.padding(12.dp),
+        )
     }
 }

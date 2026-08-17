@@ -1,4 +1,4 @@
-package com.matijasokol.githubapp.ui.theme
+package com.matijasokol.coreui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -8,16 +8,10 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun GitHubAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
-
     MaterialTheme(
-        colorScheme = colors,
-        typography = Typography,
-        shapes = Shapes,
+        colorScheme = if (darkTheme) DarkColorPalette else LightColorPalette,
+        typography = GitHubAppTypography,
+        shapes = GitHubAppShapes,
         content = content,
     )
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -24,6 +25,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import com.matijasokol.coreui.preview.GitHubAppPreviewContent
+import com.matijasokol.coreui.preview.GitHubAppThemePreviews
 import com.matijasokol.repo.list.R
 
 @Composable
@@ -101,6 +104,22 @@ fun SearchBar(
                     }
                 }
             },
+        )
+    }
+}
+
+@GitHubAppThemePreviews
+@Composable
+private fun SearchBarPreview() {
+    GitHubAppPreviewContent {
+        SearchBar(
+            modifier = Modifier.padding(12.dp),
+            text = "compose",
+            placeholderText = "Search repositories",
+            searchContentDescription = "Search",
+            clearSearchContentDescription = "Clear search",
+            onTextChanged = {},
+            onClearClicked = {},
         )
     }
 }

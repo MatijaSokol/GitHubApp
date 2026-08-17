@@ -3,6 +3,7 @@ package com.matijasokol.repo.list.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import com.matijasokol.coreui.preview.GitHubAppPreviewContent
+import com.matijasokol.coreui.preview.GitHubAppThemePreviews
 import com.matijasokol.repo.list.R
 
 @Composable
@@ -68,6 +71,22 @@ private fun RepoStat(
             text = text,
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@GitHubAppThemePreviews
+@Composable
+private fun RepoInfoPanelPreview() {
+    GitHubAppPreviewContent {
+        RepoInfoPanel(
+            watchers = "12345",
+            forks = "12345",
+            issues = "12345",
+            watchersContentDescription = "Watchers",
+            forksContentDescription = "Forks",
+            issuesContentDescription = "Issues",
+            modifier = Modifier.padding(12.dp),
         )
     }
 }
