@@ -215,9 +215,6 @@ private fun ListScreen(
         items(items = repos, key = RepoListItem::id) { repo ->
             RepoListItem(
                 repo = repo,
-                watchersContentDescription = text.watchersIconContentDescription,
-                forksContentDescription = text.forksIconContentDescription,
-                issuesContentDescription = text.issuesIconContentDescription,
                 onItemClick = onItemClick,
                 onImageClick = onImageClick,
             )
