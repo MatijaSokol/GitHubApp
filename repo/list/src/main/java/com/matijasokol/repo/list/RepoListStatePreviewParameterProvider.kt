@@ -43,9 +43,6 @@ internal object RepoListPreviewFixtures {
             forksOption = sortOption("Forks"),
             updatedOption = sortOption("Updated"),
         ),
-        watchersIconContentDescription = "Watchers",
-        forksIconContentDescription = "Forks",
-        issuesIconContentDescription = "Issues",
     )
 
     val regularItem = RepoListItem(
@@ -55,9 +52,12 @@ internal object RepoListPreviewFixtures {
         authorName = "JetBrains",
         authorImageUrl = "",
         authorProfileUrl = "https://github.com/JetBrains",
-        watchers = "49,640",
-        forks = "5,805",
-        issues = "174",
+        stars = "49.6k",
+        starsContentDescription = "Stars: 49640",
+        forks = "5.8k",
+        forksContentDescription = "Forks: 5805",
+        watchers = "49.6k",
+        watchersContentDescription = "Watchers: 49640",
     )
 
     val longItem = RepoListItem(
@@ -67,9 +67,12 @@ internal object RepoListPreviewFixtures {
         authorName = "androidx-with-an-unusually-long-organization-name",
         authorImageUrl = "",
         authorProfileUrl = "https://github.com/androidx",
-        watchers = "2,147,483,647",
-        forks = "987,654,321",
-        issues = "123,456,789",
+        stars = "2.1b",
+        starsContentDescription = "Stars: 2147483647",
+        forks = "987.7m",
+        forksContentDescription = "Forks: 987654321",
+        watchers = "2.1b",
+        watchersContentDescription = "Watchers: 2147483647",
     )
 
     val loaded = RepoListState(

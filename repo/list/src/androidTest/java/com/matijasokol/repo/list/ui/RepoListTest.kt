@@ -15,13 +15,12 @@ import com.matijasokol.coreui.components.LocalSharedTransitionScope
 import com.matijasokol.coreui.dictionary.DictionaryImpl
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.domain.Paginator
-import com.matijasokol.repo.domain.model.Repo
+import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.list.RepoList
 import com.matijasokol.repo.list.RepoListState
 import com.matijasokol.repo.list.RepoListUiMapper
 import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
-import com.matijasokol.repo.list.toRepoListItem
 import kotlinx.collections.immutable.toPersistentList
 import org.junit.Rule
 import org.junit.Test
@@ -33,7 +32,8 @@ class RepoListTest {
 
     private val query = "kotlin"
     private val dictionary = DictionaryImpl(ApplicationProvider.getApplicationContext())
-    private val testText = RepoListUiMapper(dictionary).initialState(query).text
+    private val uiMapper = RepoListUiMapper(dictionary)
+    private val testText = uiMapper.initialState(query).text
 
     // Workaround to provide required parameters due to shared transition animation
     // Without this, test will fail. See SharedElement.kt for more details
@@ -59,9 +59,14 @@ class RepoListTest {
         val state = RepoListState(
             loadState = Paginator.LoadState.Loaded,
             query = query,
-            items = serializeRepoResponseData(
-                this::class.java.getResource("/repo_list_valid.json").readText(),
-            ).map(Repo::toRepoListItem).toPersistentList(),
+            items = uiMapper.toUiState(
+                loadState = Paginator.LoadState.Loaded,
+                items = serializeRepoResponseData(
+                    jsonData = this::class.java.getResource("/repo_list_valid.json").readText(),
+                ),
+                query = query,
+                repoSortType = RepoSortType.Unknown(),
+            ).items.toPersistentList(),
             text = testText,
         )
 
@@ -91,16 +96,23 @@ class RepoListTest {
     fun repoListEmptyShowErrorMessage() {
         val errorText = testText.loadErrorMessage
 
+        val state = RepoListState(
+            query = query,
+            text = testText,
+            items = uiMapper.toUiState(
+                loadState = Paginator.LoadState.Loaded,
+                items = serializeRepoResponseData(
+                    jsonData = this::class.java.getResource("/repo_list_empty.json").readText(),
+                ),
+                query = query,
+                repoSortType = RepoSortType.Unknown(),
+            ).items.toPersistentList(),
+        )
+
         composeTestRule.setContent {
             FakeRootComposable {
                 RepoList(
-                    state = RepoListState(
-                        query = query,
-                        text = testText,
-                        items = serializeRepoResponseData(
-                            this::class.java.getResource("/repo_list_empty.json").readText(),
-                        ).map(Repo::toRepoListItem).toPersistentList(),
-                    ),
+                    state = state,
                     onEvent = {},
                 )
             }

@@ -3,7 +3,6 @@ package com.matijasokol.repo.list
 import androidx.compose.runtime.Stable
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
-import com.matijasokol.repo.domain.model.Repo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -23,9 +22,12 @@ data class RepoListItem(
     val authorName: String,
     val authorImageUrl: String,
     val authorProfileUrl: String,
-    val watchers: String,
+    val stars: String,
+    val starsContentDescription: String,
     val forks: String,
-    val issues: String,
+    val forksContentDescription: String,
+    val watchers: String,
+    val watchersContentDescription: String,
 )
 
 data class RepoListText(
@@ -39,9 +41,6 @@ data class RepoListText(
     val profileBrowserErrorMessage: String = "",
     val retryButtonText: String = "",
     val sortOptions: RepoSortText = RepoSortText(),
-    val watchersIconContentDescription: String = "",
-    val forksIconContentDescription: String = "",
-    val issuesIconContentDescription: String = "",
 )
 
 data class RepoSortText(
@@ -55,16 +54,4 @@ data class RepoSortOptionText(
     val displayLabel: String = "",
     val ascendingActionContentDescription: String = "",
     val descendingActionContentDescription: String = "",
-)
-
-fun Repo.toRepoListItem() = RepoListItem(
-    id = id,
-    fullName = fullName,
-    name = name,
-    authorName = author.name,
-    authorImageUrl = author.image,
-    authorProfileUrl = author.profileUrl,
-    watchers = watchersCount.toString(),
-    forks = forksCount.toString(),
-    issues = issuesCount.toString(),
 )

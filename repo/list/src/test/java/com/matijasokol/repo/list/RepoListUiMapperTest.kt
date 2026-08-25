@@ -1,8 +1,13 @@
 package com.matijasokol.repo.list
 
+import com.matijasokol.repo.domain.Paginator
+import com.matijasokol.repo.domain.RepoSortType
+import com.matijasokol.repo.domain.model.Author
+import com.matijasokol.repo.domain.model.Repo
 import com.matijasokol.test.FakeDictionary
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.Test
+import java.util.Date
 
 class RepoListUiMapperTest {
 
@@ -24,9 +29,9 @@ class RepoListUiMapperTest {
             R.string.repo_list_sort_stars to "Stars",
             R.string.repo_list_sort_forks to "Forks",
             R.string.repo_list_sort_updated to "Updated",
+            R.string.repo_list_stars_content_description to "Stars",
             R.string.repo_list_watchers_content_description to "Watchers",
             R.string.repo_list_forks_content_description to "Forks",
-            R.string.repo_list_issues_content_description to "Issues",
         )
         val sut = RepoListUiMapper(
             FakeDictionary(
@@ -43,5 +48,67 @@ class RepoListUiMapperTest {
         state.text.sortOptions.forksOption.displayLabel.shouldBeEqualTo("Forks")
         state.text.sortOptions.forksOption.ascendingActionContentDescription.shouldBeEqualTo("Forks Ascending")
         state.text.sortOptions.forksOption.descendingActionContentDescription.shouldBeEqualTo("Forks Descending")
+    }
+
+    @Test
+    fun `should MAP compact repository metrics and full accessibility counts`() {
+        val metricLabels = mapOf(
+            R.string.repo_list_stars_content_description to "Stars",
+            R.string.repo_list_watchers_content_description to "Watchers",
+            R.string.repo_list_forks_content_description to "Forks",
+        )
+        val sut = RepoListUiMapper(
+            FakeDictionary(
+                getStringArgs = { id, args ->
+                    metricLabels[id]?.let { "$it: ${args.single()}" } ?: args.joinToString(" ")
+                },
+            ),
+        )
+        val repo = Repo(
+            id = 1,
+            name = "repo",
+            fullName = "owner/repo",
+            author = Author(1, "owner", "image", "profile", "followers", "repos"),
+            watchersCount = 999,
+            forksCount = 1_000_000,
+            issuesCount = 10,
+            lastUpdated = Date(0),
+            starsCount = 1_200,
+            topics = emptyList(),
+            language = null,
+            url = "url",
+            description = null,
+        )
+
+        val item = sut.toUiState(
+            loadState = Paginator.LoadState.Loaded,
+            items = listOf(repo),
+            query = "kotlin",
+            repoSortType = RepoSortType.Unknown(),
+        ).items.single()
+
+        item.stars shouldBeEqualTo "1.2k"
+        item.starsContentDescription shouldBeEqualTo "Stars: 1200"
+        item.watchers shouldBeEqualTo "999"
+        item.watchersContentDescription shouldBeEqualTo "Watchers: 999"
+        item.forks shouldBeEqualTo "1m"
+        item.forksContentDescription shouldBeEqualTo "Forks: 1000000"
+    }
+
+    @Test
+    fun `should FORMAT representative compact count boundaries`() {
+        mapOf(
+            0 to "0",
+            999 to "999",
+            1_000 to "1k",
+            1_200 to "1.2k",
+            999_949 to "999.9k",
+            999_950 to "1m",
+            1_000_000 to "1m",
+            1_250_000 to "1.3m",
+            Int.MAX_VALUE to "2.1b",
+        ).forEach { (count, expected) ->
+            formatCompactCount(count) shouldBeEqualTo expected
+        }
     }
 }

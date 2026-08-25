@@ -31,9 +31,6 @@ import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
 @Composable
 fun RepoListItem(
     repo: RepoListItem,
-    watchersContentDescription: String,
-    forksContentDescription: String,
-    issuesContentDescription: String,
     onItemClick: (RepoListItem) -> Unit,
     onImageClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -82,12 +79,12 @@ fun RepoListItem(
             }
             Spacer(modifier = Modifier.height(20.dp))
             RepoInfoPanel(
-                watchers = repo.watchers,
+                stars = repo.stars,
                 forks = repo.forks,
-                issues = repo.issues,
-                watchersContentDescription = watchersContentDescription,
-                forksContentDescription = forksContentDescription,
-                issuesContentDescription = issuesContentDescription,
+                watchers = repo.watchers,
+                starsContentDescription = repo.starsContentDescription,
+                forksContentDescription = repo.forksContentDescription,
+                watchersContentDescription = repo.watchersContentDescription,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -100,9 +97,6 @@ private fun RepoListItemPreview() {
     GitHubAppPreviewContent {
         RepoListItem(
             repo = RepoListPreviewFixtures.longItem,
-            watchersContentDescription = "Watchers",
-            forksContentDescription = "Forks",
-            issuesContentDescription = "Issues",
             onItemClick = {},
             onImageClick = {},
             modifier = Modifier.padding(12.dp),

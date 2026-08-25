@@ -22,7 +22,7 @@ class RepoListUiMapper @Inject constructor(private val dictionary: Dictionary) {
         repoSortType: RepoSortType,
     ) = RepoListState(
         loadState = loadState,
-        items = items.map(Repo::toRepoListItem).toPersistentList(),
+        items = items.map(::toRepoListItem).toPersistentList(),
         query = query,
         repoSortType = repoSortType,
         text = staticData.text,
@@ -52,11 +52,32 @@ class RepoListUiMapper @Inject constructor(private val dictionary: Dictionary) {
                 forksOption = mapSortOption(R.string.repo_list_sort_forks, ascending, descending),
                 updatedOption = mapSortOption(R.string.repo_list_sort_updated, ascending, descending),
             ),
-            watchersIconContentDescription = dictionary.getString(R.string.repo_list_watchers_content_description),
-            forksIconContentDescription = dictionary.getString(R.string.repo_list_forks_content_description),
-            issuesIconContentDescription = dictionary.getString(R.string.repo_list_issues_content_description),
         )
     }
+
+    private fun toRepoListItem(repo: Repo) = RepoListItem(
+        id = repo.id,
+        fullName = repo.fullName,
+        name = repo.name,
+        authorName = repo.author.name,
+        authorImageUrl = repo.author.image,
+        authorProfileUrl = repo.author.profileUrl,
+        stars = formatCompactCount(repo.starsCount),
+        starsContentDescription = dictionary.getString(
+            R.string.repo_list_stars_content_description,
+            repo.starsCount,
+        ),
+        forks = formatCompactCount(repo.forksCount),
+        forksContentDescription = dictionary.getString(
+            R.string.repo_list_forks_content_description,
+            repo.forksCount,
+        ),
+        watchers = formatCompactCount(repo.watchersCount),
+        watchersContentDescription = dictionary.getString(
+            R.string.repo_list_watchers_content_description,
+            repo.watchersCount,
+        ),
+    )
 
     private fun mapSortOption(labelResId: Int, ascending: String, descending: String): RepoSortOptionText {
         val label = dictionary.getString(labelResId)
@@ -74,4 +95,32 @@ class RepoListUiMapper @Inject constructor(private val dictionary: Dictionary) {
             ),
         )
     }
+}
+
+fun formatCompactCount(count: Int): String {
+    if (count < 1_000) return count.toString()
+
+    val suffixes = charArrayOf('k', 'm', 'b')
+    var divisor = 1_000L
+    var suffixIndex = 0
+
+    while (suffixIndex < suffixes.lastIndex && count >= divisor * 1_000) {
+        divisor *= 1_000
+        suffixIndex++
+    }
+
+    var roundedTenths = (count.toLong() * 10 + divisor / 2) / divisor
+    if (roundedTenths == 10_000L && suffixIndex < suffixes.lastIndex) {
+        divisor *= 1_000
+        suffixIndex++
+        roundedTenths = (count.toLong() * 10 + divisor / 2) / divisor
+    }
+
+    val value = if (roundedTenths % 10 == 0L) {
+        (roundedTenths / 10).toString()
+    } else {
+        "${roundedTenths / 10}.${roundedTenths % 10}"
+    }
+
+    return "$value${suffixes[suffixIndex]}"
 }

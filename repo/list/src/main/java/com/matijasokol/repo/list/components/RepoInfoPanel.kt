@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.preview.GitHubAppPreviewContent
 import com.matijasokol.coreui.preview.GitHubAppThemePreviews
@@ -20,12 +22,12 @@ import com.matijasokol.repo.list.R
 
 @Composable
 fun RepoInfoPanel(
-    watchers: String,
+    stars: String,
     forks: String,
-    issues: String,
-    watchersContentDescription: String,
+    watchers: String,
+    starsContentDescription: String,
     forksContentDescription: String,
-    issuesContentDescription: String,
+    watchersContentDescription: String,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -33,9 +35,9 @@ fun RepoInfoPanel(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         RepoStat(
-            text = watchers,
-            icon = ImageVector.vectorResource(R.drawable.watch),
-            contentDescription = watchersContentDescription,
+            text = stars,
+            icon = ImageVector.vectorResource(R.drawable.star),
+            contentDescription = starsContentDescription,
         )
         RepoStat(
             text = forks,
@@ -43,9 +45,9 @@ fun RepoInfoPanel(
             contentDescription = forksContentDescription,
         )
         RepoStat(
-            text = issues,
-            icon = ImageVector.vectorResource(R.drawable.issue),
-            contentDescription = issuesContentDescription,
+            text = watchers,
+            icon = ImageVector.vectorResource(R.drawable.watch),
+            contentDescription = watchersContentDescription,
         )
     }
 }
@@ -59,11 +61,11 @@ private fun RepoStat(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier,
+        modifier = modifier.clearAndSetSemantics { this.contentDescription = contentDescription },
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = contentDescription,
+            contentDescription = null,
             modifier = Modifier.size(15.dp),
             tint = MaterialTheme.colorScheme.primary,
         )
@@ -80,12 +82,12 @@ private fun RepoStat(
 private fun RepoInfoPanelPreview() {
     GitHubAppPreviewContent {
         RepoInfoPanel(
-            watchers = "12345",
-            forks = "12345",
-            issues = "12345",
-            watchersContentDescription = "Watchers",
-            forksContentDescription = "Forks",
-            issuesContentDescription = "Issues",
+            stars = "12.3k",
+            forks = "12.3k",
+            watchers = "12.3k",
+            starsContentDescription = "Stars: 12345",
+            forksContentDescription = "Forks: 12345",
+            watchersContentDescription = "Watchers: 12345",
             modifier = Modifier.padding(12.dp),
         )
     }
