@@ -29,7 +29,7 @@ navigation3Lifecycle = "2.11.0"
 coil = "3.5.0"
 material3 = "1.4.0"
 splash = "1.2.0"
-backdrop = "2.0.0"
+backdrop = "2.0.1"
 
 sqldelight = "2.3.2"
 ktor = "3.5.2"
