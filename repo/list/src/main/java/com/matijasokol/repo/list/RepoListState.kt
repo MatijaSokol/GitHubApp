@@ -37,6 +37,8 @@ data class RepoListText(
     val searchIconContentDescription: String = "",
     val clearSearchButtonContentDescription: String = "",
     val refreshErrorTitle: String = "",
+    val emptyResultTitle: String = "",
+    val emptyResultMessage: String = "",
     val loadErrorMessage: String = "",
     val profileBrowserErrorMessage: String = "",
     val retryButtonText: String = "",

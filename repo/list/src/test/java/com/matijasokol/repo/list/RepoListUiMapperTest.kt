@@ -22,6 +22,8 @@ class RepoListUiMapperTest {
             R.string.repo_list_search_content_description to "Search",
             R.string.repo_list_clear_search_content_description to "Clear",
             R.string.repo_list_refresh_error_title to "Could not load repositories",
+            R.string.repo_list_empty_result_title to "No repositories found",
+            R.string.repo_list_empty_result_message to "Try another search term",
             R.string.repo_list_message_error to "Loading failed",
             R.string.repo_list_message_browser_error to "Could not open profile",
             R.string.repo_list_retry_text to "Retry",
@@ -44,6 +46,8 @@ class RepoListUiMapperTest {
 
         state.text.headerTitle.shouldBeEqualTo("Discover")
         state.text.searchIconContentDescription.shouldBeEqualTo("Search")
+        state.text.emptyResultTitle.shouldBeEqualTo("No repositories found")
+        state.text.emptyResultMessage.shouldBeEqualTo("Try another search term")
         state.text.profileBrowserErrorMessage.shouldBeEqualTo("Could not open profile")
         state.text.sortOptions.forksOption.displayLabel.shouldBeEqualTo("Forks")
         state.text.sortOptions.forksOption.ascendingActionContentDescription.shouldBeEqualTo("Forks Ascending")
