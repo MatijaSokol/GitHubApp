@@ -8,7 +8,7 @@ GitHubApp is an Android application for browsing GitHub repositories, built with
 
 - **Package name:** `com.matijasokol.githubapp`
 - **Min SDK:** 24 | **Target/Compile SDK:** 37
-- **Kotlin:** 2.4.10 | **AGP:** 9.3.1
+- **Kotlin:** 2.4.10 | **AGP:** 9.4.0
 - **Product flavors:** `free`, `paid`
 
 ## Architecture
