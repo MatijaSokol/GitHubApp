@@ -41,6 +41,8 @@ class RepoListUiMapper @Inject constructor(private val dictionary: Dictionary) {
                 R.string.repo_list_clear_search_content_description,
             ),
             refreshErrorTitle = dictionary.getString(R.string.repo_list_refresh_error_title),
+            emptyResultTitle = dictionary.getString(R.string.repo_list_empty_result_title),
+            emptyResultMessage = dictionary.getString(R.string.repo_list_empty_result_message),
             loadErrorMessage = dictionary.getString(R.string.repo_list_message_error),
             profileBrowserErrorMessage = dictionary.getString(R.string.repo_list_message_browser_error),
             retryButtonText = dictionary.getString(R.string.repo_list_retry_text),

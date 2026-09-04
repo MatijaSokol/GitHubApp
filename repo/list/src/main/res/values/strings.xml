@@ -5,6 +5,8 @@
     <string name="repo_list_message_error">Error while loading data. Query missing or you run out of free APIs.</string>
     <string name="repo_list_retry_text">Retry</string>
     <string name="repo_list_refresh_error_title">Couldn\'t load repositories</string>
+    <string name="repo_list_empty_result_title">No repositories found</string>
+    <string name="repo_list_empty_result_message">Try another search term or check your spelling.</string>
     <string name="repo_list_message_browser_error">Can not open author profile in browser.</string>
     <string name="repo_list_search_content_description">Search</string>
     <string name="repo_list_clear_search_content_description">Clear</string>

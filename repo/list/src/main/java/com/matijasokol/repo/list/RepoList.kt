@@ -52,6 +52,10 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -153,7 +157,7 @@ fun RepoList(
                         retryText = state.text.retryButtonText,
                         onRetryClick = { onEvent(RepoListEvent.OnRetryClick) },
                     )
-                    Loaded, Append, AppendError -> ListScreen(
+                    Loaded, Append, AppendError -> SuccessContent(
                         repos = state.items,
                         loadState = state.loadState,
                         text = state.text,
@@ -167,7 +171,10 @@ fun RepoList(
         }
 
         AnimatedVisibility(
-            visible = sortBarVisible && state.loadState != Refresh && state.loadState != RefreshError,
+            visible = sortBarVisible &&
+                state.loadState != Refresh &&
+                state.loadState != RefreshError &&
+                state.items.isNotEmpty(),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .navigationBarsPadding()
@@ -183,6 +190,83 @@ fun RepoList(
                     onEvent(RepoListEvent.UpdateSortType(it))
                 },
             )
+        }
+    }
+}
+
+@Composable
+@Suppress("LongParameterList")
+private fun SuccessContent(
+    repos: ImmutableList<RepoListItem>,
+    loadState: LoadState,
+    text: RepoListText,
+    lazyStaggeredGridState: LazyStaggeredGridState,
+    onItemClick: (RepoListItem) -> Unit,
+    onImageClick: (String) -> Unit,
+    onRetryClick: () -> Unit,
+) {
+    if (repos.isEmpty()) {
+        EmptyContent(
+            title = text.emptyResultTitle,
+            message = text.emptyResultMessage,
+        )
+    } else {
+        ListScreen(
+            repos = repos,
+            loadState = loadState,
+            text = text,
+            lazyStaggeredGridState = lazyStaggeredGridState,
+            onItemClick = onItemClick,
+            onImageClick = onImageClick,
+            onRetryClick = onRetryClick,
+        )
+    }
+}
+
+@Composable
+private fun EmptyContent(title: String, message: String, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.surfaceContainer,
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.empty_repositories),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(132.dp)
+                        .background(MaterialTheme.colorScheme.secondaryContainer, CircleShape)
+                        .padding(14.dp),
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+                Text(
+                    text = title,
+                    modifier = Modifier.semantics {
+                        heading()
+                        liveRegion = LiveRegionMode.Polite
+                    },
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = message,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }

@@ -64,6 +64,55 @@ class RepoListViewModelTest {
     }
 
     @Test
+    fun `should RETURN EMPTY STATE when request returns no repositories`() = runTest {
+        sut = RepoListViewModel(
+            sortRepos = sortRepos,
+            paginator = FakePaginator(
+                repoService = RepoServiceFake.build(
+                    RepoServiceResponseType.EmptyList,
+                ),
+            ),
+            uiMapper = uiMapper,
+        )
+
+        sut.state.test {
+            awaitItem() // initial state
+
+            awaitItem().run {
+                loadState `should be` Paginator.LoadState.Loaded
+                items.shouldBeEmpty()
+            }
+        }
+    }
+
+    @Test
+    fun `should KEEP SUCCESS STATE when query is cleared`() = runTest {
+        sut = RepoListViewModel(
+            sortRepos = sortRepos,
+            paginator = FakePaginator(
+                repoService = RepoServiceFake.build(
+                    RepoServiceResponseType.GoodData,
+                ),
+            ),
+            uiMapper = uiMapper,
+        )
+
+        sut.state.test {
+            awaitItem() // initial state
+            awaitItem().loadState `should be` Paginator.LoadState.Loaded
+            awaitItem().items.shouldNotBeEmpty()
+
+            sut.onEvent(RepoListEvent.OnQueryChanged(""))
+
+            awaitItem().run {
+                loadState `should be` Paginator.LoadState.Loaded
+                items.shouldNotBeEmpty()
+                query `should be` ""
+            }
+        }
+    }
+
+    @Test
     fun `should RETURN ERROR STATE when request fails`() = runTest {
         sut = RepoListViewModel(
             sortRepos = sortRepos,

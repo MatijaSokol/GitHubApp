@@ -5,8 +5,13 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
@@ -17,11 +22,9 @@ import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.list.RepoList
-import com.matijasokol.repo.list.RepoListState
 import com.matijasokol.repo.list.RepoListUiMapper
 import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
-import kotlinx.collections.immutable.toPersistentList
 import org.junit.Rule
 import org.junit.Test
 
@@ -56,18 +59,13 @@ class RepoListTest {
     fun repoListSuccessShowData() {
         val errorText = testText.loadErrorMessage
 
-        val state = RepoListState(
+        val state = uiMapper.toUiState(
             loadState = Paginator.LoadState.Loaded,
+            items = serializeRepoResponseData(
+                jsonData = this::class.java.getResource("/repo_list_valid.json").readText(),
+            ),
             query = query,
-            items = uiMapper.toUiState(
-                loadState = Paginator.LoadState.Loaded,
-                items = serializeRepoResponseData(
-                    jsonData = this::class.java.getResource("/repo_list_valid.json").readText(),
-                ),
-                query = query,
-                repoSortType = RepoSortType.Unknown(),
-            ).items.toPersistentList(),
-            text = testText,
+            repoSortType = RepoSortType.Unknown(),
         )
 
         composeTestRule.setContent {
@@ -80,6 +78,8 @@ class RepoListTest {
         }
 
         composeTestRule.onNodeWithText(errorText).assertDoesNotExist()
+        composeTestRule.onNodeWithText(testText.emptyResultTitle).assertDoesNotExist()
+        composeTestRule.onNodeWithText(testText.emptyResultMessage).assertDoesNotExist()
         composeTestRule
             .onNodeWithText(query, useUnmergedTree = true)
             .assertExists()
@@ -93,20 +93,16 @@ class RepoListTest {
     }
 
     @Test
-    fun repoListEmptyShowErrorMessage() {
+    fun repoListEmptyShowsEmptyMessage() {
         val errorText = testText.loadErrorMessage
 
-        val state = RepoListState(
+        val state = uiMapper.toUiState(
+            loadState = Paginator.LoadState.Loaded,
+            items = serializeRepoResponseData(
+                jsonData = this::class.java.getResource("/repo_list_empty.json").readText(),
+            ),
             query = query,
-            text = testText,
-            items = uiMapper.toUiState(
-                loadState = Paginator.LoadState.Loaded,
-                items = serializeRepoResponseData(
-                    jsonData = this::class.java.getResource("/repo_list_empty.json").readText(),
-                ),
-                query = query,
-                repoSortType = RepoSortType.Unknown(),
-            ).items.toPersistentList(),
+            repoSortType = RepoSortType.Unknown(),
         )
 
         composeTestRule.setContent {
@@ -126,6 +122,19 @@ class RepoListTest {
             .let(::assert)
 
         composeTestRule.onNodeWithText(errorText).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(TAG_LOADING_INDICATOR).assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription(testText.emptyResultTitle).assertExists()
+        composeTestRule
+            .onNodeWithText(testText.emptyResultTitle)
+            .assertExists()
+            .assert(
+                SemanticsMatcher.expectValue(
+                    SemanticsProperties.LiveRegion,
+                    LiveRegionMode.Polite,
+                ),
+            )
+            .assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading))
+        composeTestRule.onNodeWithText(testText.emptyResultMessage).assertExists()
     }
 
     @Test
@@ -133,11 +142,7 @@ class RepoListTest {
         composeTestRule.setContent {
             FakeRootComposable {
                 RepoList(
-                    state = RepoListState(
-                        loadState = Paginator.LoadState.Refresh,
-                        query = query,
-                        text = testText,
-                    ),
+                    state = uiMapper.initialState(query),
                     onEvent = {},
                 )
             }
@@ -146,5 +151,7 @@ class RepoListTest {
         composeTestRule
             .onNodeWithTag(TAG_LOADING_INDICATOR)
             .assertExists()
+        composeTestRule.onNodeWithText(testText.emptyResultTitle).assertDoesNotExist()
+        composeTestRule.onNodeWithText(testText.emptyResultMessage).assertDoesNotExist()
     }
 }

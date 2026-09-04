@@ -34,6 +34,8 @@ internal object RepoListPreviewFixtures {
         searchIconContentDescription = "Search",
         clearSearchButtonContentDescription = "Clear search",
         refreshErrorTitle = "Couldn't load repositories",
+        emptyResultTitle = "No repositories found",
+        emptyResultMessage = "Try another search term or check your spelling.",
         loadErrorMessage = "Check your connection and try again.",
         profileBrowserErrorMessage = "Cannot open the author profile.",
         retryButtonText = "Retry",
