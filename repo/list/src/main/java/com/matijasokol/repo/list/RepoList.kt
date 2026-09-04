@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,15 +29,21 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -92,6 +99,10 @@ fun RepoList(
     modifier: Modifier = Modifier,
     lazyStaggeredGridState: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
 ) {
+    val messageScrollState = rememberScrollState()
+    val isMessageInfoContent = state.loadState == RefreshError ||
+        (state.loadState != Refresh && state.items.isEmpty())
+    val headerScrollBehavior = rememberHeaderScrollBehavior(isMessageInfoContent, messageScrollState)
     val shouldStartPaginate by remember {
         derivedStateOf {
             with(lazyStaggeredGridState.layoutInfo) {
@@ -138,6 +149,7 @@ fun RepoList(
             modifier = Modifier
                 .fillMaxSize()
                 .nestedScroll(sortBarScrollConnection)
+                .nestedScroll(headerScrollBehavior.nestedScrollConnection)
                 .layerBackdrop(backdrop),
         ) {
             RepoListHeader(
@@ -145,6 +157,7 @@ fun RepoList(
                 queryValue = state.query,
                 onQueryChanged = { onEvent(RepoListEvent.OnQueryChanged(it)) },
                 onClearClicked = { onEvent(RepoListEvent.OnQueryChanged("")) },
+                scrollBehavior = headerScrollBehavior,
             )
 
             Box(modifier = Modifier.fillMaxSize()) {
@@ -155,12 +168,14 @@ fun RepoList(
                         title = state.text.refreshErrorTitle,
                         errorText = state.text.loadErrorMessage,
                         retryText = state.text.retryButtonText,
+                        scrollState = messageScrollState,
                         onRetryClick = { onEvent(RepoListEvent.OnRetryClick) },
                     )
                     Loaded, Append, AppendError -> SuccessContent(
                         repos = state.items,
                         loadState = state.loadState,
                         text = state.text,
+                        scrollState = messageScrollState,
                         lazyStaggeredGridState = lazyStaggeredGridState,
                         onItemClick = { onEvent(RepoListEvent.OnItemClick(it.authorImageUrl, it.fullName)) },
                         onImageClick = { onEvent(RepoListEvent.OnImageClick(it)) },
@@ -200,6 +215,7 @@ private fun SuccessContent(
     repos: ImmutableList<RepoListItem>,
     loadState: LoadState,
     text: RepoListText,
+    scrollState: ScrollState,
     lazyStaggeredGridState: LazyStaggeredGridState,
     onItemClick: (RepoListItem) -> Unit,
     onImageClick: (String) -> Unit,
@@ -209,6 +225,7 @@ private fun SuccessContent(
         EmptyContent(
             title = text.emptyResultTitle,
             message = text.emptyResultMessage,
+            scrollState = scrollState,
         )
     } else {
         ListScreen(
@@ -224,7 +241,12 @@ private fun SuccessContent(
 }
 
 @Composable
-private fun EmptyContent(title: String, message: String, modifier: Modifier = Modifier) {
+private fun EmptyContent(
+    title: String,
+    message: String,
+    scrollState: ScrollState,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -237,7 +259,9 @@ private fun EmptyContent(title: String, message: String, modifier: Modifier = Mo
             color = MaterialTheme.colorScheme.surfaceContainer,
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp),
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .padding(horizontal = 24.dp, vertical = 28.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
@@ -360,6 +384,7 @@ private fun RetryContent(
     title: String,
     errorText: String,
     retryText: String,
+    scrollState: ScrollState,
     modifier: Modifier = Modifier,
     onRetryClick: () -> Unit,
 ) {
@@ -372,7 +397,9 @@ private fun RetryContent(
         color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp),
+            modifier = Modifier
+                .padding(horizontal = 24.dp, vertical = 28.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -442,6 +469,31 @@ private fun LoadingContent(modifier: Modifier = Modifier) {
     ) {
         items(12) { ShimmerRepoListItem() }
     }
+}
+
+/**
+ * Keeps the header expanded when empty or error content fits, while allowing it to collapse when content overflows.
+ */
+@Composable
+private fun rememberHeaderScrollBehavior(
+    isMessageInfoContent: Boolean,
+    messageScrollState: ScrollState,
+): TopAppBarScrollBehavior {
+    val headerState = rememberTopAppBarState()
+
+    SideEffect(isMessageInfoContent) {
+        if (isMessageInfoContent) {
+            headerState.heightOffset = 0f
+            headerState.contentOffset = 0f
+        }
+    }
+
+    return TopAppBarDefaults.enterAlwaysScrollBehavior(
+        state = headerState,
+        canScroll = {
+            !isMessageInfoContent || messageScrollState.maxValue > 0 || headerState.heightOffset < 0f
+        },
+    )
 }
 
 @Preview(
