@@ -19,6 +19,9 @@ internal fun viewModelClasses(): List<KoClassDeclaration> = productionClasses()
             clazz.containingFile.hasImportWithName(ANDROIDX_VIEW_MODEL_IMPORT)
     }
 
+internal fun mapperClasses(): List<KoClassDeclaration> = productionClasses()
+    .filter { clazz -> clazz.name.endsWith(MAPPER_SUFFIX) }
+
 internal fun useCaseClasses(): List<KoClassDeclaration> = productionClasses()
     .filter { it.path.normalizedPath().contains(DOMAIN_USECASE_PATH) }
 
@@ -34,3 +37,4 @@ internal fun String.normalizedPath(): String = replace('\\', '/')
 private const val DATASOURCE_MAIN_PATH = "/repo/datasource/src/main/"
 private const val DOMAIN_USECASE_PATH = "/repo/domain/src/main/java/com/matijasokol/repo/domain/usecase/"
 private const val ANDROIDX_VIEW_MODEL_IMPORT = "androidx.lifecycle.ViewModel"
+private const val MAPPER_SUFFIX = "Mapper"

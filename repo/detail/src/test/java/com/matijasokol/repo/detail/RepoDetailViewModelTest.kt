@@ -5,7 +5,6 @@ import com.matijasokol.coreui.navigation.Destination
 import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
 import com.matijasokol.repo.domain.usecase.GetRepoDetailsUseCase
-import com.matijasokol.test.FakeDictionary
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should be instance of`
 import org.junit.jupiter.api.Test
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 class RepoDetailViewModelTest {
 
     private val destination = Destination.RepoDetail(repoFullName = "JetBrains/kotlin", authorImageUrl = "")
-    private val uiMapper = RepoDetailsUiMapper(FakeDictionary())
+    private val uiMapper = RepoDetailsUiMapper()
 
     @Test
     fun `should RETURN SUCCESS STATE when request was successful`() = runTest {

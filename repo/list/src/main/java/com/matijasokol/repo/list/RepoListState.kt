@@ -1,6 +1,7 @@
 package com.matijasokol.repo.list
 
 import androidx.compose.runtime.Stable
+import com.matijasokol.coreui.text.UiText
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
 import kotlinx.collections.immutable.ImmutableList
@@ -23,37 +24,36 @@ data class RepoListItem(
     val authorImageUrl: String,
     val authorProfileUrl: String,
     val stars: String,
-    val starsContentDescription: String,
+    val starsContentDescription: UiText,
     val forks: String,
-    val forksContentDescription: String,
+    val forksContentDescription: UiText,
     val watchers: String,
-    val watchersContentDescription: String,
+    val watchersContentDescription: UiText,
 )
 
 data class RepoListText(
-    val headerTitle: String = "",
-    val headerSubtitle: String = "",
-    val searchPlaceholder: String = "",
-    val searchIconContentDescription: String = "",
-    val clearSearchButtonContentDescription: String = "",
-    val refreshErrorTitle: String = "",
-    val emptyResultTitle: String = "",
-    val emptyResultMessage: String = "",
-    val loadErrorMessage: String = "",
-    val profileBrowserErrorMessage: String = "",
-    val retryButtonText: String = "",
+    val headerTitle: UiText = UiText.StringText(""),
+    val headerSubtitle: UiText = UiText.StringText(""),
+    val searchPlaceholder: UiText = UiText.StringText(""),
+    val searchIconContentDescription: UiText = UiText.StringText(""),
+    val clearSearchButtonContentDescription: UiText = UiText.StringText(""),
+    val refreshErrorTitle: UiText = UiText.StringText(""),
+    val emptyResultTitle: UiText = UiText.StringText(""),
+    val emptyResultMessage: UiText = UiText.StringText(""),
+    val loadErrorMessage: UiText = UiText.StringText(""),
+    val retryButtonText: UiText = UiText.StringText(""),
     val sortOptions: RepoSortText = RepoSortText(),
 )
 
 data class RepoSortText(
-    val sortOptionsContentDescription: String = "",
+    val sortOptionsContentDescription: UiText = UiText.StringText(""),
     val starsOption: RepoSortOptionText = RepoSortOptionText(),
     val forksOption: RepoSortOptionText = RepoSortOptionText(),
     val updatedOption: RepoSortOptionText = RepoSortOptionText(),
 )
 
 data class RepoSortOptionText(
-    val displayLabel: String = "",
-    val ascendingActionContentDescription: String = "",
-    val descendingActionContentDescription: String = "",
+    val displayLabel: UiText = UiText.StringText(""),
+    val ascendingActionContentDescription: UiText = UiText.StringText(""),
+    val descendingActionContentDescription: UiText = UiText.StringText(""),
 )

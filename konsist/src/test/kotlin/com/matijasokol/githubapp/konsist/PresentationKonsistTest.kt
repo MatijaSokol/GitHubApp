@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test
 class PresentationKonsistTest {
 
     @Test
-    fun `production code does not resolve string resources in composables`() {
-        productionScope.imports.assertFalse { import ->
-            import.name == "androidx.compose.ui.res.stringResource"
-        }
+    fun `only UiText resolves string resources in composables`() {
+        productionScope.files
+            .filter { file -> file.hasImportWithName(STRING_RESOURCE_IMPORT) }
+            .assertTrue { file -> file.path.replace('\\', '/').endsWith(UI_TEXT_PATH) }
     }
 
     @Test
@@ -40,10 +40,10 @@ class PresentationKonsistTest {
     }
 
     @Test
-    fun `view models do not use Dictionary`() {
-        viewModelClasses()
-            .assertFalse { viewModel ->
-                viewModel.containingFile.hasImportWithName(DICTIONARY_IMPORT)
+    fun `view models and mappers do not resolve Android resources`() {
+        (viewModelClasses() + mapperClasses())
+            .assertFalse { clazz ->
+                forbiddenResourceImports.any(clazz.containingFile::hasImportWithName)
             }
     }
 
@@ -75,4 +75,11 @@ private const val PLAIN_LIST_TYPE_DECLARATION = ": List<"
 private const val IMMUTABLE_LIST_TYPE_DECLARATION = ": ImmutableList<"
 private const val STATE_FLOW_TYPE_DECLARATION = ": StateFlow<"
 private const val FLOW_TYPE_DECLARATION = ": Flow<"
-private const val DICTIONARY_IMPORT = "com.matijasokol.core.dictionary.Dictionary"
+private val forbiddenResourceImports = listOf(
+    "android.content.Context",
+    "android.content.res.Resources",
+    "androidx.compose.ui.res.stringResource",
+)
+
+private const val STRING_RESOURCE_IMPORT = "androidx.compose.ui.res.stringResource"
+private const val UI_TEXT_PATH = "/coreui/text/UiText.kt"

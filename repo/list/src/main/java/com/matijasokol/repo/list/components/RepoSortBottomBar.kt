@@ -42,6 +42,7 @@ import com.kyant.backdrop.effects.vibrancy
 import com.matijasokol.core.domain.SortOrder
 import com.matijasokol.coreui.preview.GitHubAppPreviewContent
 import com.matijasokol.coreui.preview.GitHubAppThemePreviews
+import com.matijasokol.coreui.text.asString
 import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.list.R
 import com.matijasokol.repo.list.RepoListPreviewFixtures
@@ -98,37 +99,39 @@ private fun RepoSortBottomBarContent(
     modifier: Modifier = Modifier,
     onSortTypeClicked: (RepoSortType) -> Unit,
 ) {
+    val sortOptionsContentDescription = text.sortOptionsContentDescription.asString()
+
     Row(
         modifier = modifier
             .height(64.dp)
             .fillMaxWidth()
-            .semantics { contentDescription = text.sortOptionsContentDescription }
+            .semantics { contentDescription = sortOptionsContentDescription }
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SortOption(
-            label = text.starsOption.displayLabel,
-            ascendingContentDescription = text.starsOption.ascendingActionContentDescription,
-            descendingContentDescription = text.starsOption.descendingActionContentDescription,
+            label = text.starsOption.displayLabel.asString(),
+            ascendingContentDescription = text.starsOption.ascendingActionContentDescription.asString(),
+            descendingContentDescription = text.starsOption.descendingActionContentDescription.asString(),
             selected = appliedSortType is RepoSortType.Stars,
             order = appliedSortType.order,
             modifier = Modifier.weight(1f).fillMaxHeight(),
             onOrderClick = { onSortTypeClicked(RepoSortType.Stars(it)) },
         )
         SortOption(
-            label = text.forksOption.displayLabel,
-            ascendingContentDescription = text.forksOption.ascendingActionContentDescription,
-            descendingContentDescription = text.forksOption.descendingActionContentDescription,
+            label = text.forksOption.displayLabel.asString(),
+            ascendingContentDescription = text.forksOption.ascendingActionContentDescription.asString(),
+            descendingContentDescription = text.forksOption.descendingActionContentDescription.asString(),
             selected = appliedSortType is RepoSortType.Forks,
             order = appliedSortType.order,
             modifier = Modifier.weight(1f).fillMaxHeight(),
             onOrderClick = { onSortTypeClicked(RepoSortType.Forks(it)) },
         )
         SortOption(
-            label = text.updatedOption.displayLabel,
-            ascendingContentDescription = text.updatedOption.ascendingActionContentDescription,
-            descendingContentDescription = text.updatedOption.descendingActionContentDescription,
+            label = text.updatedOption.displayLabel.asString(),
+            ascendingContentDescription = text.updatedOption.ascendingActionContentDescription.asString(),
+            descendingContentDescription = text.updatedOption.descendingActionContentDescription.asString(),
             selected = appliedSortType is RepoSortType.Updated,
             order = appliedSortType.order,
             modifier = Modifier.weight(1f).fillMaxHeight(),

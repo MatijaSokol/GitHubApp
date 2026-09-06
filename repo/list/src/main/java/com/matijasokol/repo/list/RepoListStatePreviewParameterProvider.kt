@@ -2,6 +2,7 @@ package com.matijasokol.repo.list
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.matijasokol.core.domain.SortOrder
+import com.matijasokol.coreui.text.UiText
 import com.matijasokol.repo.domain.Paginator.LoadState.Append
 import com.matijasokol.repo.domain.Paginator.LoadState.AppendError
 import com.matijasokol.repo.domain.Paginator.LoadState.Loaded
@@ -28,19 +29,18 @@ internal class RepoListStatePreviewParameterProvider : PreviewParameterProvider<
 
 internal object RepoListPreviewFixtures {
     val text = RepoListText(
-        headerTitle = "Discover",
-        headerSubtitle = "Repositories worth exploring",
-        searchPlaceholder = "Search repositories",
-        searchIconContentDescription = "Search",
-        clearSearchButtonContentDescription = "Clear search",
-        refreshErrorTitle = "Couldn't load repositories",
-        emptyResultTitle = "No repositories found",
-        emptyResultMessage = "Try another search term or check your spelling.",
-        loadErrorMessage = "Check your connection and try again.",
-        profileBrowserErrorMessage = "Cannot open the author profile.",
-        retryButtonText = "Retry",
+        headerTitle = text("Discover"),
+        headerSubtitle = text("Repositories worth exploring"),
+        searchPlaceholder = text("Search repositories"),
+        searchIconContentDescription = text("Search"),
+        clearSearchButtonContentDescription = text("Clear search"),
+        refreshErrorTitle = text("Couldn't load repositories"),
+        emptyResultTitle = text("No repositories found"),
+        emptyResultMessage = text("Try another search term or check your spelling."),
+        loadErrorMessage = text("Check your connection and try again."),
+        retryButtonText = text("Retry"),
         sortOptions = RepoSortText(
-            sortOptionsContentDescription = "Sort options",
+            sortOptionsContentDescription = text("Sort options"),
             starsOption = sortOption("Stars"),
             forksOption = sortOption("Forks"),
             updatedOption = sortOption("Updated"),
@@ -55,11 +55,11 @@ internal object RepoListPreviewFixtures {
         authorImageUrl = "",
         authorProfileUrl = "https://github.com/JetBrains",
         stars = "49.6k",
-        starsContentDescription = "Stars: 49640",
+        starsContentDescription = text("Stars: 49640"),
         forks = "5.8k",
-        forksContentDescription = "Forks: 5805",
+        forksContentDescription = text("Forks: 5805"),
         watchers = "49.6k",
-        watchersContentDescription = "Watchers: 49640",
+        watchersContentDescription = text("Watchers: 49640"),
     )
 
     val longItem = RepoListItem(
@@ -70,11 +70,11 @@ internal object RepoListPreviewFixtures {
         authorImageUrl = "",
         authorProfileUrl = "https://github.com/androidx",
         stars = "2.1b",
-        starsContentDescription = "Stars: 2147483647",
+        starsContentDescription = text("Stars: 2147483647"),
         forks = "987.7m",
-        forksContentDescription = "Forks: 987654321",
+        forksContentDescription = text("Forks: 987654321"),
         watchers = "2.1b",
-        watchersContentDescription = "Watchers: 2147483647",
+        watchersContentDescription = text("Watchers: 2147483647"),
     )
 
     val loaded = RepoListState(
@@ -134,8 +134,10 @@ internal object RepoListPreviewFixtures {
     )
 
     private fun sortOption(label: String) = RepoSortOptionText(
-        displayLabel = label,
-        ascendingActionContentDescription = "$label ascending",
-        descendingActionContentDescription = "$label descending",
+        displayLabel = text(label),
+        ascendingActionContentDescription = text("$label ascending"),
+        descendingActionContentDescription = text("$label descending"),
     )
+
+    private fun text(value: String) = UiText.StringText(value)
 }
