@@ -41,6 +41,7 @@ import com.matijasokol.coreui.preview.GitHubAppPreviewContent
 import com.matijasokol.coreui.preview.GitHubAppThemePreviews
 import com.matijasokol.coreui.preview.STANDARD_PHONE_PREVIEW_HEIGHT_DP
 import com.matijasokol.coreui.preview.STANDARD_PHONE_PREVIEW_WIDTH_DP
+import com.matijasokol.coreui.text.asString
 import com.matijasokol.repo.detail.components.RepoDetailError
 import com.matijasokol.repo.detail.components.RepoDetailPanel
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
@@ -66,7 +67,7 @@ fun RepoDetail(
                 authorImageUrl = state.authorImageUrl,
                 authorName = state.authorName,
                 repoName = state.repoName,
-                profileSupportingText = state.profileSupportingText,
+                profileSupportingText = state.profileSupportingText.asString(),
                 profileEnabled = state is RepoDetailState.Success,
                 onProfileClick = {
                     try {
@@ -81,9 +82,9 @@ fun RepoDetail(
         when (state) {
             is RepoDetailState.Error -> item {
                 RepoDetailError(
-                    title = state.errorTitle,
-                    message = state.loadErrorMessage,
-                    retryText = state.retryButtonText,
+                    title = state.errorTitle.asString(),
+                    message = state.loadErrorMessage.asString(),
+                    retryText = state.retryButtonText.asString(),
                     onRetryClick = { onEvent(RepoDetailEvent.OnRetryClick) },
                 )
             }
@@ -100,7 +101,7 @@ fun RepoDetail(
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     ) {
                         if (state.repoUi.topics.isNotEmpty()) {
-                            SectionLabel(state.topicsSectionTitle)
+                            SectionLabel(state.topicsSectionTitle.asString())
                             LazyRow(
                                 contentPadding = PaddingValues(horizontal = 20.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -115,13 +116,17 @@ fun RepoDetail(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                         ) {
-                            state.repoUi.followersCountText?.let { ProfileMetric(it, Modifier.weight(1f)) }
-                            state.repoUi.reposCountText?.let { ProfileMetric(it, Modifier.weight(1f)) }
+                            state.repoUi.followersCountText?.let {
+                                ProfileMetric(it.asString(), Modifier.weight(1f))
+                            }
+                            state.repoUi.reposCountText?.let {
+                                ProfileMetric(it.asString(), Modifier.weight(1f))
+                            }
                         }
 
                         RepositoryLinkCard(
-                            title = state.repositoryLinkTitle,
-                            subtitle = state.repositoryLinkSubtitle,
+                            title = state.repositoryLinkTitle.asString(),
+                            subtitle = state.repositoryLinkSubtitle.asString(),
                             onClick = {
                                 try {
                                     uriHandler.openUri(state.repoUi.repoUrl)
@@ -132,7 +137,7 @@ fun RepoDetail(
                         )
 
                         SectionLabel(
-                            text = state.overviewSectionTitle,
+                            text = state.overviewSectionTitle.asString(),
                             modifier = Modifier.padding(top = 24.dp),
                         )
                         RepoDetailPanel(stats = state.repoUi.info)

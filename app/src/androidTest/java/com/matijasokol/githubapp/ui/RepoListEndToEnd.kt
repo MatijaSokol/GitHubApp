@@ -12,13 +12,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
-import androidx.test.core.app.ApplicationProvider
-import com.matijasokol.core.dictionary.Dictionary
-import com.matijasokol.coreui.dictionary.DictionaryImpl
 import com.matijasokol.coreui.theme.GitHubAppTheme
 import com.matijasokol.githubapp.MainActivity
 import com.matijasokol.githubapp.di.CacheModule
-import com.matijasokol.githubapp.di.CoreModule
 import com.matijasokol.githubapp.di.ViewModelModule
 import com.matijasokol.githubapp.navigation.NavigationErrorMapper
 import com.matijasokol.githubapp.navigation.Navigator
@@ -50,7 +46,6 @@ import javax.inject.Singleton
 // keep NavigationModule in the test module since behavior is same
 @UninstallModules(
     CacheModule::class,
-    CoreModule::class,
     NetworkModule::class,
     DataSourceModule::class,
     ViewModelModule::class,
@@ -77,10 +72,6 @@ class RepoListEndToEnd {
         fun providePaginator(
             repoService: RepoService,
         ): Paginator = FakePaginator(repoService = repoService)
-
-        @Provides
-        @Singleton
-        fun provideDictionary(): Dictionary = DictionaryImpl(ApplicationProvider.getApplicationContext())
     }
 
     @get:Rule(order = 0)
@@ -94,9 +85,6 @@ class RepoListEndToEnd {
 
     @Inject
     lateinit var navigationErrorMapper: NavigationErrorMapper
-
-    @Inject
-    lateinit var dictionary: Dictionary
 
     @Before
     fun before() {

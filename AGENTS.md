@@ -76,8 +76,8 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
   - `val state: StateFlow<*State>` (combined from multiple flows using `combine`)
   - `val actions: Flow<*Action>` (from `Channel.receiveAsFlow()`)
   - `fun onEvent(event: *Event)` as the single entry point for UI interactions.
-- **`*UiMapper`** — Separate class to map domain state to UI state (injected into ViewModel).
-- Screen composables may consume UI state. Child composables needing up to three text values should receive individual strings; when more than three text arguments are required, pass the relevant text state/model directly. Do not pass the entire screen state.
+- **`*UiMapper`** — Separate class to map domain state to UI state, retaining resource-backed text as unresolved `UiText` (injected into ViewModel).
+- Screen composables resolve `UiText` at the UI boundary. Child composables needing up to three text values should receive individual resolved strings; when more than three text arguments are required, pass the relevant text state/model directly. Do not pass the entire screen state.
 
 ### Compose Previews
 
@@ -121,7 +121,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - Use **fakes** (preferred over mocks) for data layer tests (`RepoServiceFake`, `FakePaginator`).
 - Coroutine tests use `runTest` with a custom `AndroidCoroutinesExtension` (JUnit 6 extension).
 - Compose UI tests use `compose-junit4` with test tags defined in `**/test/TestTags.kt`.
-- Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and run with `./gradlew konsist:test`. They enforce package boundaries, MVI/ViewModel conventions, immutable UI state collections, DTO naming/serialization, Compose placement, and related project structure rules.
+- Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and run with `./gradlew konsist:test`. They enforce package boundaries, MVI/ViewModel conventions, immutable UI state collections, DTO naming/serialization, Compose placement, and allow string-resource resolution only through `UiText`.
 - Test file naming: `<ClassUnderTest>Test.kt`.
 - Test method naming: backtick-style descriptive names (e.g., `` `should RETURN SUCCESS STATE when request was successful`() ``).
 
@@ -141,7 +141,9 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 ### Don't
 
 - ❌ Don't add Android framework dependencies to `domain` or `core` modules.
-- ❌ Don't hardcode or resolve strings in composables. Use `strings.xml` → `Dictionary` → `UiMapper` → UI state/model → composable, including formatted and accessibility text.
+- ❌ Don't resolve or cache localized strings in mappers or ViewModels, or inject `Context` or `Resources` into them. Use `strings.xml` → `UiText.StringResource` → UI state/action → UI-boundary resolution, including formatted, accessibility, and one-shot message text.
+- ❌ Don't call `stringResource` directly in feature composables; `UiText.asString()` is the centralized resolver.
+  Direct `Resources` access is limited to `UiText` and the app-level one-shot message boundary in `AppContent`.
 - ❌ Don't use `LiveData` — use `StateFlow` and `Channel` exclusively.
 - ❌ Don't use `mutableStateOf` in ViewModels — use `MutableStateFlow`.
 - ❌ Don't put business logic in Composables or ViewModels — extract to use cases.

@@ -76,6 +76,7 @@ import com.matijasokol.coreui.preview.GitHubAppPreviewContent
 import com.matijasokol.coreui.preview.GitHubAppThemePreviews
 import com.matijasokol.coreui.preview.STANDARD_PHONE_PREVIEW_HEIGHT_DP
 import com.matijasokol.coreui.preview.STANDARD_PHONE_PREVIEW_WIDTH_DP
+import com.matijasokol.coreui.text.asString
 import com.matijasokol.repo.domain.Paginator.LoadState
 import com.matijasokol.repo.domain.Paginator.LoadState.Append
 import com.matijasokol.repo.domain.Paginator.LoadState.AppendError
@@ -165,9 +166,9 @@ fun RepoList(
                     Refresh -> LoadingContent()
                     RefreshError -> RetryContent(
                         modifier = Modifier.align(Alignment.Center),
-                        title = state.text.refreshErrorTitle,
-                        errorText = state.text.loadErrorMessage,
-                        retryText = state.text.retryButtonText,
+                        title = state.text.refreshErrorTitle.asString(),
+                        errorText = state.text.loadErrorMessage.asString(),
+                        retryText = state.text.retryButtonText.asString(),
                         scrollState = messageScrollState,
                         onRetryClick = { onEvent(RepoListEvent.OnRetryClick) },
                     )
@@ -223,8 +224,8 @@ private fun SuccessContent(
 ) {
     if (repos.isEmpty()) {
         EmptyContent(
-            title = text.emptyResultTitle,
-            message = text.emptyResultMessage,
+            title = text.emptyResultTitle.asString(),
+            message = text.emptyResultMessage.asString(),
             scrollState = scrollState,
         )
     } else {
@@ -337,8 +338,8 @@ private fun ListScreen(
         if (loadState == AppendError) {
             item(span = StaggeredGridItemSpan.FullLine) {
                 AppendRetryContent(
-                    errorText = text.loadErrorMessage,
-                    retryText = text.retryButtonText,
+                    errorText = text.loadErrorMessage.asString(),
+                    retryText = text.retryButtonText.asString(),
                     onRetryClick = onRetryClick,
                 )
             }

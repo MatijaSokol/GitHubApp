@@ -15,12 +15,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.preview.GitHubAppPreviewContent
 import com.matijasokol.coreui.preview.GitHubAppThemePreviews
+import com.matijasokol.coreui.text.UiText
+import com.matijasokol.coreui.text.asString
 import com.matijasokol.repo.detail.RepoDetailPreviewFixtures
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun RepoDetailPanel(
-    stats: ImmutableList<String>,
+    stats: ImmutableList<UiText>,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -33,7 +35,7 @@ fun RepoDetailPanel(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 rowStats.forEach { stat ->
-                    MetricCard(stat = stat, modifier = Modifier.weight(1f))
+                    MetricCard(stat = stat.asString(), modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -43,12 +45,12 @@ fun RepoDetailPanel(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                MetadataCard(stats[LANGUAGE_INDEX], Modifier.weight(1f))
-                MetadataCard(stats[UPDATED_INDEX], Modifier.weight(1f))
+                MetadataCard(stats[LANGUAGE_INDEX].asString(), Modifier.weight(1f))
+                MetadataCard(stats[UPDATED_INDEX].asString(), Modifier.weight(1f))
             }
         }
 
-        stats.getOrNull(DESCRIPTION_INDEX)?.let { DescriptionCard(it) }
+        stats.getOrNull(DESCRIPTION_INDEX)?.let { DescriptionCard(it.asString()) }
     }
 }
 

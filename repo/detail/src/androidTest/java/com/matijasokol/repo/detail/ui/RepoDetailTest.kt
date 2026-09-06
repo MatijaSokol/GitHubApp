@@ -5,6 +5,8 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.test.hasAnySibling
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -14,7 +16,7 @@ import arrow.core.left
 import arrow.core.right
 import com.matijasokol.core.error.NetworkError
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
-import com.matijasokol.coreui.dictionary.DictionaryImpl
+import com.matijasokol.coreui.text.asString
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.detail.RepoDetail
 import com.matijasokol.repo.detail.RepoDetailState
@@ -30,8 +32,8 @@ class RepoDetailTest {
 
     private val repoData = serializeRepoResponseData(this::class.java.getResource("/repo_list_valid.json").readText())
     private val repoFullName = "JetBrains/kotlin"
-    private val dictionary = DictionaryImpl(ApplicationProvider.getApplicationContext())
-    private val uiMapper = RepoDetailsUiMapper(dictionary)
+    private val resources = ApplicationProvider.getApplicationContext<android.content.Context>().resources
+    private val uiMapper = RepoDetailsUiMapper()
 
     // Workaround to provide required parameters due to shared transition animation
     // Without this, test will fail. See SharedElement.kt for more details
@@ -69,10 +71,17 @@ class RepoDetailTest {
             }
         }
 
-        composeTestRule.onNodeWithText(state.repositoryLinkTitle, useUnmergedTree = true).assertExists()
+        composeTestRule
+            .onNodeWithText(state.repositoryLinkTitle.asString(resources), useUnmergedTree = true)
+            .assertExists()
 
+        // Values can repeat across cards (watchers and stars are always equal), so each value is
+        // matched next to its own label instead of on its own.
         state.repoUi.info.forEach { infoText ->
-            composeTestRule.onNodeWithText(infoText, useUnmergedTree = true).assertExists()
+            val (label, value) = infoText.asString(resources).split(":", limit = 2)
+            composeTestRule
+                .onNode(hasText(label) and hasAnySibling(hasText(value.trim())), useUnmergedTree = true)
+                .assertExists()
         }
     }
 
@@ -95,8 +104,10 @@ class RepoDetailTest {
         }
 
         composeTestRule.onNodeWithTag(TAG_REPO_DETAIL_PROGRESS).assertDoesNotExist()
-        composeTestRule.onNodeWithText(state.errorTitle, useUnmergedTree = true).assertExists()
-        composeTestRule.onNodeWithText(state.loadErrorMessage, useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithText(state.errorTitle.asString(resources), useUnmergedTree = true).assertExists()
+        composeTestRule
+            .onNodeWithText(state.loadErrorMessage.asString(resources), useUnmergedTree = true)
+            .assertExists()
     }
 
     @Test

@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.preview.GitHubAppPreviewContent
 import com.matijasokol.coreui.preview.GitHubAppThemePreviews
+import com.matijasokol.coreui.text.asString
 import com.matijasokol.repo.list.RepoListPreviewFixtures
 import com.matijasokol.repo.list.RepoListText
 
@@ -38,17 +39,17 @@ fun RepoListHeader(
                     .fillMaxWidth()
                     .padding(end = 20.dp),
             ) {
-                Text(text = text.headerTitle)
+                Text(text = text.headerTitle.asString())
                 Text(
-                    text = text.headerSubtitle,
+                    text = text.headerSubtitle.asString(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 SearchBar(
                     text = queryValue,
-                    placeholderText = text.searchPlaceholder,
-                    searchContentDescription = text.searchIconContentDescription,
-                    clearSearchContentDescription = text.clearSearchButtonContentDescription,
+                    placeholderText = text.searchPlaceholder.asString(),
+                    searchContentDescription = text.searchIconContentDescription.asString(),
+                    clearSearchContentDescription = text.clearSearchButtonContentDescription.asString(),
                     onTextChanged = onQueryChanged,
                     onClearClicked = onClearClicked,
                     modifier = Modifier.padding(vertical = 12.dp),

@@ -18,6 +18,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import com.matijasokol.coreui.preview.GitHubAppPreviewContent
 import com.matijasokol.coreui.preview.GitHubAppThemePreviews
+import com.matijasokol.coreui.text.UiText
+import com.matijasokol.coreui.text.asString
 import com.matijasokol.repo.list.R
 
 @Composable
@@ -25,9 +27,9 @@ fun RepoInfoPanel(
     stars: String,
     forks: String,
     watchers: String,
-    starsContentDescription: String,
-    forksContentDescription: String,
-    watchersContentDescription: String,
+    starsContentDescription: UiText,
+    forksContentDescription: UiText,
+    watchersContentDescription: UiText,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -37,17 +39,17 @@ fun RepoInfoPanel(
         RepoStat(
             text = stars,
             icon = ImageVector.vectorResource(R.drawable.star),
-            contentDescription = starsContentDescription,
+            contentDescription = starsContentDescription.asString(),
         )
         RepoStat(
             text = forks,
             icon = ImageVector.vectorResource(R.drawable.fork),
-            contentDescription = forksContentDescription,
+            contentDescription = forksContentDescription.asString(),
         )
         RepoStat(
             text = watchers,
             icon = ImageVector.vectorResource(R.drawable.watch),
-            contentDescription = watchersContentDescription,
+            contentDescription = watchersContentDescription.asString(),
         )
     }
 }
@@ -85,9 +87,9 @@ private fun RepoInfoPanelPreview() {
             stars = "12.3k",
             forks = "12.3k",
             watchers = "12.3k",
-            starsContentDescription = "Stars: 12345",
-            forksContentDescription = "Forks: 12345",
-            watchersContentDescription = "Watchers: 12345",
+            starsContentDescription = UiText.StringText("Stars: 12345"),
+            forksContentDescription = UiText.StringText("Forks: 12345"),
+            watchersContentDescription = UiText.StringText("Watchers: 12345"),
             modifier = Modifier.padding(12.dp),
         )
     }
