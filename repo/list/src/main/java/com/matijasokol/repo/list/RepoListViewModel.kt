@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
     sortRepos: SortReposUseCase,
-    uiMapper: RepoListUiMapper,
+    private val uiMapper: RepoListUiMapper,
     private val paginator: Paginator,
 ) : ViewModel() {
 
@@ -69,7 +69,12 @@ class RepoListViewModel @Inject constructor(
                 _actions.send(RepoListAction.NavigateToDetails(event.authorImageUrl, event.repoFullName))
             }
             is RepoListEvent.OnImageClick -> viewModelScope.launch {
-                _actions.send(RepoListAction.OpenProfile(event.profileUrl))
+                _actions.send(
+                    RepoListAction.OpenProfile(
+                        profileUrl = event.profileUrl,
+                        errorMessage = uiMapper.profileBrowserErrorMessage(),
+                    ),
+                )
             }
             RepoListEvent.OnRetryClick -> viewModelScope.launch { paginator.retry() }
         }

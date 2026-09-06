@@ -11,8 +11,7 @@ dependencies {
     implementation(projects.core)
 
     implementation(libs.kotlinx.coroutines)
-
-    implementation(libs.javax.inject)
+    api(libs.kotlinx.collections)
 
     implementation(libs.coil.compose)
     implementation(libs.coil.network)

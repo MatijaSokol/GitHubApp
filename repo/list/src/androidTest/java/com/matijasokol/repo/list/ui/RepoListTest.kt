@@ -11,13 +11,12 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.test.core.app.ApplicationProvider
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
-import com.matijasokol.coreui.dictionary.DictionaryImpl
+import com.matijasokol.coreui.text.asString
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
@@ -34,8 +33,8 @@ class RepoListTest {
     val composeTestRule = createComposeRule()
 
     private val query = "kotlin"
-    private val dictionary = DictionaryImpl(ApplicationProvider.getApplicationContext())
-    private val uiMapper = RepoListUiMapper(dictionary)
+    private val resources = ApplicationProvider.getApplicationContext<android.content.Context>().resources
+    private val uiMapper = RepoListUiMapper()
     private val testText = uiMapper.initialState(query).text
 
     // Workaround to provide required parameters due to shared transition animation
@@ -57,7 +56,9 @@ class RepoListTest {
 
     @Test
     fun repoListSuccessShowData() {
-        val errorText = testText.loadErrorMessage
+        val errorText = testText.loadErrorMessage.asString(resources)
+        val emptyResultTitle = testText.emptyResultTitle.asString(resources)
+        val emptyResultMessage = testText.emptyResultMessage.asString(resources)
 
         val state = uiMapper.toUiState(
             loadState = Paginator.LoadState.Loaded,
@@ -78,8 +79,8 @@ class RepoListTest {
         }
 
         composeTestRule.onNodeWithText(errorText).assertDoesNotExist()
-        composeTestRule.onNodeWithText(testText.emptyResultTitle).assertDoesNotExist()
-        composeTestRule.onNodeWithText(testText.emptyResultMessage).assertDoesNotExist()
+        composeTestRule.onNodeWithText(emptyResultTitle).assertDoesNotExist()
+        composeTestRule.onNodeWithText(emptyResultMessage).assertDoesNotExist()
         composeTestRule
             .onNodeWithText(query, useUnmergedTree = true)
             .assertExists()
@@ -94,7 +95,9 @@ class RepoListTest {
 
     @Test
     fun repoListEmptyShowsEmptyMessage() {
-        val errorText = testText.loadErrorMessage
+        val errorText = testText.loadErrorMessage.asString(resources)
+        val emptyResultTitle = testText.emptyResultTitle.asString(resources)
+        val emptyResultMessage = testText.emptyResultMessage.asString(resources)
 
         val state = uiMapper.toUiState(
             loadState = Paginator.LoadState.Loaded,
@@ -123,9 +126,8 @@ class RepoListTest {
 
         composeTestRule.onNodeWithText(errorText).assertDoesNotExist()
         composeTestRule.onNodeWithTag(TAG_LOADING_INDICATOR).assertDoesNotExist()
-        composeTestRule.onNodeWithContentDescription(testText.emptyResultTitle).assertExists()
         composeTestRule
-            .onNodeWithText(testText.emptyResultTitle)
+            .onNodeWithText(emptyResultTitle)
             .assertExists()
             .assert(
                 SemanticsMatcher.expectValue(
@@ -134,11 +136,14 @@ class RepoListTest {
                 ),
             )
             .assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading))
-        composeTestRule.onNodeWithText(testText.emptyResultMessage).assertExists()
+        composeTestRule.onNodeWithText(emptyResultMessage).assertExists()
     }
 
     @Test
     fun repoListLoadingShowProgress() {
+        val emptyResultTitle = testText.emptyResultTitle.asString(resources)
+        val emptyResultMessage = testText.emptyResultMessage.asString(resources)
+
         composeTestRule.setContent {
             FakeRootComposable {
                 RepoList(
@@ -151,7 +156,7 @@ class RepoListTest {
         composeTestRule
             .onNodeWithTag(TAG_LOADING_INDICATOR)
             .assertExists()
-        composeTestRule.onNodeWithText(testText.emptyResultTitle).assertDoesNotExist()
-        composeTestRule.onNodeWithText(testText.emptyResultMessage).assertDoesNotExist()
+        composeTestRule.onNodeWithText(emptyResultTitle).assertDoesNotExist()
+        composeTestRule.onNodeWithText(emptyResultMessage).assertDoesNotExist()
     }
 }

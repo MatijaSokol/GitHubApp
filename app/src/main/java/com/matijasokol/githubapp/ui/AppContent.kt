@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -33,6 +34,8 @@ import androidx.navigation3.ui.NavDisplay
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
 import com.matijasokol.coreui.events.ObserveAsEvent
 import com.matijasokol.coreui.navigation.Destination
+import com.matijasokol.coreui.text.UiText
+import com.matijasokol.coreui.text.asString
 import com.matijasokol.githubapp.navigation.LocalNavigator
 import com.matijasokol.githubapp.navigation.LocalNavigatorErrorMapper
 import com.matijasokol.githubapp.navigation.NavigationEffect
@@ -112,6 +115,7 @@ private fun RepoListEntry() {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
+    val resources = LocalResources.current
     val uriHandler = LocalUriHandler.current
     val navigator = LocalNavigator.current
     val navigatorErrorMapper = LocalNavigatorErrorMapper.current
@@ -129,12 +133,13 @@ private fun RepoListEntry() {
             )
             is RepoListAction.OpenProfile -> openProfile(
                 profileUrl = action.profileUrl,
-                errorMessage = state.text.profileBrowserErrorMessage,
+                errorMessage = action.errorMessage,
                 uriHandler = uriHandler,
                 context = context,
             )
             RepoListAction.ScrollToTop -> lazyStaggeredGridState.animateScrollToItem(0)
-            is RepoListAction.ShowMessage -> Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
+            is RepoListAction.ShowMessage ->
+                Toast.makeText(context, action.message.asString(resources), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -153,11 +158,12 @@ private fun RepoDetailEntry(key: Destination.RepoDetail) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
+    val resources = LocalResources.current
 
     ObserveAsEvent(viewModel.actions) { action ->
         when (action) {
             is RepoDetailAction.ShowMessage ->
-                Toast.makeText(context, action.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, action.message.asString(resources), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -177,17 +183,21 @@ private suspend fun showDetails(
     navigator.emitDestination(
         NavigationEvent.Destination(route = Destination.RepoDetail(repoFullName, authorImageUrl)),
     ).onLeft {
-        Toast.makeText(context, navigatorErrorMapper.map(it), Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            context,
+            navigatorErrorMapper.map(it).asString(context.resources),
+            Toast.LENGTH_SHORT,
+        ).show()
     }
 }
 
-fun openProfile(profileUrl: String, errorMessage: String, uriHandler: UriHandler, context: Context) {
+fun openProfile(profileUrl: String, errorMessage: UiText, uriHandler: UriHandler, context: Context) {
     try {
         uriHandler.openUri(profileUrl)
     } catch (_: Exception) {
         Toast.makeText(
             context,
-            errorMessage,
+            errorMessage.asString(context.resources),
             Toast.LENGTH_SHORT,
         ).show()
     }

@@ -54,8 +54,8 @@ The project uses a multi-module setup with a small application module and featur
 
 ```text
 app/                     Application entry point, app-level Hilt setup, mode-specific sources, navigation
-core/                    Shared Kotlin utilities, dictionary contract, errors, app mode
-core-ui/                 Shared Compose components, navigation destination types, UI helpers
+core/                    Shared Kotlin utilities, errors, app mode
+core-ui/                 Shared Compose components, UiText, navigation destination types, UI helpers
 repo/
   domain/                Repository models, contracts, paginator contract, use cases
   datasource/            Ktor GitHub API client, network mapping, SQLDelight cache
@@ -80,7 +80,7 @@ Feature screens follow an MVI-style structure:
 - `*Event` models user input sent to a ViewModel through `onEvent`.
 - `*Action` models one-shot effects such as navigation, browser launches, scroll requests, or messages.
 - `*ViewModel` exposes state through `StateFlow` and actions through a `Channel.receiveAsFlow()`.
-- `*UiMapper` maps domain/loading/error data into display-ready state and strings.
+- `*UiMapper` maps domain/loading/error data into UI state, retaining resource-backed text as unresolved `UiText`.
 
 ## Tech Stack
 
@@ -235,8 +235,13 @@ open pull requests per ecosystem.
 - Build configuration belongs in `build-logic/convention/`.
 - Dependency versions belong in `gradle/libs.versions.toml`.
 - Inter-module dependencies should use `projects.*` type-safe accessors.
-- Resolve visible, formatted, and accessibility strings through `Dictionary` in UI mappers, then expose plain strings
-  through UI state or UI models. Composables must not access string resources directly.
+- Represent resource-backed visible, formatted, accessibility, and one-shot message text as `UiText` in UI state or
+  actions. The flow is `strings.xml` → `UiText.StringResource` → state/action → UI-boundary resolution.
+- Resolve `UiText` with the active Compose configuration immediately before rendering, or with current `Resources` for
+  non-Compose consumers such as Toasts. Mappers and ViewModels must not resolve or cache localized strings. Dynamic
+  values such as queries, URLs, repository names, and navigation arguments remain ordinary values.
+- Feature code must not call `stringResource` directly; `stringResource` is confined to `UiText`. Direct
+  `Resources` access is limited to `UiText` and the app-level one-shot message boundary in `AppContent`.
 - At the screen boundary, pass child composables individual strings when they need up to three text values. Components
   needing more than three may receive the relevant text state/model, but should not receive the entire screen state.
 - Let Compose infer stability for immutable state and UI models. Use `@Stable` only when inference is insufficient and
@@ -253,7 +258,7 @@ open pull requests per ecosystem.
 Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and inspect production sources with
 `Konsist.scopeFromProduction()`. The current rules cover package layer dependencies, domain and datasource boundaries,
 package naming and path matching, use case and ViewModel conventions, MVI companion declarations, UI model immutable
-collections, datasource DTO naming/serialization, Compose placement, localized string access, data class immutability,
+collections, datasource DTO naming/serialization, Compose placement, `UiText`-only resource resolution, data class immutability,
 and wildcard imports.
 
 When adding or changing a rule, prefer a focused test class and avoid checks that duplicate ktlint or detekt unless

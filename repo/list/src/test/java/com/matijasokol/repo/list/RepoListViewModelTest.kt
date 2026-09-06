@@ -6,7 +6,6 @@ import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.usecase.SortReposUseCase
-import com.matijasokol.test.FakeDictionary
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.shouldBeEmpty
@@ -20,7 +19,7 @@ class RepoListViewModelTest {
     private lateinit var sut: RepoListViewModel
 
     private val sortRepos = SortReposUseCase()
-    private val uiMapper = RepoListUiMapper(dictionary = FakeDictionary())
+    private val uiMapper = RepoListUiMapper()
 
     @Test
     fun `should RETURN REFRESH STATE when query is set`() = runTest {

@@ -1,19 +1,19 @@
 package com.matijasokol.repo.list
 
-import com.matijasokol.core.dictionary.Dictionary
+import com.matijasokol.coreui.text.UiText
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.domain.model.Repo
 import kotlinx.collections.immutable.toPersistentList
 import javax.inject.Inject
 
-class RepoListUiMapper @Inject constructor(private val dictionary: Dictionary) {
+class RepoListUiMapper @Inject constructor() {
 
-    private data class ListStaticData(val text: RepoListText)
+    private val text = mapText()
 
-    private val staticData by lazy { ListStaticData(text = mapText()) }
+    fun initialState(query: String) = RepoListState(query = query, text = text)
 
-    fun initialState(query: String) = RepoListState(query = query, text = staticData.text)
+    fun profileBrowserErrorMessage() = UiText.StringResource(R.string.repo_list_message_browser_error)
 
     fun toUiState(
         loadState: Paginator.LoadState,
@@ -25,37 +25,31 @@ class RepoListUiMapper @Inject constructor(private val dictionary: Dictionary) {
         items = items.map(::toRepoListItem).toPersistentList(),
         query = query,
         repoSortType = repoSortType,
-        text = staticData.text,
+        text = text,
     )
 
-    private fun mapText(): RepoListText {
-        val ascending = dictionary.getString(R.string.repo_list_sort_ascending)
-        val descending = dictionary.getString(R.string.repo_list_sort_descending)
-
-        return RepoListText(
-            headerTitle = dictionary.getString(R.string.repo_list_title),
-            headerSubtitle = dictionary.getString(R.string.repo_list_subtitle),
-            searchPlaceholder = dictionary.getString(R.string.repo_list_query_label),
-            searchIconContentDescription = dictionary.getString(R.string.repo_list_search_content_description),
-            clearSearchButtonContentDescription = dictionary.getString(
-                R.string.repo_list_clear_search_content_description,
+    private fun mapText(): RepoListText = RepoListText(
+        headerTitle = UiText.StringResource(R.string.repo_list_title),
+        headerSubtitle = UiText.StringResource(R.string.repo_list_subtitle),
+        searchPlaceholder = UiText.StringResource(R.string.repo_list_query_label),
+        searchIconContentDescription = UiText.StringResource(R.string.repo_list_search_content_description),
+        clearSearchButtonContentDescription = UiText.StringResource(
+            R.string.repo_list_clear_search_content_description,
+        ),
+        refreshErrorTitle = UiText.StringResource(R.string.repo_list_refresh_error_title),
+        emptyResultTitle = UiText.StringResource(R.string.repo_list_empty_result_title),
+        emptyResultMessage = UiText.StringResource(R.string.repo_list_empty_result_message),
+        loadErrorMessage = UiText.StringResource(R.string.repo_list_message_error),
+        retryButtonText = UiText.StringResource(R.string.repo_list_retry_text),
+        sortOptions = RepoSortText(
+            sortOptionsContentDescription = UiText.StringResource(
+                R.string.repo_list_sort_options_content_description,
             ),
-            refreshErrorTitle = dictionary.getString(R.string.repo_list_refresh_error_title),
-            emptyResultTitle = dictionary.getString(R.string.repo_list_empty_result_title),
-            emptyResultMessage = dictionary.getString(R.string.repo_list_empty_result_message),
-            loadErrorMessage = dictionary.getString(R.string.repo_list_message_error),
-            profileBrowserErrorMessage = dictionary.getString(R.string.repo_list_message_browser_error),
-            retryButtonText = dictionary.getString(R.string.repo_list_retry_text),
-            sortOptions = RepoSortText(
-                sortOptionsContentDescription = dictionary.getString(
-                    R.string.repo_list_sort_options_content_description,
-                ),
-                starsOption = mapSortOption(R.string.repo_list_sort_stars, ascending, descending),
-                forksOption = mapSortOption(R.string.repo_list_sort_forks, ascending, descending),
-                updatedOption = mapSortOption(R.string.repo_list_sort_updated, ascending, descending),
-            ),
-        )
-    }
+            starsOption = mapSortOption(R.string.repo_list_sort_stars),
+            forksOption = mapSortOption(R.string.repo_list_sort_forks),
+            updatedOption = mapSortOption(R.string.repo_list_sort_updated),
+        ),
+    )
 
     private fun toRepoListItem(repo: Repo) = RepoListItem(
         id = repo.id,
@@ -65,35 +59,35 @@ class RepoListUiMapper @Inject constructor(private val dictionary: Dictionary) {
         authorImageUrl = repo.author.image,
         authorProfileUrl = repo.author.profileUrl,
         stars = formatCompactCount(repo.starsCount),
-        starsContentDescription = dictionary.getString(
+        starsContentDescription = UiText.StringResource(
             R.string.repo_list_stars_content_description,
             repo.starsCount,
         ),
         forks = formatCompactCount(repo.forksCount),
-        forksContentDescription = dictionary.getString(
+        forksContentDescription = UiText.StringResource(
             R.string.repo_list_forks_content_description,
             repo.forksCount,
         ),
         watchers = formatCompactCount(repo.watchersCount),
-        watchersContentDescription = dictionary.getString(
+        watchersContentDescription = UiText.StringResource(
             R.string.repo_list_watchers_content_description,
             repo.watchersCount,
         ),
     )
 
-    private fun mapSortOption(labelResId: Int, ascending: String, descending: String): RepoSortOptionText {
-        val label = dictionary.getString(labelResId)
+    private fun mapSortOption(labelResId: Int): RepoSortOptionText {
+        val label = UiText.StringResource(labelResId)
         return RepoSortOptionText(
             displayLabel = label,
-            ascendingActionContentDescription = dictionary.getString(
+            ascendingActionContentDescription = UiText.StringResource(
                 R.string.repo_list_sort_direction_content_description,
                 label,
-                ascending,
+                UiText.StringResource(R.string.repo_list_sort_ascending),
             ),
-            descendingActionContentDescription = dictionary.getString(
+            descendingActionContentDescription = UiText.StringResource(
                 R.string.repo_list_sort_direction_content_description,
                 label,
-                descending,
+                UiText.StringResource(R.string.repo_list_sort_descending),
             ),
         )
     }
