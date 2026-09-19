@@ -84,20 +84,20 @@ Feature screens follow an MVI-style structure:
 
 ## Tech Stack
 
-| Category | Technology                                                   |
-|---|--------------------------------------------------------------|
-| Language | Kotlin                                                       |
-| Background work | Coroutines, Flow                                             |
-| UI | Jetpack Compose, Material 3, Backdrop                        |
-| Navigation | Navigation 3, Shared element transitions                     |
-| Networking | Ktor, Kotlinx Serialization                                  |
-| Local storage | SQLDelight (offline/local persistence is work in progress)   |
-| Images | Coil                                                         |
-| Dependency injection | Hilt                                                         |
-| Error handling | Arrow                                                        |
-| Testing | JUnit, MockK, Turbine, Kluent, Compose UI tests              |
-| Quality | Ktlint, Detekt, Compose Detekt rules, Konsist architecture tests |
-| Build | AGP, Gradle, convention plugins, version catalog, Kotlin DSL |
+| Category             | Technology                                                       |
+|----------------------|------------------------------------------------------------------|
+| Language             | Kotlin                                                           |
+| Background work      | Coroutines, Flow                                                 |
+| UI                   | Jetpack Compose, Material 3, Backdrop                            |
+| Navigation           | Navigation 3, Shared element transitions                         |
+| Networking           | Ktor, Kotlinx Serialization                                      |
+| Local storage        | SQLDelight (offline/local persistence is work in progress)       |
+| Images               | Coil                                                             |
+| Dependency injection | Hilt                                                             |
+| Error handling       | Arrow                                                            |
+| Testing              | JUnit, MockK, Turbine, Kluent, Compose UI tests                  |
+| Quality              | Ktlint, Detekt, Compose Detekt rules, Konsist architecture tests |
+| Build                | AGP, Gradle, convention plugins, version catalog, Kotlin DSL     |
 
 ## Requirements
 
@@ -112,10 +112,10 @@ The Gradle wrapper is checked in, so local builds should use `./gradlew`.
 
 The application has two flavor dimensions:
 
-| Dimension | Flavors |
-|---|---|
-| Environment | `dev`, `prod` |
-| Mode | `free`, `paid` |
+| Dimension   | Flavors        |
+|-------------|----------------|
+| Environment | `dev`, `prod`  |
+| Mode        | `free`, `paid` |
 
 Gradle combines dimensions in environment-then-mode order, producing variants such as:
 
@@ -140,13 +140,21 @@ cd GitHubApp
 
 Then sync Gradle and run one of the debug variants, for example `devPaidDebug` or `prodFreeDebug`.
 
+Debug variants build without any extra setup. Release builds use the signing config in `release/` and need these
+environment variables:
+
+```bash
+export GITHUBAPP_STORE_PASSWORD=...
+export GITHUBAPP_KEY_PASSWORD=...
+```
+
 Common Gradle commands:
 
 ```bash
 # Build all debug variants
 ./gradlew assembleDebug
 
-# Build release variants
+# Build release variants (requires the signing environment variables above)
 ./gradlew assembleRelease
 
 # Build the same release variants used by CI
@@ -157,23 +165,23 @@ Common Gradle commands:
 ./gradlew test
 
 # Run app and feature unit tests explicitly
-./gradlew app:test repo:domain:test repo:list:test repo:detail:test konsist:test
+./gradlew app:test repo:domain:test repo:datasource:test repo:list:test repo:detail:test konsist:test
 
 # Run Konsist architecture tests
 ./gradlew konsist:test
+
+# Instrumented / Compose UI tests (needs a running device or emulator; not run in CI)
+./gradlew app:connectedDevPaidDebugAndroidTest
+./gradlew repo:list:connectedDebugAndroidTest repo:detail:connectedDebugAndroidTest
 
 # Static analysis and formatting checks
 ./gradlew ktlintCheck detekt
 
 # Format Kotlin sources
 ./gradlew ktlintFormat
-```
 
-Release builds use the signing config in `release/` and read these environment variables:
-
-```bash
-export GITHUBAPP_STORE_PASSWORD=...
-export GITHUBAPP_KEY_PASSWORD=...
+# Generate Compose compiler stability reports/metrics (output: <module>/build/compose_metrics)
+./gradlew repo:list:assembleRelease -Pgithubapp.enableComposeCompilerReports=true
 ```
 
 ## Data Notes
@@ -192,11 +200,12 @@ convention plugin.
 Available versioning tasks include:
 
 ```bash
-./gradlew printVersionName
-./gradlew incrementMajor
-./gradlew incrementMinor
-./gradlew incrementPatch
-./gradlew incrementBuild
+./gradlew printVersion        # prints version name and version code
+./gradlew printVersionName    # prints version name only (used by CI)
+./gradlew incrementMajor      # X+1.0.0.1
+./gradlew incrementMinor      # X.Y+1.0.1
+./gradlew incrementPatch      # X.Y.Z+1.1
+./gradlew incrementBuild      # X.Y.Z.B+1
 ```
 
 ## GitHub Actions
@@ -220,7 +229,8 @@ The PR check workflow has four jobs:
 - `static_analysis` runs `./gradlew ktlintCheck detekt --stacktrace`.
 - `build_free` runs `./gradlew assembleProdFreeRelease --stacktrace`.
 - `build_paid` runs `./gradlew assembleProdPaidRelease --stacktrace`.
-- `unit_tests` runs unit tests for `app`, `repo:domain`, `repo:detail`, `repo:list`, and Konsist architecture tests.
+- `unit_tests` runs unit tests for `app`, `repo:domain`, `repo:datasource`, `repo:detail`, `repo:list`, and Konsist
+  architecture tests.
 
 Release artifact workflows require the signing secrets used by Gradle:
 
@@ -255,11 +265,12 @@ open pull requests per ecosystem.
 
 ## Konsist Architecture Checks
 
-Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and inspect production sources with
-`Konsist.scopeFromProduction()`. The current rules cover package layer dependencies, domain and datasource boundaries,
-package naming and path matching, use case and ViewModel conventions, MVI companion declarations, UI model immutable
-collections, datasource DTO naming/serialization, Compose placement, `UiText`-only resource resolution, data class immutability,
-and wildcard imports.
+Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and inspect production
+sources with `Konsist.scopeFromProduction()`. The current rules cover package layer dependencies, domain and datasource
+boundaries, datasource contract implementations, package naming and path matching, use case conventions, ViewModel
+conventions (single constructor, no `Navigator` dependency, `onEvent` as the only public entry point), MVI companion
+declarations, UI model immutable collections, datasource DTO naming/serialization, Compose placement, `UiText`-only
+resource resolution, data class immutability, and wildcard imports.
 
 When adding or changing a rule, prefer a focused test class and avoid checks that duplicate ktlint or detekt unless
 Konsist adds project-specific value. Run `./gradlew konsist:test` locally, or `./gradlew test` to include Konsist with
