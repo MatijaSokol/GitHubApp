@@ -20,8 +20,6 @@ dependencies {
     implementation(projects.coreUi)
     implementation(projects.repo.domain)
 
-    implementation(libs.sqldelight.driver.android)
-
     implementation(libs.kotlinx.collections)
 
     implementation(libs.backdrop)
