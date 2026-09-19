@@ -6,6 +6,7 @@ import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.usecase.SortReposUseCase
+import com.matijasokol.test.coroutines.MainDispatcherExtension
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.shouldBeEmpty
@@ -13,7 +14,7 @@ import org.amshove.kluent.shouldNotBeEmpty
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(AndroidCoroutinesExtension::class)
+@ExtendWith(MainDispatcherExtension::class)
 class RepoListViewModelTest {
 
     private lateinit var sut: RepoListViewModel
