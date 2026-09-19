@@ -20,9 +20,9 @@ import com.matijasokol.githubapp.navigation.NavigationErrorMapper
 import com.matijasokol.githubapp.navigation.Navigator
 import com.matijasokol.repo.datasource.di.DataSourceModule
 import com.matijasokol.repo.datasource.di.NetworkModule
+import com.matijasokol.repo.datasource.network.BasicPaginator
 import com.matijasokol.repo.datasourcetest.cache.RepoCacheFake
 import com.matijasokol.repo.datasourcetest.cache.RepoDatabaseFake
-import com.matijasokol.repo.datasourcetest.network.FakePaginator
 import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_SCREEN
@@ -71,7 +71,7 @@ class RepoListEndToEnd {
         @Singleton
         fun providePaginator(
             repoService: RepoService,
-        ): Paginator = FakePaginator(repoService = repoService)
+        ): Paginator = BasicPaginator(repoService = repoService)
     }
 
     @get:Rule(order = 0)

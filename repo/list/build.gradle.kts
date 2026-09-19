@@ -38,6 +38,7 @@ dependencies {
     debugImplementation(libs.compose.ui.test.manifest)
 
     testImplementation(testFixtures(projects.test))
+    testImplementation(projects.repo.datasource)
     testImplementation(projects.repo.datasourceTest)
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.bundles.test)

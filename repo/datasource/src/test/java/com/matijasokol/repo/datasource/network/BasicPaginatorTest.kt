@@ -1,9 +1,9 @@
-package com.matijasokol.repo.domain
+package com.matijasokol.repo.datasource.network
 
 import app.cash.turbine.test
-import com.matijasokol.repo.datasourcetest.network.FakePaginator
 import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
+import com.matijasokol.repo.domain.Paginator
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should be`
@@ -11,14 +11,14 @@ import org.amshove.kluent.shouldBeEmpty
 import org.amshove.kluent.shouldNotBeEmpty
 import org.junit.jupiter.api.Test
 
-class PaginatorTest {
+class BasicPaginatorTest {
 
     private lateinit var sut: Paginator
     private val query = "kotlin"
 
     @Test
     fun `should RETURN DATA when request was successful`() = runTest {
-        sut = FakePaginator(
+        sut = BasicPaginator(
             repoService = RepoServiceFake.build(
                 type = RepoServiceResponseType.GoodData,
             ),
@@ -40,7 +40,7 @@ class PaginatorTest {
 
     @Test
     fun `should RETURN EMPTY LIST when request fails`() = runTest {
-        sut = FakePaginator(
+        sut = BasicPaginator(
             repoService = RepoServiceFake.build(
                 type = RepoServiceResponseType.MalformedData,
             ),
@@ -62,7 +62,7 @@ class PaginatorTest {
 
     @Test
     fun `should RETURN APPEND STATUS when new page is requested`() = runTest {
-        sut = FakePaginator(
+        sut = BasicPaginator(
             repoService = RepoServiceFake.build(
                 type = RepoServiceResponseType.GoodData,
             ),
