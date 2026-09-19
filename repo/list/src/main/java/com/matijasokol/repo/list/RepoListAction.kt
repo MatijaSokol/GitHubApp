@@ -15,6 +15,4 @@ sealed interface RepoListAction {
     ) : RepoListAction
 
     data object ScrollToTop : RepoListAction
-
-    data class ShowMessage(val message: UiText) : RepoListAction
 }
