@@ -2,22 +2,25 @@
 
 This file provides instructions and context for AI coding agents working on the GitHubApp project.
 
+See [README.md](README.md) for the feature overview, build variants, CI workflows, signing, versioning, and API/data notes. This file holds the rules agents must follow. When a change affects both, update both.
+
 ## Project Overview
 
 GitHubApp is an Android application for browsing GitHub repositories, built with Kotlin and Jetpack Compose following clean architecture and multi-module design principles.
 
 - **Package name:** `com.matijasokol.githubapp`
 - **Min SDK:** 24 | **Target/Compile SDK:** 37
-- **Kotlin:** 2.4.10 | **AGP:** 9.4.0
-- **Product flavors:** `free`, `paid`
+- **Versions:** see `gradle/libs.versions.toml` (source of truth; bumped by Dependabot). Uses AGP 9 APIs (no `CommonExtension`).
+- **Product flavors:** `environment` (`dev`, `prod`) × `mode` (`free`, `paid`) → variants such as `devPaidDebug`, `prodFreeRelease`. `free` adds the `.free` applicationId suffix and blocks the detail screen.
 
 ## Architecture
 
 The project follows a **multi-module architecture** with clear separation of concerns:
 
-```
-app/                     → Application module (entry point, app-level DI setup, navigation)
-├── core/                → Shared utilities, base classes, error types (pure Kotlin/JVM)
+```text
+GitHubApp/
+├── app/                 → Application module (entry point, app-level DI setup, navigation)
+├── core/                → Shared utilities, error types, sort order, app mode (pure Kotlin/JVM)
 ├── core-ui/             → Reusable Compose UI components, theming, navigation helpers
 ├── repo/                → Feature: GitHub repositories
 │   ├── domain/          → Business logic, models, use cases (pure Kotlin/JVM)
@@ -40,19 +43,19 @@ app/                     → Application module (entry point, app-level DI setup
 
 ## Tech Stack
 
-| Layer           | Technology |
-|-----------------|---|
-| Language        | Kotlin 2.4.10 with Coroutines + Flow |
-| UI              | Jetpack Compose with Material 3 and Backdrop |
-| Navigation      | Navigation 3 with Shared Element Transitions |
-| Networking      | Ktor + Kotlinx Serialization |
-| Local Database  | SQLDelight |
-| Background Work | Coroutines + Flow |
-| Image Loading   | Coil 3 |
-| DI              | Hilt |
-| Error Handling  | Arrow |
-| Testing         | JUnit 6, MockK, Turbine, Kluent |
-| Quality         | Ktlint, Detekt, Konsist architecture tests |
+| Layer           | Technology                                                                |
+|-----------------|---------------------------------------------------------------------------|
+| Language        | Kotlin with Coroutines + Flow                                             |
+| UI              | Jetpack Compose with Material 3 and Backdrop                              |
+| Navigation      | Navigation 3 with Shared Element Transitions                              |
+| Networking      | Ktor + Kotlinx Serialization                                              |
+| Local Database  | SQLDelight                                                                |
+| Background Work | Coroutines + Flow                                                         |
+| Image Loading   | Coil 3                                                                    |
+| DI              | Hilt                                                                      |
+| Error Handling  | Arrow                                                                     |
+| Testing         | JUnit 6, MockK, Turbine, Kluent                                           |
+| Quality         | Ktlint, Detekt, Konsist architecture tests                                |
 | Build           | Gradle convention plugins + Version Catalog (`gradle/libs.versions.toml`) |
 
 ## Code Conventions
@@ -64,15 +67,17 @@ app/                     → Application module (entry point, app-level DI setup
 - Let the Compose compiler infer stability. Add `@Stable` only when a state type contains fields Compose treats as unstable and the stability contract is valid; do not annotate immutable text or value models unnecessarily.
 - Do NOT use `var` in state classes; use `MutableStateFlow` + `.update {}` in ViewModels.
 - Keep functions small and single-purpose.
+- Code style is defined in `.editorconfig` (ktlint) and `quality/detekt.yml` (detekt + Compose rules). Key rules: 4-space indent, max line length **120** (detekt allows 150 — follow 120), trailing commas on declarations and call sites, a blank line after the class header, and multiline class signatures when there are 2+ parameters.
+- Run `./gradlew ktlintFormat` to auto-fix style before `./gradlew ktlintCheck detekt`.
 
 ### Presentation Layer (MVI Pattern)
 
 Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 
-- **`*State`** — Immutable `data class` holding all UI state, using `ImmutableList` for collections. Use `@Stable` only when stability cannot be inferred safely.
+- **`*State`** — Immutable UI state: either a single `data class` (e.g. `RepoListState`) or a `sealed interface` of data-class variants when the screen has mutually exclusive modes such as Loading/Success/Error (e.g. `RepoDetailState`). Use `ImmutableList` for collections. Use `@Stable` only when stability cannot be inferred safely.
 - **`*Event`** — `sealed interface` representing user intents/interactions sent TO the ViewModel.
 - **`*Action`** — `sealed interface` representing one-shot actions sent FROM the ViewModel to the UI (navigation, messages). Delivered via `Channel`.
-- **`*ViewModel`** — `@HiltViewModel` class exposing:
+- **`*ViewModel`** — `@HiltViewModel` class (plain `@Inject constructor`, or `@AssistedInject` when it needs a navigation destination — see Dependency Injection) exposing:
   - `val state: StateFlow<*State>` (combined from multiple flows using `combine`)
   - `val actions: Flow<*Action>` (from `Channel.receiveAsFlow()`)
   - `fun onEvent(event: *Event)` as the single entry point for UI interactions.
@@ -103,8 +108,15 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - Use Hilt `@Module` / `@Provides` / `@Binds` for wiring.
 - Place DI bindings in the module that owns the implementation when the choice is not app-specific and the target Hilt component is available to that module.
 - Keep bindings in `app` when the application composes or selects between implementations, such as flavor-specific, fake-vs-real, Android application setup, Android context providers, or Android-specific Hilt components.
-- ViewModels use `@HiltViewModel` with `@Inject constructor`.
+- ViewModels without navigation arguments use `@HiltViewModel` + `@Inject constructor`.
+- ViewModels that need a Navigation 3 destination use `@HiltViewModel(assistedFactory = X.Factory::class)` + `@AssistedInject constructor(@Assisted destination: Destination.Foo, ...)` with a nested `@AssistedFactory interface Factory`, and are obtained in the nav entry via `hiltViewModel<X, X.Factory>(creationCallback = { it.create(key) })` (see `RepoDetailViewModel`). Do not use `SavedStateHandle` for navigation arguments.
 - Use cases and mappers use `@Inject constructor` directly (no module needed).
+
+### App Modes (free / paid)
+
+- Mode-specific code lives in flavor source sets: `app/src/free/java` and `app/src/paid/java`. Each defines its own `ModeChecker` exposing `AppMode`. Keep class names and signatures identical in both.
+- Mode gating belongs in `app` (`CanShowDetailsUseCase` → `NavigatorImpl`, which returns `NavigationError.DetailsUnavailable` for `RepoDetail` in free mode). Feature modules stay mode-agnostic.
+- Mode-specific tests go in `app/src/testFree` and `app/src/testPaid`. Update both when mode behavior changes, and verify both flavors (e.g. `./gradlew testDevFreeDebugUnitTest testDevPaidDebugUnitTest`).
 
 ### Build System
 
@@ -118,10 +130,20 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - Use **Turbine** for testing `StateFlow`/`Flow` emissions (`flow.test { awaitItem() }`).
 - Use **Kluent** assertion style (e.g., `` value `should be` expected ``, `list.shouldNotBeEmpty()`).
 - Use **MockK** for mocking dependencies when needed.
-- Use **fakes** (preferred over mocks) for data layer tests (`RepoServiceFake`, `FakePaginator`).
-- Coroutine tests use `runTest` with a custom `AndroidCoroutinesExtension` (JUnit 6 extension).
-- Compose UI tests use `compose-junit4` with test tags defined in `**/test/TestTags.kt`.
-- Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and run with `./gradlew konsist:test`. They enforce package boundaries, MVI/ViewModel conventions, immutable UI state collections, DTO naming/serialization, Compose placement, and allow string-resource resolution only through `UiText`.
+- Use **fakes** (preferred over mocks) for data layer tests (`RepoServiceFake`, `RepoCacheFake`).
+- Coroutine/ViewModel tests use `runTest` with `@ExtendWith(MainDispatcherExtension::class)` from `com.matijasokol.test.coroutines` (the `test` module's test fixtures, consumed via `testImplementation(testFixtures(projects.test))`). It replaces `Dispatchers.Main` with a `StandardTestDispatcher` for each test. Reuse it instead of creating per-module copies.
+- Instrumented / Compose UI tests (`src/androidTest`) use **JUnit 4** (`org.junit.Test`, `org.junit.Rule`), not Jupiter, with `createComposeRule()` and test tags defined in `**/test/TestTags.kt`.
+- App-level end-to-end tests use `@HiltAndroidTest` + `HiltAndroidRule` (rule order 0), replace production modules with `@UninstallModules(...)` and a nested test `@Module` that provides fakes from `repo:datasource-test`, and run with `CustomTestRunner` (see `RepoListEndToEnd`).
+- Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and run with `./gradlew konsist:test`. They enforce:
+  - Package layer dependencies; `domain` free of Android, datasource, and UI packages; datasource free of UI packages.
+  - Datasource implementations (e.g. `RepoServiceImpl`, `RepoCacheImpl`) implement their matching domain contract; DTOs use the `Dto` suffix and `@Serializable`.
+  - Use cases use the `UseCase` suffix and expose `operator fun invoke`.
+  - ViewModels use the `ViewModel` suffix and `@HiltViewModel`, have a single constructor, do not depend on `Navigator`, expose `state: StateFlow` and `actions: Flow`, and have `onEvent` as the only public entry point.
+  - Every feature package with a ViewModel declares `*State`, `*Event`, `*Action`, and `*UiMapper`; Events and Actions are sealed.
+  - State and UI models use `ImmutableList` for exposed collections; data classes use only `val` properties.
+  - `@Composable` functions live only in UI modules; string resources are resolved only through `UiText`; ViewModels and mappers do not touch Android resources.
+  - Package names are lowercase and match file paths; no wildcard imports.
+- `domain` tests build their inputs from domain models only and must not depend on `repo:datasource` or `repo:datasource-test`. Tests for datasource implementations (e.g. `BasicPaginatorTest`) live in `repo/datasource/src/test`.
 - Test file naming: `<ClassUnderTest>Test.kt`.
 - Test method naming: backtick-style descriptive names (e.g., `` `should RETURN SUCCESS STATE when request was successful`() ``).
 
@@ -142,8 +164,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 
 - ❌ Don't add Android framework dependencies to `domain` or `core` modules.
 - ❌ Don't resolve or cache localized strings in mappers or ViewModels, or inject `Context` or `Resources` into them. Use `strings.xml` → `UiText.StringResource` → UI state/action → UI-boundary resolution, including formatted, accessibility, and one-shot message text.
-- ❌ Don't call `stringResource` directly in feature composables; `UiText.asString()` is the centralized resolver.
-  Direct `Resources` access is limited to `UiText` and the app-level one-shot message boundary in `AppContent`.
+- ❌ Don't call `stringResource` directly in feature composables; `UiText.asString()` is the centralized resolver. Direct `Resources` access is limited to `UiText` and the app-level one-shot message boundary in `AppContent`.
 - ❌ Don't use `LiveData` — use `StateFlow` and `Channel` exclusively.
 - ❌ Don't use `mutableStateOf` in ViewModels — use `MutableStateFlow`.
 - ❌ Don't put business logic in Composables or ViewModels — extract to use cases.
@@ -166,6 +187,10 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 # Run Konsist architecture and naming tests
 ./gradlew konsist:test
 
+# Instrumented / Compose UI tests (needs a running device or emulator; not run in CI)
+./gradlew app:connectedDevPaidDebugAndroidTest
+./gradlew repo:list:connectedDebugAndroidTest repo:detail:connectedDebugAndroidTest
+
 # Run detekt static analysis
 ./gradlew detekt
 
@@ -175,3 +200,5 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 # Run ktlint format
 ./gradlew ktlintFormat
 ```
+
+`assembleRelease` and `assemble*Release` need the `GITHUBAPP_STORE_PASSWORD` and `GITHUBAPP_KEY_PASSWORD` environment variables; use debug variants for local verification.
