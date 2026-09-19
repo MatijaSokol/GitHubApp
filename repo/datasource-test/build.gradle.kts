@@ -9,4 +9,5 @@ dependencies {
 
     implementation(project.dependencies.platform(libs.ktor.bom))
     implementation(libs.bundles.ktor)
+    implementation(libs.ktor.client.mock)
 }
