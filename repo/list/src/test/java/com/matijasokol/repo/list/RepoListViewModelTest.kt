@@ -1,7 +1,7 @@
 package com.matijasokol.repo.list
 
 import app.cash.turbine.test
-import com.matijasokol.repo.datasourcetest.network.FakePaginator
+import com.matijasokol.repo.datasource.network.BasicPaginator
 import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
 import com.matijasokol.repo.domain.Paginator
@@ -25,7 +25,7 @@ class RepoListViewModelTest {
     fun `should RETURN REFRESH STATE when query is set`() = runTest {
         sut = RepoListViewModel(
             sortRepos = sortRepos,
-            paginator = FakePaginator(
+            paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
@@ -46,7 +46,7 @@ class RepoListViewModelTest {
     fun `should RETURN SUCCESS STATE when request was successful`() = runTest {
         sut = RepoListViewModel(
             sortRepos = sortRepos,
-            paginator = FakePaginator(
+            paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
@@ -66,7 +66,7 @@ class RepoListViewModelTest {
     fun `should RETURN EMPTY STATE when request returns no repositories`() = runTest {
         sut = RepoListViewModel(
             sortRepos = sortRepos,
-            paginator = FakePaginator(
+            paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.EmptyList,
                 ),
@@ -88,7 +88,7 @@ class RepoListViewModelTest {
     fun `should KEEP SUCCESS STATE when query is cleared`() = runTest {
         sut = RepoListViewModel(
             sortRepos = sortRepos,
-            paginator = FakePaginator(
+            paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
@@ -115,7 +115,7 @@ class RepoListViewModelTest {
     fun `should RETURN ERROR STATE when request fails`() = runTest {
         sut = RepoListViewModel(
             sortRepos = sortRepos,
-            paginator = FakePaginator(
+            paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.Http404,
                 ),
@@ -138,7 +138,7 @@ class RepoListViewModelTest {
     fun `should RETURN APPEND STATE when new page is requested`() = runTest {
         sut = RepoListViewModel(
             sortRepos = sortRepos,
-            paginator = FakePaginator(
+            paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.Http404,
                 ),
@@ -165,7 +165,7 @@ class RepoListViewModelTest {
     fun `should RETURN REFRESH STATE when retry is clicked after error is received`() = runTest {
         sut = RepoListViewModel(
             sortRepos = sortRepos,
-            paginator = FakePaginator(
+            paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
