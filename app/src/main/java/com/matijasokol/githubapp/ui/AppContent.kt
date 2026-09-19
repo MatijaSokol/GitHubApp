@@ -115,7 +115,6 @@ private fun RepoListEntry() {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
-    val resources = LocalResources.current
     val uriHandler = LocalUriHandler.current
     val navigator = LocalNavigator.current
     val navigatorErrorMapper = LocalNavigatorErrorMapper.current
@@ -138,8 +137,6 @@ private fun RepoListEntry() {
                 context = context,
             )
             RepoListAction.ScrollToTop -> lazyStaggeredGridState.animateScrollToItem(0)
-            is RepoListAction.ShowMessage ->
-                Toast.makeText(context, action.message.asString(resources), Toast.LENGTH_SHORT).show()
         }
     }
 
