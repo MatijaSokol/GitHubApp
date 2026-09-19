@@ -149,7 +149,6 @@ ktor = [
     "ktor-serialization-kotlinx-json",
     "ktor-client-content-negotiation",
     "ktor-client-resources",
-    "ktor-client-mock",
 ]
 
 compose = [
