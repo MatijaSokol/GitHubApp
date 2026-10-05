@@ -84,20 +84,20 @@ Feature screens follow an MVI-style structure:
 
 ## Tech Stack
 
-| Category             | Technology                                                       |
-|----------------------|------------------------------------------------------------------|
-| Language             | Kotlin                                                           |
-| Background work      | Coroutines, Flow                                                 |
-| UI                   | Jetpack Compose, Material 3, Backdrop                            |
-| Navigation           | Navigation 3, Shared element transitions                         |
-| Networking           | Ktor, Kotlinx Serialization                                      |
-| Local storage        | SQLDelight (offline/local persistence is work in progress)       |
-| Images               | Coil                                                             |
-| Dependency injection | Hilt                                                             |
-| Error handling       | Arrow                                                            |
-| Testing              | JUnit, MockK, Turbine, Kluent, Compose UI tests                  |
-| Quality              | Ktlint, Detekt, Compose Detekt rules, Konsist architecture tests |
-| Build                | AGP, Gradle, convention plugins, version catalog, Kotlin DSL     |
+| Category             | Technology                                                                     |
+|----------------------|--------------------------------------------------------------------------------|
+| Language             | Kotlin                                                                         |
+| Background work      | Coroutines, Flow                                                               |
+| UI                   | Jetpack Compose, Material 3, Backdrop                                          |
+| Navigation           | Navigation 3, Shared element transitions                                       |
+| Networking           | Ktor, Kotlinx Serialization                                                    |
+| Local storage        | SQLDelight (offline/local persistence is work in progress)                     |
+| Images               | Coil                                                                           |
+| Dependency injection | Hilt                                                                           |
+| Error handling       | Arrow                                                                          |
+| Testing              | JUnit, MockK, Turbine, Kluent, Compose UI tests                                |
+| Quality              | Ktlint, Detekt, Compose Detekt rules, Android Lint, Konsist architecture tests |
+| Build                | AGP, Gradle, convention plugins, version catalog, Kotlin DSL                   |
 
 ## Requirements
 
@@ -161,7 +161,7 @@ Common Gradle commands:
 ./gradlew assembleProdFreeRelease
 ./gradlew assembleProdPaidRelease
 
-# Run unit tests
+# Run unit tests for every module and variant, including Konsist
 ./gradlew test
 
 # Run app and feature unit tests explicitly
@@ -176,6 +176,12 @@ Common Gradle commands:
 
 # Static analysis and formatting checks
 ./gradlew ktlintCheck detekt
+
+# Android Lint (fails only on issues not in the module's lint-baseline.xml)
+./gradlew lint
+
+# Regenerate the Android Lint baselines
+./gradlew updateLintBaseline
 
 # Format Kotlin sources
 ./gradlew ktlintFormat
@@ -210,35 +216,35 @@ Available versioning tasks include:
 
 ## GitHub Actions
 
-The repository uses GitHub Actions for pull request checks, release APK artifact generation, and version bump
-automation.
+All workflows run on `ubuntu-latest` and share the JDK 21 + Gradle setup in `.github/actions/setup-build`.
 
-Important workflows:
+| Workflow                                     | Runs on                                           | What it does                                                                 |
+|----------------------------------------------|---------------------------------------------------|------------------------------------------------------------------------------|
+| `pr_checks.yml`                              | PRs and pushes to `master`, `develop`, `release*` | Static analysis, release builds and tests (see below)                        |
+| `claude.yml`                                 | `@claude` mention in an issue or PR               | Claude Code assistant                                                        |
+| `claude-code-review.yml`                     | PR opened or updated                              | Automatic Claude review based on `AGENTS.md` (skips fork and Dependabot PRs) |
+| `distribute_release_*_prod_apk_artifact.yml` | Manual                                            | Builds the free/paid release APK with the version in its name                |
+| `increment_version.yml`                      | Manual                                            | Bumps the app version and opens a PR into `develop`                          |
 
-- `pr_checks.yml`: runs on pushes and pull requests targeting `master`, `develop`, or `release*`. It runs
-  ktlint, detekt, release builds, and unit tests.
-- `distribute_release_free_prod_apk_artifact.yml`: manual workflow that builds `prodFreeRelease`, renames the APK
-  with the current version, and uploads it as an artifact.
-- `distribute_release_paid_prod_apk_artifact.yml`: manual workflow that builds `prodPaidRelease`, renames the APK
-  with the current version, and uploads it as an artifact.
-- `increment_version.yml`: manual workflow that runs the selected version increment task and opens a pull request
-  into `develop`.
+`pr_checks.yml` jobs run in parallel and upload their reports even when they fail:
 
-The PR check workflow has four jobs:
+| Job               | Command                                        | Artifact                                  |
+|-------------------|------------------------------------------------|-------------------------------------------|
+| `static-analysis` | `./gradlew ktlintCheck detekt lint --continue` | `static-analysis-reports`                 |
+| `build-free`      | `./gradlew assembleProdFreeRelease`            | `app-prod-free-release.apk` (kept 2 days) |
+| `build-paid`      | `./gradlew assembleProdPaidRelease`            | `app-prod-paid-release.apk` (kept 2 days) |
+| `unit-test`       | `./gradlew test` (includes Konsist)            | `unit-test-reports`                       |
 
-- `static_analysis` runs `./gradlew ktlintCheck detekt --stacktrace`.
-- `build_free` runs `./gradlew assembleProdFreeRelease --stacktrace`.
-- `build_paid` runs `./gradlew assembleProdPaidRelease --stacktrace`.
-- `unit_tests` runs unit tests for `app`, `repo:domain`, `repo:datasource`, `repo:detail`, `repo:list`, and Konsist
-  architecture tests.
+Android Lint fails only on issues missing from the module's `lint-baseline.xml`. Regenerate the baselines with
+`./gradlew updateLintBaseline` only when intentionally accepting existing issues.
 
-Release artifact workflows require the signing secrets used by Gradle:
+Dependabot checks Gradle and GitHub Actions dependencies monthly and groups Compose updates into one PR.
 
-- `GITHUBAPP_STORE_PASSWORD`
-- `GITHUBAPP_KEY_PASSWORD`
+Required repository secrets:
 
-Dependabot is also configured to check Gradle and GitHub Actions dependencies monthly, with a maximum of five
-open pull requests per ecosystem.
+- `GITHUBAPP_STORE_PASSWORD`, `GITHUBAPP_KEY_PASSWORD`: release signing (also add them as Dependabot secrets).
+- `CLAUDE_CODE_OAUTH_TOKEN`: Claude workflows. Generate it with `claude setup-token` and install the
+  [Claude GitHub app](https://github.com/apps/claude) on the repository.
 
 ## Project Conventions
 

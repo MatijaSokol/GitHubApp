@@ -16,14 +16,10 @@ concurrency:
 
 jobs:
   increment_version:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-
-      - name: Prepare environment
-        run: |
-          export GRADLE_USER_HOME=`pwd`/.gradle
-          chmod +x ./gradlew
+      - uses: ./.github/actions/setup-build
 
       - name: Increment major version
         if: ${{ inputs.name == 'Major' }}

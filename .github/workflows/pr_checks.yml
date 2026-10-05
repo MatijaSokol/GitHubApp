@@ -4,98 +4,100 @@ on:
   push:
     branches:
       - master
-      - 'release*'
       - develop
+      - 'release*'
   pull_request:
+    types: [opened, synchronize]
     branches:
       - master
-      - 'release*'
       - develop
+      - 'release*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  static_analysis:
-    runs-on: macos-latest
+  static-analysis:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Prepare environment
-        run: |
-          export GRADLE_USER_HOME=`pwd`/.gradle
-          chmod +x ./gradlew
-      - name: Setup Java JDK
-        uses: actions/setup-java@v6
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: 'gradle'
-      - name: Static Analysis
-        run: ./gradlew ktlintCheck detekt --stacktrace
+      - uses: ./.github/actions/setup-build
 
-  build_free:
-    runs-on: macos-latest
+      # --continue runs all three tools even if one fails, so every report is written.
+      - name: Ktlint, Detekt and Android Lint
+        shell: bash # runs with pipefail, so a failure still fails the step despite tee
+        run: ./gradlew ktlintCheck detekt lint --continue --stacktrace 2>&1 | tee static-analysis-console.log
+
+      - name: Upload static analysis reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: static-analysis-reports
+          path: |
+            static-analysis-console.log
+            **/build/reports/ktlint.html
+            **/build/reports/detekt/detekt.*
+            **/build/reports/lint-results*
+          if-no-files-found: warn
+
+  build-free:
+    runs-on: ubuntu-latest
     env:
       GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
       GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
     steps:
       - uses: actions/checkout@v7
-      - name: Prepare environment
-        run: |
-          export GRADLE_USER_HOME=`pwd`/.gradle
-          chmod +x ./gradlew
-      - name: Setup Java JDK
-        uses: actions/setup-java@v6
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: 'gradle'
-      - name: Assemble
+      - uses: ./.github/actions/setup-build
+
+      - name: Assemble free release APK
         run: ./gradlew assembleProdFreeRelease --stacktrace
 
-  build_paid:
-    runs-on: macos-latest
+      - name: Upload free release APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-prod-free-release.apk
+          path: app/build/outputs/apk/prodFree/release/app-prod-free-release.apk
+          if-no-files-found: warn
+          retention-days: 2
+
+  build-paid:
+    runs-on: ubuntu-latest
     env:
       GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
       GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
     steps:
       - uses: actions/checkout@v7
-      - name: Prepare environment
-        run: |
-          export GRADLE_USER_HOME=`pwd`/.gradle
-          chmod +x ./gradlew
-      - name: Setup Java JDK
-        uses: actions/setup-java@v6
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: 'gradle'
-      - name: Assemble
+      - uses: ./.github/actions/setup-build
+
+      - name: Assemble paid release APK
         run: ./gradlew assembleProdPaidRelease --stacktrace
 
-  unit_tests:
-    runs-on: macos-latest
-    env:
-      GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
-      GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
+      - name: Upload paid release APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-prod-paid-release.apk
+          path: app/build/outputs/apk/prodPaid/release/app-prod-paid-release.apk
+          if-no-files-found: warn
+          retention-days: 2
+
+  unit-test:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Prepare environment
-        run: |
-          export GRADLE_USER_HOME=`pwd`/.gradle
-          chmod +x ./gradlew
-      - name: Setup Java JDK
-        uses: actions/setup-java@v6
+      - uses: ./.github/actions/setup-build
+
+      # Runs every module and every variant (including testFree/testPaid sources) and the Konsist architecture tests
+      - name: Unit and Konsist tests
+        run: ./gradlew test --stacktrace
+
+      - name: Upload unit test reports
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: 'gradle'
-      - name: Unit tests
-        run: |
-          ./gradlew app:test --stacktrace
-          ./gradlew repo:domain:test --stacktrace
-          ./gradlew repo:datasource:test --stacktrace
-          ./gradlew repo:detail:test --stacktrace
-          ./gradlew repo:list:test --stacktrace
-          ./gradlew konsist:test --stacktrace
+          name: unit-test-reports
+          path: '**/build/reports/tests/'
+          if-no-files-found: warn
