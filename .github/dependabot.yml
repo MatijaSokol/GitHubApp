@@ -16,6 +16,11 @@ updates:
       - "MatijaSokol"
     labels:
       - "dependencies"
+    groups:
+      # Compose UI artifacts (BOM, Material 3) are released together, so update them in one PR.
+      compose:
+        patterns:
+          - "androidx.compose*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

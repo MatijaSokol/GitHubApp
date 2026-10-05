@@ -55,7 +55,7 @@ GitHubApp/
 | DI              | Hilt                                                                      |
 | Error Handling  | Arrow                                                                     |
 | Testing         | JUnit 6, MockK, Turbine, Kluent                                           |
-| Quality         | Ktlint, Detekt, Konsist architecture tests                                |
+| Quality         | Ktlint, Detekt, Android Lint, Konsist architecture tests                  |
 | Build           | Gradle convention plugins + Version Catalog (`gradle/libs.versions.toml`) |
 
 ## Code Conventions
@@ -158,7 +158,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - ✅ Use `ImmutableList` for list properties in state classes.
 - ✅ Write unit tests for ViewModels and use cases.
 - ✅ Use `combine` to derive state from multiple flows.
-- ✅ Run `./gradlew konsist:test`, `./gradlew detekt`, and `./gradlew ktlintCheck` before submitting changes.
+- ✅ Run `./gradlew konsist:test`, `./gradlew detekt`, `./gradlew ktlintCheck`, and `./gradlew lint` before submitting changes.
 
 ### Don't
 
@@ -181,11 +181,17 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 # Build the release project
 ./gradlew assembleRelease
 
-# Run unit tests
+# Run unit tests for every module and variant (includes Konsist)
 ./gradlew test
 
 # Run Konsist architecture and naming tests
 ./gradlew konsist:test
+
+# Run Android Lint (fails only on issues missing from the module's lint-baseline.xml)
+./gradlew lint
+
+# Regenerate Android Lint baselines (only when intentionally accepting existing issues)
+./gradlew updateLintBaseline
 
 # Instrumented / Compose UI tests (needs a running device or emulator; not run in CI)
 ./gradlew app:connectedDevPaidDebugAndroidTest
@@ -202,3 +208,5 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 ```
 
 `assembleRelease` and `assemble*Release` need the `GITHUBAPP_STORE_PASSWORD` and `GITHUBAPP_KEY_PASSWORD` environment variables; use debug variants for local verification.
+
+CI (`.github/workflows/pr_checks.yml`) runs `static-analysis`, `build-free`, `build-paid` and `unit-test` on every PR; see the GitHub Actions section in [README.md](README.md) for details. Fix new Android Lint findings instead of adding them to `lint-baseline.xml`.

@@ -5,24 +5,14 @@ on:
 
 jobs:
   distribute_release_build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     env:
       GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
       GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
 
     steps:
       - uses: actions/checkout@v7
-      - name: Prepare environment
-        run: |
-          export GRADLE_USER_HOME=`pwd`/.gradle
-          chmod +x ./gradlew
-
-      - name: Setup Java JDK
-        uses: actions/setup-java@v6
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: 'gradle'
+      - uses: ./.github/actions/setup-build
 
       - name: Assemble
         run: ./gradlew assembleProdPaidRelease --stacktrace

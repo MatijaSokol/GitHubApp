@@ -1,3 +1,7 @@
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
+import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.LibraryPlugin
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Plugin
@@ -8,6 +12,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
 
 class QualityConventionPlugin : Plugin<Project> {
 
@@ -15,6 +20,7 @@ class QualityConventionPlugin : Plugin<Project> {
     with(project) {
       configureDetekt()
       configureKtlint()
+      configureAndroidLint()
     }
   }
 
@@ -78,6 +84,15 @@ class QualityConventionPlugin : Plugin<Project> {
             attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
         }
       }
+    }
+  }
+
+  private fun Project.configureAndroidLint() {
+    plugins.withType<AppPlugin> {
+      extensions.configure<ApplicationExtension> { lint { configureLint(this) } }
+    }
+    plugins.withType<LibraryPlugin> {
+      extensions.configure<LibraryExtension> { lint { configureLint(this) } }
     }
   }
 }
