@@ -271,12 +271,19 @@ Required repository secrets:
 
 ## Konsist Architecture Checks
 
-Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and inspect production
-sources with `Konsist.scopeFromProduction()`. The current rules cover package layer dependencies, domain and datasource
-boundaries, datasource contract implementations, package naming and path matching, use case conventions, ViewModel
-conventions (single constructor, no `Navigator` dependency, `onEvent` as the only public entry point), MVI companion
-declarations, UI model immutable collections, datasource DTO naming/serialization, Compose placement, `UiText`-only
-resource resolution, data class immutability, and wildcard imports.
+Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist`. Architecture and
+naming rules inspect production sources with `Konsist.scopeFromProduction()`; hygiene and test rules inspect the whole
+project, tests included, with `Konsist.scopeFromProject()`. The current rules cover package layer dependencies, domain
+and datasource boundaries, datasource contract implementations, package naming and path matching, use case conventions
+(`UseCase` suffix, `operator fun invoke` as the single public declaration, constructor parameters named after their
+type), ViewModel conventions (single constructor, no `Navigator` dependency, `onEvent` as the only public entry point,
+constructor parameters named after their type except Hilt `@Assisted` ones), MVI companion declarations, UI model
+immutable collections, datasource DTO naming/serialization, Compose placement, `UiText`-only resource resolution, data
+class immutability, and wildcard imports.
+
+They also enforce test coverage and hygiene: every ViewModel and use case has a `<ClassUnderTest>Test` class with a
+class-level `sut` property, unit-test source sets use JUnit Jupiter instead of JUnit 4 (`androidTest` is exempt), and
+the codebase has no `m`-prefixed fields, no `android.util.Log` imports, and no empty `.kt` files.
 
 When adding or changing a rule, prefer a focused test class and avoid checks that duplicate ktlint or detekt unless
 Konsist adds project-specific value. Run `./gradlew konsist:test` locally, or `./gradlew test` to include Konsist with

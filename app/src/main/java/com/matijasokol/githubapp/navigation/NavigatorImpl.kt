@@ -9,7 +9,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
-class NavigatorImpl @Inject constructor(private val canShowDetailsUseCase: CanShowDetailsUseCase) : Navigator {
+class NavigatorImpl @Inject constructor(private val canShowDetails: CanShowDetails) : Navigator {
 
     private val _navigationEvent = Channel<NavigationEvent>(Channel.BUFFERED)
     override val navigationEvent = _navigationEvent.receiveAsFlow()
@@ -19,7 +19,7 @@ class NavigatorImpl @Inject constructor(private val canShowDetailsUseCase: CanSh
 
     private fun isEligibleDestination(event: NavigationEvent): Either<NavigationError, Unit> =
         when (event) {
-            is Destination<*> if (event.route is RepoDetail && !canShowDetailsUseCase()) ->
+            is Destination<*> if (event.route is RepoDetail && !canShowDetails()) ->
                 NavigationError.DetailsUnavailable.left()
             else -> Unit.right()
         }

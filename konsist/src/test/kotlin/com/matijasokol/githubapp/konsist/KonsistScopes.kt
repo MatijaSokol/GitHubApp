@@ -5,7 +5,15 @@ import com.lemonappdev.konsist.api.declaration.KoClassDeclaration
 import com.lemonappdev.konsist.api.declaration.KoFileDeclaration
 import com.lemonappdev.konsist.api.declaration.KoInterfaceDeclaration
 
+/**
+ * Production sources only: every source set whose name doesn't contain "test" (main, free, paid, ...).
+ */
 internal val productionScope = Konsist.scopeFromProduction()
+
+/**
+ * All Kotlin sources, production and test (incl. androidTest); only build output (build/, .gradle/) is skipped.
+ */
+internal val projectScope = Konsist.scopeFromProject()
 
 internal fun productionClasses(): List<KoClassDeclaration> = productionScope
     .classes(includeNested = false, includeLocal = false)

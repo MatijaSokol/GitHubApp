@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import java.util.Date
 
 @ExtendWith(MockKExtension::class)
-class GetRepoFromDetailsTest {
+class GetRepoDetailsUseCaseTest {
 
     @RelaxedMockK
     private lateinit var repoService: RepoService

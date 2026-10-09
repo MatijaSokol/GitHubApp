@@ -9,7 +9,7 @@ import org.amshove.kluent.`should be less or equal to`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class SortReposTest {
+class SortReposUseCaseTest {
 
     private lateinit var sut: SortReposUseCase
 

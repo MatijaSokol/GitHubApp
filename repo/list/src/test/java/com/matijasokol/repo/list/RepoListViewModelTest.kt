@@ -19,19 +19,19 @@ class RepoListViewModelTest {
 
     private lateinit var sut: RepoListViewModel
 
-    private val sortRepos = SortReposUseCase()
-    private val uiMapper = RepoListUiMapper()
+    private val sortReposUseCase = SortReposUseCase()
+    private val repoListUiMapper = RepoListUiMapper()
 
     @Test
     fun `should RETURN REFRESH STATE when query is set`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = sortRepos,
+            sortReposUseCase = sortReposUseCase,
             paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
             ),
-            uiMapper = uiMapper,
+            repoListUiMapper = repoListUiMapper,
         )
 
         sut.state.test {
@@ -46,13 +46,13 @@ class RepoListViewModelTest {
     @Test
     fun `should RETURN SUCCESS STATE when request was successful`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = sortRepos,
+            sortReposUseCase = sortReposUseCase,
             paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
             ),
-            uiMapper = uiMapper,
+            repoListUiMapper = repoListUiMapper,
         )
 
         sut.state.test {
@@ -66,13 +66,13 @@ class RepoListViewModelTest {
     @Test
     fun `should RETURN EMPTY STATE when request returns no repositories`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = sortRepos,
+            sortReposUseCase = sortReposUseCase,
             paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.EmptyList,
                 ),
             ),
-            uiMapper = uiMapper,
+            repoListUiMapper = repoListUiMapper,
         )
 
         sut.state.test {
@@ -88,13 +88,13 @@ class RepoListViewModelTest {
     @Test
     fun `should KEEP SUCCESS STATE when query is cleared`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = sortRepos,
+            sortReposUseCase = sortReposUseCase,
             paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
             ),
-            uiMapper = uiMapper,
+            repoListUiMapper = repoListUiMapper,
         )
 
         sut.state.test {
@@ -115,13 +115,13 @@ class RepoListViewModelTest {
     @Test
     fun `should RETURN ERROR STATE when request fails`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = sortRepos,
+            sortReposUseCase = sortReposUseCase,
             paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.Http404,
                 ),
             ),
-            uiMapper = uiMapper,
+            repoListUiMapper = repoListUiMapper,
         )
 
         sut.state.test {
@@ -138,13 +138,13 @@ class RepoListViewModelTest {
     @Test
     fun `should RETURN APPEND STATE when new page is requested`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = sortRepos,
+            sortReposUseCase = sortReposUseCase,
             paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.Http404,
                 ),
             ),
-            uiMapper = uiMapper,
+            repoListUiMapper = repoListUiMapper,
         )
 
         sut.state.test {
@@ -165,13 +165,13 @@ class RepoListViewModelTest {
     @Test
     fun `should RETURN REFRESH STATE when retry is clicked after error is received`() = runTest {
         sut = RepoListViewModel(
-            sortRepos = sortRepos,
+            sortReposUseCase = sortReposUseCase,
             paginator = BasicPaginator(
                 repoService = RepoServiceFake.build(
                     RepoServiceResponseType.GoodData,
                 ),
             ),
-            uiMapper = uiMapper,
+            repoListUiMapper = repoListUiMapper,
         )
 
         sut.state.test {
