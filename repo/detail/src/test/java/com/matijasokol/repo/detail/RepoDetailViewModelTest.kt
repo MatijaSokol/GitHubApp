@@ -14,8 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MainDispatcherExtension::class)
 class RepoDetailViewModelTest {
 
+    private lateinit var sut: RepoDetailViewModel
+
     private val destination = Destination.RepoDetail(repoFullName = "JetBrains/kotlin", authorImageUrl = "")
-    private val uiMapper = RepoDetailsUiMapper()
+    private val repoDetailsUiMapper = RepoDetailsUiMapper()
 
     @Test
     fun `should RETURN SUCCESS STATE when request was successful`() = runTest {
@@ -25,10 +27,10 @@ class RepoDetailViewModelTest {
             ),
         )
 
-        val sut = RepoDetailViewModel(
+        sut = RepoDetailViewModel(
             destination = destination,
-            getRepoDetails = getRepoDetailsUseCase,
-            uiMapper = uiMapper,
+            getRepoDetailsUseCase = getRepoDetailsUseCase,
+            repoDetailsUiMapper = repoDetailsUiMapper,
         )
 
         sut.state.test {
@@ -45,10 +47,10 @@ class RepoDetailViewModelTest {
             ),
         )
 
-        val sut = RepoDetailViewModel(
+        sut = RepoDetailViewModel(
             destination = destination,
-            getRepoDetails = getRepoDetailsUseCase,
-            uiMapper = uiMapper,
+            getRepoDetailsUseCase = getRepoDetailsUseCase,
+            repoDetailsUiMapper = repoDetailsUiMapper,
         )
 
         sut.state.test {

@@ -7,15 +7,15 @@ import org.junit.jupiter.api.Test
 
 class CanShowDetailsTest {
 
-    private lateinit var sut: CanShowDetailsUseCase
+    private lateinit var sut: CanShowDetails
 
     @BeforeEach
     fun setUp() {
-        sut = CanShowDetailsUseCase(ModeChecker())
+        sut = CanShowDetails(ModeChecker())
     }
 
     @Test
-    fun `should RETURN TRUE when use case is called`() {
+    fun `should RETURN TRUE when invoked`() {
         sut() `should be` true
     }
 }

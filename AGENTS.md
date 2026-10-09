@@ -115,7 +115,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 ### App Modes (free / paid)
 
 - Mode-specific code lives in flavor source sets: `app/src/free/java` and `app/src/paid/java`. Each defines its own `ModeChecker` exposing `AppMode`. Keep class names and signatures identical in both.
-- Mode gating belongs in `app` (`CanShowDetailsUseCase` → `NavigatorImpl`, which returns `NavigationError.DetailsUnavailable` for `RepoDetail` in free mode). Feature modules stay mode-agnostic.
+- Mode gating belongs in `app` (`CanShowDetails` → `NavigatorImpl`, which returns `NavigationError.DetailsUnavailable` for `RepoDetail` in free mode). Feature modules stay mode-agnostic.
 - Mode-specific tests go in `app/src/testFree` and `app/src/testPaid`. Update both when mode behavior changes, and verify both flavors (e.g. `./gradlew testDevFreeDebugUnitTest testDevPaidDebugUnitTest`).
 
 ### Build System
@@ -137,12 +137,15 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and run with `./gradlew konsist:test`. They enforce:
   - Package layer dependencies; `domain` free of Android, datasource, and UI packages; datasource free of UI packages.
   - Datasource implementations (e.g. `RepoServiceImpl`, `RepoCacheImpl`) implement their matching domain contract; DTOs use the `Dto` suffix and `@Serializable`.
-  - Use cases use the `UseCase` suffix and expose `operator fun invoke`.
-  - ViewModels use the `ViewModel` suffix and `@HiltViewModel`, have a single constructor, do not depend on `Navigator`, expose `state: StateFlow` and `actions: Flow`, and have `onEvent` as the only public entry point.
+  - Use cases use the `UseCase` suffix and expose `operator fun invoke` as their single public declaration; constructor parameters are named after their type (e.g. `repoService: RepoService`).
+  - ViewModels use the `ViewModel` suffix and `@HiltViewModel`, have a single constructor, do not depend on `Navigator`, expose `state: StateFlow` and `actions: Flow`, and have `onEvent` as the only public entry point. Constructor parameters are named after their type (e.g. `sortReposUseCase: SortReposUseCase`); Hilt `@Assisted` parameters are exempt.
+  - Every ViewModel (with declarations) and use case has a unit test class named `<ClassUnderTest>Test` that holds the instance under test in a class-level `sut` property (e.g. `private lateinit var sut: RepoListViewModel`).
   - Every feature package with a ViewModel declares `*State`, `*Event`, `*Action`, and `*UiMapper`; Events and Actions are sealed.
   - State and UI models use `ImmutableList` for exposed collections; data classes use only `val` properties.
   - `@Composable` functions live only in UI modules; string resources are resolved only through `UiText`; ViewModels and mappers do not touch Android resources.
   - Package names are lowercase and match file paths; no wildcard imports.
+  - No `m`-prefixed fields (`mFoo`), no `android.util.Log` imports, and no empty `.kt` files.
+  - Unit-test source sets (`src/test`, `src/testFree`, `src/testPaid`, `src/testFixtures`) use only JUnit 6 `org.junit.jupiter.api.Test`, never JUnit 4 `org.junit.Test`; instrumented `androidTest` is exempt.
 - `domain` tests build their inputs from domain models only and must not depend on `repo:datasource` or `repo:datasource-test`. Tests for datasource implementations (e.g. `BasicPaginatorTest`) live in `repo/datasource/src/test`.
 - Test file naming: `<ClassUnderTest>Test.kt`.
 - Test method naming: backtick-style descriptive names (e.g., `` `should RETURN SUCCESS STATE when request was successful`() ``).

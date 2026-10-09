@@ -25,8 +25,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = RepoDetailViewModel.Factory::class)
 class RepoDetailViewModel @AssistedInject constructor(
     @Assisted private val destination: Destination.RepoDetail,
-    getRepoDetails: GetRepoDetailsUseCase,
-    private val uiMapper: RepoDetailsUiMapper,
+    getRepoDetailsUseCase: GetRepoDetailsUseCase,
+    private val repoDetailsUiMapper: RepoDetailsUiMapper,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -43,23 +43,23 @@ class RepoDetailViewModel @AssistedInject constructor(
     private val repo = fetchTrigger.receiveAsFlow()
         .onStart { emit(Unit) }
         .onEach { isLoading.update { true } }
-        .map { getRepoDetails(destination.repoFullName) }
+        .map { getRepoDetailsUseCase(destination.repoFullName) }
         .onEach { isLoading.update { false } }
 
     val state: StateFlow<RepoDetailState> = combine(
         isLoading,
         repo,
     ) { loading, repo ->
-        uiMapper.toUiState(loading, repo, destination.repoFullName, destination.authorImageUrl)
+        repoDetailsUiMapper.toUiState(loading, repo, destination.repoFullName, destination.authorImageUrl)
     }.stateIn(
-        initialValue = uiMapper.loadingState(destination.repoFullName, destination.authorImageUrl),
+        initialValue = repoDetailsUiMapper.loadingState(destination.repoFullName, destination.authorImageUrl),
     )
 
     fun onEvent(event: RepoDetailEvent) {
         when (event) {
             RepoDetailEvent.OnRetryClick -> viewModelScope.launch { fetchTrigger.send(Unit) }
             RepoDetailEvent.OpenProfileWebError, RepoDetailEvent.OpenRepoWebError ->
-                viewModelScope.launch { _actions.send(uiMapper.toAction(event)) }
+                viewModelScope.launch { _actions.send(repoDetailsUiMapper.toAction(event)) }
         }
     }
 }

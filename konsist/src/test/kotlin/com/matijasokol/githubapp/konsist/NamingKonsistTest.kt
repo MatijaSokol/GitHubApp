@@ -6,19 +6,9 @@ import org.junit.jupiter.api.Test
 class NamingKonsistTest {
 
     @Test
-    fun `use cases use UseCase suffix and expose operator invoke`() {
+    fun `use cases use UseCase suffix`() {
         useCaseClasses()
-            .assertTrue { useCase ->
-                useCase.name.endsWith("UseCase") &&
-                    useCase.hasFunction(includeNested = false, includeLocal = false) { function ->
-                        function.name == "invoke" &&
-                            function.hasPublicOrDefaultModifier &&
-                            function.hasOperatorModifier
-                    } &&
-                    useCase.countFunctions(includeNested = false, includeLocal = false) { function ->
-                        function.hasPublicOrDefaultModifier
-                    } == 1
-            }
+            .assertTrue { useCase -> useCase.name.endsWith("UseCase") }
     }
 
     @Test

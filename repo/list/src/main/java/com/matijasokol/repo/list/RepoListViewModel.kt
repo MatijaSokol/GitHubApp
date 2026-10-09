@@ -24,8 +24,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
-    sortRepos: SortReposUseCase,
-    private val uiMapper: RepoListUiMapper,
+    sortReposUseCase: SortReposUseCase,
+    private val repoListUiMapper: RepoListUiMapper,
     private val paginator: Paginator,
 ) : ViewModel() {
 
@@ -46,7 +46,7 @@ class RepoListViewModel @Inject constructor(
     private val sortedItems = combine(
         items,
         sortType,
-        sortRepos::invoke,
+        sortReposUseCase::invoke,
     )
 
     val state: StateFlow<RepoListState> = combine(
@@ -54,8 +54,8 @@ class RepoListViewModel @Inject constructor(
         sortedItems,
         query,
         sortType,
-        uiMapper::toUiState,
-    ).stateIn(initialValue = uiMapper.initialState(query = DEFAULT_QUERY))
+        repoListUiMapper::toUiState,
+    ).stateIn(initialValue = repoListUiMapper.initialState(query = DEFAULT_QUERY))
 
     fun onEvent(event: RepoListEvent) {
         when (event) {
@@ -72,7 +72,7 @@ class RepoListViewModel @Inject constructor(
                 _actions.send(
                     RepoListAction.OpenProfile(
                         profileUrl = event.profileUrl,
-                        errorMessage = uiMapper.profileBrowserErrorMessage(),
+                        errorMessage = repoListUiMapper.profileBrowserErrorMessage(),
                     ),
                 )
             }
