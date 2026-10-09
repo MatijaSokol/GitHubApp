@@ -54,6 +54,7 @@ GitHubApp/
 | Image Loading   | Coil 3                                                                    |
 | DI              | Hilt                                                                      |
 | Error Handling  | Arrow                                                                     |
+| Logging         | `AppLogger` abstraction backed by Timber (debug builds only)              |
 | Testing         | JUnit 6, MockK, Turbine, Kluent                                           |
 | Quality         | Ktlint, Detekt, Android Lint, Konsist architecture tests                  |
 | Build           | Gradle convention plugins + Version Catalog (`gradle/libs.versions.toml`) |
@@ -144,11 +145,20 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
   - State and UI models use `ImmutableList` for exposed collections; data classes use only `val` properties.
   - `@Composable` functions live only in UI modules; string resources are resolved only through `UiText`; ViewModels and mappers do not touch Android resources.
   - Package names are lowercase and match file paths; no wildcard imports.
-  - No `m`-prefixed fields (`mFoo`), no `android.util.Log` imports, and no empty `.kt` files.
+  - No `m`-prefixed fields (`mFoo`), no `android.util.Log` imports, Timber imports only in `app`'s logging setup (`com/matijasokol/githubapp/logging/`), and no empty `.kt` files. Both logging rules fail with a message pointing to `AppLogger`.
   - Unit-test source sets (`src/test`, `src/testFree`, `src/testPaid`, `src/testFixtures`) use only JUnit 6 `org.junit.jupiter.api.Test`, never JUnit 4 `org.junit.Test`; instrumented `androidTest` is exempt.
 - `domain` tests build their inputs from domain models only and must not depend on `repo:datasource` or `repo:datasource-test`. Tests for datasource implementations (e.g. `BasicPaginatorTest`) live in `repo/datasource/src/test`.
 - Test file naming: `<ClassUnderTest>Test.kt`.
 - Test method naming: backtick-style descriptive names (e.g., `` `should RETURN SUCCESS STATE when request was successful`() ``).
+
+## Debugging / Logging
+
+- Log through `com.matijasokol.core.logging.AppLogger` in every module, Android and JVM alike: inject it and call `appLogger.d(message)`, `appLogger.e(message, throwable, tag = LogTag.NETWORK)`, etc. It lives in `core`, so pure Kotlin/JVM modules (`repo:domain`, `repo:datasource`, ...) can use it even though Timber is Android-only.
+- Don't call Timber directly outside `app`'s logging setup (`githubapp/logging/`, enforced by Konsist), and don't use `android.util.Log` (banned by Konsist).
+- `AppLogger` is implemented only in `app` by `TimberLogger` and bound in `di/LoggingModule`. Don't add other implementations in feature or data modules. `RepoListEndToEnd` keeps `LoggingModule` installed.
+- `App.onCreate()` calls `initLogging(isDebug = BuildConfig.DEBUG)`, which plants `Timber.DebugTree()` in debug builds only. Release builds plant no tree, so all logs, including `AppLogger` calls, are no-ops there. Never plant trees outside `app`.
+- Tag related logs with the `LogTag` enum in `core` (`com.matijasokol.core.logging.LogTag`); each entry holds its Logcat tag string in `value`. Use `appLogger.d(message, tag = LogTag.NETWORK)` and filter Logcat by that value. Add new tags as enum entries instead of using string literals. An `AppLogger` call without a tag (`null`), or with a tag whose `value` is empty, falls back to the default `AppLogger` tag.
+- Unit tests need no logging setup: with no tree planted, logging does nothing. Classes that inject `AppLogger` can get a relaxed MockK mock (`mockk<AppLogger>(relaxed = true)`) in tests.
 
 ## Do's and Don'ts
 

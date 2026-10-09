@@ -39,6 +39,8 @@ javaxInject = "1"
 
 arrow = "2.2.3"
 
+timber = "5.0.1"
+
 detekt = "1.23.8"
 detektCompose ="0.0.26"
 ktlint = "1.8.0"
@@ -106,6 +108,8 @@ ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock" }
 
 arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow" }
 arrow-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", version.ref = "arrow" }
+
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 ktlint-cli = { group = "com.pinterest.ktlint", name = "ktlint-cli", version.ref = "ktlint" }
 

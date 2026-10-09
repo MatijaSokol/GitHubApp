@@ -95,6 +95,7 @@ Feature screens follow an MVI-style structure:
 | Images               | Coil                                                                           |
 | Dependency injection | Hilt                                                                           |
 | Error handling       | Arrow                                                                          |
+| Logging              | `AppLogger` abstraction backed by Timber (debug builds only)                   |
 | Testing              | JUnit, MockK, Turbine, Kluent, Compose UI tests                                |
 | Quality              | Ktlint, Detekt, Compose Detekt rules, Android Lint, Konsist architecture tests |
 | Build                | AGP, Gradle, convention plugins, version catalog, Kotlin DSL                   |
@@ -283,7 +284,8 @@ class immutability, and wildcard imports.
 
 They also enforce test coverage and hygiene: every ViewModel and use case has a `<ClassUnderTest>Test` class with a
 class-level `sut` property, unit-test source sets use JUnit Jupiter instead of JUnit 4 (`androidTest` is exempt), and
-the codebase has no `m`-prefixed fields, no `android.util.Log` imports, and no empty `.kt` files.
+the codebase has no `m`-prefixed fields, no `android.util.Log` imports, no Timber imports outside `app`'s logging setup
+(log through `AppLogger` instead), and no empty `.kt` files.
 
 When adding or changing a rule, prefer a focused test class and avoid checks that duplicate ktlint or detekt unless
 Konsist adds project-specific value. Run `./gradlew konsist:test` locally, or `./gradlew test` to include Konsist with
