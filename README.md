@@ -54,11 +54,11 @@ The project uses a multi-module setup with a small application module and featur
 
 ```text
 app/                     Application entry point, app-level Hilt setup, mode-specific sources, navigation
-core/                    Shared Kotlin utilities, errors, app mode
+core/                    Shared Kotlin utilities, errors, app mode, logging contract (pure Kotlin/JVM)
 core-ui/                 Shared Compose components, UiText, navigation destination types, UI helpers
-repo/
-  domain/                Repository models, contracts, paginator contract, use cases
-  datasource/            Ktor GitHub API client, network mapping, SQLDelight cache
+repo/                    Empty container project for the repository feature (`:repo`, no build file of its own)
+  domain/                Repository models, contracts, paginator contract, use cases (pure Kotlin/JVM)
+  datasource/            Ktor GitHub API client, network mapping, paginator, SQLDelight cache (Kotlin/JVM)
   datasource-test/       Fakes and JSON fixtures for tests
   list/                  Repository list screen, ViewModel, UI tests
   detail/                Repository detail screen, ViewModel, UI tests
@@ -72,6 +72,103 @@ bindings for their implementations when the binding fits the module's platform a
 on domain and shared UI helpers. Application-level setup, Android context providers, Android-specific Hilt components,
 and composition decisions stay in `app`.
 
+The diagrams below show the same structure visually:
+
+- [Module dependency graph](#module-dependency-graph) — how Gradle modules depend on each other
+- [Layered architecture](#layered-architecture) — presentation, domain, and data layers
+- [Feature module structure](#feature-module-structure) — the MVI pieces inside a feature module
+
+The build setup behind these modules is described in [Gradle Configuration](#gradle-configuration).
+
+### Module Dependency Graph
+
+Production `implementation` dependencies between Gradle modules, as declared in each module's `build.gradle.kts`.
+Test-support modules (`repo:datasource-test`, `test`, `konsist`) are left out, as they are in the Konsist layer rule.
+Arrows point from the consumer to the dependency. Shapes mark the module type: stadium = Android application,
+rectangle = Android library, hexagon = pure Kotlin/JVM library.
+
+```mermaid
+flowchart TD
+    app(["app<br/>Android application"])
+
+    subgraph feature["Feature UI"]
+        list["repo:list<br/>Android library + Compose"]
+        detail["repo:detail<br/>Android library + Compose"]
+    end
+
+    datasource{{"repo:datasource<br/>Kotlin/JVM + SQLDelight"}}
+    domain{{"repo:domain<br/>Kotlin/JVM"}}
+    coreUi["core-ui<br/>Android library + Compose"]
+    core{{"core<br/>Kotlin/JVM"}}
+
+    app --> list
+    app --> detail
+    app --> datasource
+    app --> domain
+    app --> coreUi
+    app --> core
+
+    list --> coreUi
+    list --> domain
+    list --> core
+    detail --> coreUi
+    detail --> domain
+    detail --> core
+
+    datasource --> domain
+    datasource --> core
+    domain --> core
+    coreUi --> core
+```
+
+The same graph is enforced at package level by Konsist (`package layers have correct dependencies` in
+`ArchitectureKonsistTest`), so a new production dependency has to be added in both places.
+
+### Layered Architecture
+
+The repository feature is split into three layers. Presentation and data both depend on the domain layer, and the
+domain layer depends on nothing but `core`. The data layer plugs in by implementing domain contracts, and Hilt wires
+the implementations together; the bindings live in the modules listed below the diagram.
+
+```mermaid
+flowchart TB
+    subgraph presentation["Presentation · repo:list, repo:detail · Android"]
+        listVm["RepoListViewModel"]
+        detailVm["RepoDetailViewModel"]
+    end
+
+    subgraph data["Data · repo:datasource · Kotlin/JVM"]
+        serviceImpl["RepoServiceImpl<br/>Ktor → api.github.com"]
+        paginatorImpl["BasicPaginator"]
+        cacheImpl["RepoCacheImpl<br/>SQLDelight (work in progress)"]
+    end
+
+    subgraph domainLayer["Domain · repo:domain · pure Kotlin/JVM"]
+        useCases["Use cases<br/>SortReposUseCase · GetRepoDetailsUseCase"]
+        contracts["Contracts<br/>RepoService · Paginator · RepoCache"]
+        models["Models<br/>Repo · Author · RepoSortType"]
+    end
+
+    listVm -- depends on --> useCases
+    listVm -- depends on --> contracts
+    detailVm -- depends on --> useCases
+    useCases --> contracts
+    contracts --> models
+
+    serviceImpl -. implements .-> contracts
+    paginatorImpl -. implements .-> contracts
+    cacheImpl -. implements .-> contracts
+```
+
+- `RepoService` and `RepoCache` are bound to their implementations in `repo:datasource`
+  (`DataSourceModule`), because the choice is not app-specific.
+- `Paginator` is bound to `BasicPaginator` in `app` (`ViewModelModule`), because the binding uses the Android-only
+  `ViewModelComponent`.
+- The `SqlDriver` that `RepoDatabase` needs is provided in `app` (`CacheModule`), because `AndroidSqliteDriver` needs
+  an Android `Context`.
+- `AppLogger` (from `core`) is bound to `TimberLogger` in `app` (`LoggingModule`).
+- `RepoCache` is implemented and bound, but not yet used by any screen; offline/local persistence is work in progress.
+
 ## Presentation Pattern
 
 Feature screens follow an MVI-style structure:
@@ -81,6 +178,41 @@ Feature screens follow an MVI-style structure:
 - `*Action` models one-shot effects such as navigation, browser launches, scroll requests, or messages.
 - `*ViewModel` exposes state through `StateFlow` and actions through a `Channel.receiveAsFlow()`.
 - `*UiMapper` maps domain/loading/error data into UI state, retaining resource-backed text as unresolved `UiText`.
+
+### Feature Module Structure
+
+How the MVI pieces of one feature module fit together. The screen composable lives in the feature module; the
+navigation entry that collects state and handles actions (`RepoListEntry`, `RepoDetailEntry`) lives in `app`'s
+`AppContent`.
+
+```mermaid
+flowchart LR
+    subgraph appModule["app"]
+        entry["Nav entry<br/>e.g. RepoListEntry"]
+    end
+
+    subgraph featureModule["Feature module, e.g. repo:list"]
+        screen["Screen composable<br/>e.g. RepoList"]
+        vm["*ViewModel<br/>onEvent(event)"]
+        mapper["*UiMapper<br/>domain → *State<br/>text kept as UiText"]
+        state["state: StateFlow of *State"]
+        actions["actions: Flow of *Action<br/>Channel.receiveAsFlow()"]
+    end
+
+    subgraph domainModule["repo:domain"]
+        domainApi["Use cases and contracts<br/>e.g. SortReposUseCase, Paginator"]
+    end
+
+    screen -- "*Event" --> vm
+    vm -- calls --> domainApi
+    domainApi -- "domain models" --> vm
+    vm -- "combine(...)" --> mapper
+    mapper --> state
+    vm -- "send(*Action)" --> actions
+    state -- "collectAsStateWithLifecycle()" --> entry
+    actions -- "ObserveAsEvent" --> entry
+    entry -- "state + onEvent" --> screen
+```
 
 ## Tech Stack
 
@@ -191,6 +323,59 @@ Common Gradle commands:
 ./gradlew repo:list:assembleRelease -Pgithubapp.enableComposeCompilerReports=true
 ```
 
+## Gradle Configuration
+
+Module build files stay short: shared setup lives in convention plugins under `build-logic/convention`, versions live
+in the version catalog, and modules reference each other through type-safe project accessors.
+
+### Convention Plugins
+
+`build-logic` is an included build (`pluginManagement { includeBuild("build-logic") }` in `settings.gradle.kts`).
+Plugins are registered in [`build-logic/convention/build.gradle.kts`](build-logic/convention/build.gradle.kts) and
+exposed to modules through `githubapp-*` aliases in the `[plugins]` table of the version catalog.
+
+The plugins that compose others:
+
+```mermaid
+flowchart LR
+    application(["githubapp.android.application"]) --> productflavors["githubapp.productflavors"]
+    application --> buildtypes["githubapp.buildtypes"]
+    application --> versioning["githubapp.versioning"]
+    application --> quality["githubapp.quality"]
+    library(["githubapp.android.library"]) --> quality
+    jvm(["githubapp.jvm.library"]) --> quality
+```
+
+### Type-Safe Project Accessors
+
+`settings.gradle.kts` enables `TYPESAFE_PROJECT_ACCESSORS`, so modules depend on each other through generated
+`projects.*` accessors instead of string paths. Path segments become properties, and kebab-case names become
+camelCase:
+
+```kotlin
+dependencies {
+    implementation(projects.core)                       // :core
+    implementation(projects.coreUi)                     // :core-ui
+    implementation(projects.repo.domain)                // :repo:domain
+    testImplementation(projects.repo.datasourceTest)    // :repo:datasource-test
+    testImplementation(testFixtures(projects.test))     // test fixtures of :test
+}
+```
+
+A misspelled or removed module fails at compile time of the build script rather than at dependency resolution.
+
+### Java and JVM Version
+
+The Java/JVM version is set once, in [`ConfigureKotlin.kt`](build-logic/convention/src/main/kotlin/ConfigureKotlin.kt)
+(`JavaVersion.VERSION_21` and `JvmTarget.JVM_21`), and applied by the convention plugins to:
+
+- Android `compileOptions` (`sourceCompatibility` / `targetCompatibility`) in application and library modules
+- the `java` extension in Kotlin/JVM modules
+- `jvmTarget` of every `KotlinCompile` task, together with the shared compiler flags
+
+`build-logic/convention/build.gradle.kts` sets Java 21 separately for compiling the plugins themselves. Builds need
+JDK 21 (see [Requirements](#requirements)).
+
 ## Data Notes
 
 Network calls target `https://api.github.com` through Ktor. The current client does not attach a GitHub token,
@@ -252,6 +437,8 @@ Required repository secrets:
 - Build configuration belongs in `build-logic/convention/`.
 - Dependency versions belong in `gradle/libs.versions.toml`.
 - Inter-module dependencies should use `projects.*` type-safe accessors.
+- When adding or removing a module or an inter-module dependency, update the
+  [module dependency graph](#module-dependency-graph) and the Konsist layer rule in the same PR.
 - Represent resource-backed visible, formatted, accessibility, and one-shot message text as `UiText` in UI state or
   actions. The flow is `strings.xml` → `UiText.StringResource` → state/action → UI-boundary resolution.
 - Resolve `UiText` with the active Compose configuration immediately before rendering, or with current `Resources` for
