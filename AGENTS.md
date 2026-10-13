@@ -20,11 +20,11 @@ The project follows a **multi-module architecture** with clear separation of con
 ```text
 GitHubApp/
 ├── app/                 → Application module (entry point, app-level DI setup, navigation)
-├── core/                → Shared utilities, error types, sort order, app mode (pure Kotlin/JVM)
+├── core/                → Shared utilities, error types, sort order, app mode, logging contract (pure Kotlin/JVM)
 ├── core-ui/             → Reusable Compose UI components, theming, navigation helpers
-├── repo/                → Feature: GitHub repositories
+├── repo/                → Empty container project for the repository feature (`:repo`, no build file of its own)
 │   ├── domain/          → Business logic, models, use cases (pure Kotlin/JVM)
-│   ├── datasource/      → Data layer (Ktor network + SQLDelight local database)
+│   ├── datasource/      → Data layer (Ktor network + SQLDelight local database, pure Kotlin/JVM)
 │   ├── datasource-test/ → Test doubles for the data layer
 │   ├── list/            → Repository list screen (UI + ViewModel)
 │   └── detail/          → Repository detail screen (UI + ViewModel)
@@ -40,6 +40,8 @@ GitHubApp/
 - **UI/feature** modules (list, detail) depend on **domain** and **core-ui**.
 - **app** module owns application-level Hilt setup, Android-specific bindings, and composition decisions, while feature/data modules own DI bindings for implementations they define when the binding fits that module's platform and component scope.
 - Use `projects.*` typesafe accessors for inter-module dependencies (e.g., `projects.repo.domain`).
+- The README's [Module Dependency Graph](README.md#module-dependency-graph) shows the current production dependencies and matches the Konsist rule `package layers have correct dependencies`. When adding or removing a module or an inter-module dependency, update both the graph and the Konsist rule in the same change.
+- The README's [Gradle Configuration](README.md#gradle-configuration) section describes the convention plugins and how they compose. Update it when adding, removing, or changing what a convention plugin applies.
 
 ## Tech Stack
 
@@ -123,7 +125,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 
 - All build configuration goes through **convention plugins** in `build-logic/convention/`.
 - Dependency versions live in `gradle/libs.versions.toml`. Never hardcode versions in `build.gradle.kts`.
-- Use custom plugin aliases: `githubapp.android.library`, `githubapp.android.library.compose`, `githubapp.jvm.library`, etc.
+- Apply convention plugins through their version-catalog aliases, e.g. `alias(libs.plugins.githubapp.library)`, `alias(libs.plugins.githubapp.library.compose)`, `alias(libs.plugins.githubapp.jvm.library)` (plugin IDs `githubapp.android.library`, `githubapp.android.library.compose`, `githubapp.jvm.library`). Each module's `plugins { }` block shows which convention plugins it applies.
 
 ## Testing Guidelines
 
