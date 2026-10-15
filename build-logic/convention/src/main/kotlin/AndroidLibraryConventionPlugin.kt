@@ -24,7 +24,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
   private fun Project.configureAndroid(libraryExtension: LibraryExtension) = libraryExtension.apply {
     buildFeatures {
-      buildConfig = true
       resValues = true
     }
 

@@ -20,7 +20,7 @@ The project follows a **multi-module architecture** with clear separation of con
 ```text
 GitHubApp/
 ├── app/                 → Application module (entry point, app-level DI setup, navigation)
-├── core/                → Shared utilities, error types, sort order, app mode, logging contract (pure Kotlin/JVM)
+├── core/                → Shared utilities, error types, sort order, app mode, logging contract, build config model (pure Kotlin/JVM)
 ├── core-ui/             → Reusable Compose UI components, theming, navigation helpers
 ├── repo/                → Empty container project for the repository feature (`:repo`, no build file of its own)
 │   ├── domain/          → Business logic, models, use cases (pure Kotlin/JVM)
@@ -114,6 +114,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - ViewModels without navigation arguments use `@HiltViewModel` + `@Inject constructor`.
 - ViewModels that need a Navigation 3 destination use `@HiltViewModel(assistedFactory = X.Factory::class)` + `@AssistedInject constructor(@Assisted destination: Destination.Foo, ...)` with a nested `@AssistedFactory interface Factory`, and are obtained in the nav entry via `hiltViewModel<X, X.Factory>(creationCallback = { it.create(key) })` (see `RepoDetailViewModel`). Do not use `SavedStateHandle` for navigation arguments.
 - Use cases and mappers use `@Inject constructor` directly (no module needed).
+- Build information (`isDebug`, `applicationId`, `buildType`, `flavor`, `versionName`, `versionCode`) is exposed as the `AppBuildConfig` data class in `core` (`com.matijasokol.core.buildconfig`), so pure Kotlin/JVM modules without a generated `BuildConfig` can use it too. Only `app` creates it, in `di/BuildConfigModule` from its generated `BuildConfig`. Inject `AppBuildConfig` instead of reading `BuildConfig` anywhere else.
 
 ### App Modes (free / paid)
 
@@ -157,10 +158,11 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 
 - Log through `com.matijasokol.core.logging.AppLogger` in every module, Android and JVM alike: inject it and call `appLogger.d(message)`, `appLogger.e(message, throwable, tag = LogTag.NETWORK)`, etc. It lives in `core`, so pure Kotlin/JVM modules (`repo:domain`, `repo:datasource`, ...) can use it even though Timber is Android-only.
 - Don't call Timber directly outside `app`'s logging setup (`githubapp/logging/`, enforced by Konsist), and don't use `android.util.Log` (banned by Konsist).
-- `AppLogger` is implemented only in `app` by `TimberLogger` and bound in `di/LoggingModule`. Don't add other implementations in feature or data modules. `RepoListEndToEnd` keeps `LoggingModule` installed.
-- `App.onCreate()` calls `initLogging(isDebug = BuildConfig.DEBUG)`, which plants `Timber.DebugTree()` in debug builds only. Release builds plant no tree, so all logs, including `AppLogger` calls, are no-ops there. Never plant trees outside `app`.
+- `AppLogger` is implemented only in `app` by `TimberLogger` and bound in `di/LoggingModule`. Don't add other production implementations in feature or data modules; test fakes (`AppLoggerFake`) are fine. `RepoListEndToEnd` keeps `LoggingModule` installed.
+- `App.onCreate()` calls `initLogging(isDebug = appBuildConfig.isDebug)` (injected `AppBuildConfig`), which plants `Timber.DebugTree()` in debug builds only. Release builds plant no tree, so all logs, including `AppLogger` calls, are no-ops there. Never plant trees outside `app`.
 - Tag related logs with the `LogTag` enum in `core` (`com.matijasokol.core.logging.LogTag`); each entry holds its Logcat tag string in `value`. Use `appLogger.d(message, tag = LogTag.NETWORK)` and filter Logcat by that value. Add new tags as enum entries instead of using string literals. An `AppLogger` call without a tag (`null`), or with a tag whose `value` is empty, falls back to the default `AppLogger` tag.
-- Unit tests need no logging setup: with no tree planted, logging does nothing. Classes that inject `AppLogger` can get a relaxed MockK mock (`mockk<AppLogger>(relaxed = true)`) in tests.
+- Unit tests need no logging setup: with no tree planted, logging does nothing. Classes that inject `AppLogger` get an `AppLoggerFake` in tests (fakes over mocks); it records every call as an `Entry` (level, message, throwable, tag), so assert on `entries` or `messages` instead of `verify`. It lives in `repo:datasource-test` (`com.matijasokol.repo.datasourcetest.logging`), next to the other data-layer fakes.
+- Network logging: in debug builds the GitHub API client logs every request and response, headers and bodies included, through `AppLogger` under `LogTag.NETWORK`. Filter Logcat with `tag:Network`. `NetworkModule` injects `AppBuildConfig` and `AppLogger`; when `isDebug` is `true` it passes `buildHttpClient` a `networkLogger`, a `NetworkLogger` (the internal Ktor `Logger` that forwards to `AppLogger`), otherwise `null`. Release builds don't install Ktor's `Logging` plugin at all. `Authorization`, `Proxy-Authorization`, `Cookie` and `Set-Cookie` values are logged as `***` (see `network/NetworkLogging.kt`). `networkLogger` defaults to `null`, which installs no logging plugin, so test clients (`RepoServiceFake`) stay silent. Large search responses show up as several consecutive `Network` entries, because Logcat caps an entry at ~4 KB and Timber splits longer messages.
 
 ## Do's and Don'ts
 
