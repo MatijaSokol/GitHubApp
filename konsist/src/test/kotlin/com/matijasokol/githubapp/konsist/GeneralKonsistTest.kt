@@ -34,6 +34,17 @@ class GeneralKonsistTest {
     }
 
     @Test
+    fun `BuildConfig is read only in BuildConfigModule`() {
+        productionScope
+            .files
+            .filterNot { file -> file.path.normalizedPath().endsWith(BUILD_CONFIG_ALLOWED_FILE) }
+            .assertFalse(
+                additionalMessage = "BuildConfig is read only in app's di/BuildConfigModule. " +
+                    "Inject AppBuildConfig instead.",
+            ) { file -> file.text.contains(BUILD_CONFIG_USAGE_REGEX) }
+    }
+
+    @Test
     fun `no empty files allowed`() {
         projectScope
             .files
@@ -45,3 +56,5 @@ private val HUNGARIAN_FIELD_REGEX = "^m[A-Z].*".toRegex()
 private const val ANDROID_LOG_IMPORT = "android.util.Log"
 private const val TIMBER_PACKAGE = "timber."
 private const val TIMBER_ALLOWED_PATH = "/app/src/main/java/com/matijasokol/githubapp/logging/"
+private val BUILD_CONFIG_USAGE_REGEX = "\\bBuildConfig\\.".toRegex()
+private const val BUILD_CONFIG_ALLOWED_FILE = "/app/src/main/java/com/matijasokol/githubapp/di/BuildConfigModule.kt"

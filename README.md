@@ -54,7 +54,7 @@ The project uses a multi-module setup with a small application module and featur
 
 ```text
 app/                     Application entry point, app-level Hilt setup, mode-specific sources, navigation
-core/                    Shared Kotlin utilities, errors, app mode, logging contract (pure Kotlin/JVM)
+core/                    Shared Kotlin utilities, errors, app mode, logging contract, build config (pure Kotlin/JVM)
 core-ui/                 Shared Compose components, UiText, navigation destination types, UI helpers
 repo/                    Empty container project for the repository feature (`:repo`, no build file of its own)
   domain/                Repository models, contracts, paginator contract, use cases (pure Kotlin/JVM)
@@ -167,6 +167,9 @@ flowchart TB
 - The `SqlDriver` that `RepoDatabase` needs is provided in `app` (`CacheModule`), because `AndroidSqliteDriver` needs
   an Android `Context`.
 - `AppLogger` (from `core`) is bound to `TimberLogger` in `app` (`LoggingModule`).
+- `AppBuildConfig` (from `core`) is provided in `app` (`BuildConfigModule`), because only `app` has a generated
+  `BuildConfig`. Other modules inject it, e.g. `repo:datasource`'s `NetworkModule` turns on HTTP logging when
+  `isDebug` is `true`.
 - `RepoCache` is implemented and bound, but not yet used by any screen; offline/local persistence is work in progress.
 
 ## Presentation Pattern
@@ -381,6 +384,11 @@ JDK 21 (see [Requirements](#requirements)).
 Network calls target `https://api.github.com` through Ktor. The current client does not attach a GitHub token,
 so local usage is subject to GitHub's unauthenticated API rate limits. If list loading starts returning errors
 after repeated searches, wait for the limit to reset or add authenticated API support before heavy testing.
+
+Debug builds log every GitHub API request and response, headers and bodies included, under the `Network` Logcat tag
+(filter with `tag:Network`). `Authorization`, `Proxy-Authorization`, `Cookie`, and `Set-Cookie` values are logged as
+`***`. Release builds don't install Ktor's logging plugin. Large search responses are split across several consecutive
+`Network` entries, because Logcat caps a single entry at about 4 KB.
 
 The SQLDelight local database layer is present, but offline/local persistence behavior is still being built out.
 

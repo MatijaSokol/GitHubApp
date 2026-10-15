@@ -7,6 +7,7 @@ import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -17,6 +18,7 @@ import kotlinx.serialization.json.Json
 fun <T : HttpClientEngineConfig> buildHttpClient(
     json: Json,
     engine: HttpClientEngineFactory<T>,
+    networkLogger: Logger? = null,
     config: (HttpClientConfig<T>.() -> Unit)? = null,
 ): HttpClient = HttpClient(engine) {
     install(DefaultRequest) {
@@ -30,6 +32,8 @@ fun <T : HttpClientEngineConfig> buildHttpClient(
     install(ContentNegotiation) {
         json(json)
     }
+
+    networkLogger?.let { installNetworkLogging(it) }
 
     config?.invoke(this)
 }

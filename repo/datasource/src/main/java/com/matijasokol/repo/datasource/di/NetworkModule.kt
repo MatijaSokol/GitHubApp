@@ -1,5 +1,8 @@
 package com.matijasokol.repo.datasource.di
 
+import com.matijasokol.core.buildconfig.AppBuildConfig
+import com.matijasokol.core.logging.AppLogger
+import com.matijasokol.repo.datasource.network.NetworkLogger
 import com.matijasokol.repo.datasource.network.buildHttpClient
 import com.matijasokol.repo.datasource.network.json
 import dagger.Module
@@ -29,5 +32,11 @@ object NetworkModule {
     fun provideHttpClient(
         json: Json,
         engine: HttpClientEngineFactory<*>,
-    ): HttpClient = buildHttpClient(json, engine)
+        appBuildConfig: AppBuildConfig,
+        appLogger: AppLogger,
+    ): HttpClient = buildHttpClient(
+        json = json,
+        engine = engine,
+        networkLogger = if (appBuildConfig.isDebug) NetworkLogger(appLogger) else null,
+    )
 }
