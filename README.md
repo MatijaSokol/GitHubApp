@@ -326,6 +326,12 @@ Common Gradle commands:
 ./gradlew repo:list:assembleRelease -Pgithubapp.enableComposeCompilerReports=true
 ```
 
+### Inspecting network traffic
+
+Debug builds trust user-installed CA certificates, so HTTPS traffic can be inspected with Charles Proxy, Proxyman or
+mitmproxy. Install the proxy's root CA on the device or emulator, point its proxy setting at your machine, and run any
+debug variant. Release builds keep Android's default trust, so they fail TLS through a proxy.
+
 ## Gradle Configuration
 
 Module build files stay short: shared setup lives in convention plugins under `build-logic/convention`, versions live
