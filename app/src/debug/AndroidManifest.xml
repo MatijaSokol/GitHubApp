@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Debug build type only: lets a local HTTPS proxy inspect traffic. See "Inspecting network traffic" in README.md. -->
+    <application android:networkSecurityConfig="@xml/network_security_config" />
+
+</manifest>
