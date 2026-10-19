@@ -14,6 +14,7 @@ forks, or last update date, open author profiles in the browser, and view reposi
 - Repository detail screen with author, topic, stats, language, description, and external repository/profile links.
 - Free and paid app modes. The free variant blocks the detail screen; the paid variant enables it.
 - Light and dark theme.
+- Themed (monochrome) launcher icon on Android 13+ that follows the wallpaper colors when themed icons are enabled.
 - Shared element transitions between list and detail surfaces.
 - Predictive back gesture support.
 - SQLDelight database layer and datasource test fakes. Offline/local persistence is still a work in progress.
