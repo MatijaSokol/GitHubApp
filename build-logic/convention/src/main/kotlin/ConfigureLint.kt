@@ -11,5 +11,8 @@ internal fun Project.configureLint(lint: Lint) {
   lint.apply {
     baseline = file("lint-baseline.xml")
     abortOnError = true
+    // Dependency/Gradle version bumps are handled by Dependabot; these online checks only add noise
+    // and churn the baselines every time a new release ships.
+    disable += setOf("NewerVersionAvailable", "GradleDependency", "AndroidGradlePluginVersion")
   }
 }
