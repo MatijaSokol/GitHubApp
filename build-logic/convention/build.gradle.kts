@@ -26,6 +26,15 @@ dependencies {
 
     // used for type safe access to version catalog
     compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.kluent)
+    testRuntimeOnly(libs.junit.platform.launcher)
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
 
 gradlePlugin {

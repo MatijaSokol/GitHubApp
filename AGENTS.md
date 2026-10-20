@@ -58,7 +58,7 @@ GitHubApp/
 | Error Handling  | Arrow                                                                     |
 | Logging         | `AppLogger` abstraction backed by Timber (debug builds only)              |
 | Testing         | JUnit 6, MockK, Turbine, Kluent                                           |
-| Quality         | Ktlint, Detekt, Android Lint, Konsist architecture tests                  |
+| Quality         | Ktlint, Detekt, Android Lint, XML format, Konsist architecture tests      |
 | Build           | Gradle convention plugins + Version Catalog (`gradle/libs.versions.toml`) |
 
 ## Code Conventions
@@ -72,6 +72,7 @@ GitHubApp/
 - Keep functions small and single-purpose.
 - Code style is defined in `.editorconfig` (ktlint) and `quality/detekt.yml` (detekt + Compose rules). Key rules: 4-space indent, max line length **120** (detekt allows 150 — follow 120), trailing commas on declarations and call sites, a blank line after the class header, and multiline class signatures when there are 2+ parameters.
 - Run `./gradlew ktlintFormat` to auto-fix style before `./gradlew ktlintCheck detekt`.
+- XML files are checked by `./gradlew xmlFormatCheck` (`build-logic/convention/src/main/kotlin/quality/`): indentation width must be a multiple of 4 (spaces or tabs; a tab counts as 4 spaces), no trailing whitespace, and a newline at end of file. Text inside multi-line `<!-- -->` comments is not indentation-checked.
 
 ### Presentation Layer (MVI Pattern)
 
@@ -176,7 +177,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - ✅ Use `ImmutableList` for list properties in state classes.
 - ✅ Write unit tests for ViewModels and use cases.
 - ✅ Use `combine` to derive state from multiple flows.
-- ✅ Run `./gradlew konsist:test`, `./gradlew detekt`, `./gradlew ktlintCheck`, and `./gradlew lint` before submitting changes.
+- ✅ Run `./gradlew konsist:test`, `./gradlew detekt`, `./gradlew ktlintCheck`, `./gradlew xmlFormatCheck`, and `./gradlew lint` before submitting changes.
 
 ### Don't
 
@@ -223,6 +224,9 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 
 # Run ktlint format
 ./gradlew ktlintFormat
+
+# Check XML formatting
+./gradlew xmlFormatCheck
 ```
 
 `assembleRelease` and `assemble*Release` need the `GITHUBAPP_STORE_PASSWORD` and `GITHUBAPP_KEY_PASSWORD` environment variables; use debug variants for local verification.

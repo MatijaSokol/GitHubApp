@@ -314,6 +314,12 @@ Common Gradle commands:
 # Static analysis and formatting checks
 ./gradlew ktlintCheck detekt
 
+# XML formatting check (indentation in multiples of 4, a tab counts as 4; no trailing whitespace; newline at end of file)
+./gradlew xmlFormatCheck
+
+# Tests for the build-logic convention plugins (e.g. the XML format checker)
+./gradlew :build-logic:convention:test
+
 # Android Lint (fails only on issues not in the module's lint-baseline.xml)
 ./gradlew lint
 
@@ -355,6 +361,17 @@ flowchart LR
     library(["githubapp.android.library"]) --> quality
     jvm(["githubapp.jvm.library"]) --> quality
 ```
+
+`githubapp.quality` applies the static analysis and formatting checks to every module that uses it:
+
+- **Detekt**, configured with `quality/detekt.yml`, plus the `detekt-formatting` and Compose rule sets; HTML, TXT and
+  XML reports
+- **ktlint**: `ktlintCheck` (with an HTML report in `build/reports/ktlint.html`) and `ktlintFormat`
+- **Android Lint**, configured through [`ConfigureLint.kt`](build-logic/convention/src/main/kotlin/ConfigureLint.kt)
+  in application and library modules
+- **`xmlFormatCheck`** (task in [`quality/`](build-logic/convention/src/main/kotlin/quality)): checks XML under the
+  module's `src/` for indentation in multiples of 4 (a tab counts as 4), trailing whitespace and a final newline, and
+  writes `build/reports/xml-format.txt`. It is wired into `check` wherever the module has one.
 
 ### Type-Safe Project Accessors
 
@@ -429,12 +446,12 @@ All workflows run on `ubuntu-latest` and share the JDK 21 + Gradle setup in `.gi
 
 `pr_checks.yml` jobs run in parallel and upload their reports even when they fail:
 
-| Job               | Command                                        | Artifact                                  |
-|-------------------|------------------------------------------------|-------------------------------------------|
-| `static-analysis` | `./gradlew ktlintCheck detekt lint --continue` | `static-analysis-reports`                 |
-| `build-free`      | `./gradlew assembleProdFreeRelease`            | `app-prod-free-release.apk` (kept 2 days) |
-| `build-paid`      | `./gradlew assembleProdPaidRelease`            | `app-prod-paid-release.apk` (kept 2 days) |
-| `unit-test`       | `./gradlew test` (includes Konsist)            | `unit-test-reports`                       |
+| Job               | Command                                                          | Artifact                                  |
+|-------------------|------------------------------------------------------------------|-------------------------------------------|
+| `static-analysis` | `./gradlew ktlintCheck detekt lint xmlFormatCheck --continue`    | `static-analysis-reports`                 |
+| `build-free`      | `./gradlew assembleProdFreeRelease`                              | `app-prod-free-release.apk` (kept 2 days) |
+| `build-paid`      | `./gradlew assembleProdPaidRelease`                              | `app-prod-paid-release.apk` (kept 2 days) |
+| `unit-test`       | `./gradlew test :build-logic:convention:test` (includes Konsist) | `unit-test-reports`                       |
 
 Android Lint fails only on issues missing from the module's `lint-baseline.xml`. Regenerate the baselines with
 `./gradlew updateLintBaseline` only when intentionally accepting existing issues.

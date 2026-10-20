@@ -27,10 +27,10 @@ jobs:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-build
 
-      # --continue runs all three tools even if one fails, so every report is written.
-      - name: Ktlint, Detekt and Android Lint
+      # --continue runs every tool even if one fails, so every report is written.
+      - name: Ktlint, Detekt, Android Lint and XML format check
         shell: bash # runs with pipefail, so a failure still fails the step despite tee
-        run: ./gradlew ktlintCheck detekt lint --continue --stacktrace 2>&1 | tee static-analysis-console.log
+        run: ./gradlew ktlintCheck detekt lint xmlFormatCheck --continue --stacktrace 2>&1 | tee static-analysis-console.log
 
       - name: Upload static analysis reports
         if: always()
@@ -42,6 +42,7 @@ jobs:
             **/build/reports/ktlint.html
             **/build/reports/detekt/detekt.*
             **/build/reports/lint-results*
+            **/build/reports/xml-format.txt
           if-no-files-found: warn
 
   build-free:
@@ -90,9 +91,10 @@ jobs:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-build
 
-      # Runs every module and every variant (including testFree/testPaid sources) and the Konsist architecture tests
-      - name: Unit and Konsist tests
-        run: ./gradlew test --stacktrace
+      # Runs every module and every variant (including testFree/testPaid sources), the Konsist architecture tests
+      # and the tests of the build-logic convention plugins (an included build, so it needs its own task path)
+      - name: Unit, Konsist and build-logic tests
+        run: ./gradlew test :build-logic:convention:test --stacktrace
 
       - name: Upload unit test reports
         if: always()
