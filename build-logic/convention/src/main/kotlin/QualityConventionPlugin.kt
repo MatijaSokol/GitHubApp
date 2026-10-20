@@ -13,6 +13,9 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import org.gradle.language.base.plugins.LifecycleBasePlugin
+import quality.XmlFormatCheckTask
+import quality.XmlFormatChecker
 
 class QualityConventionPlugin : Plugin<Project> {
 
@@ -21,6 +24,7 @@ class QualityConventionPlugin : Plugin<Project> {
       configureDetekt()
       configureKtlint()
       configureAndroidLint()
+      configureXmlFormatCheck()
     }
   }
 
@@ -93,6 +97,20 @@ class QualityConventionPlugin : Plugin<Project> {
     }
     plugins.withType<LibraryPlugin> {
       extensions.configure<LibraryExtension> { lint { configureLint(this) } }
+    }
+  }
+
+  private fun Project.configureXmlFormatCheck() {
+    val xmlFormatCheck = tasks.register<XmlFormatCheckTask>("xmlFormatCheck") {
+      group = "Verification"
+      description = "Check XML indentation (multiple of 4, tab = 4), trailing whitespace and final newline."
+      sources.from(fileTree("src") { include("**/*.xml") })
+      checker.convention(XmlFormatChecker())
+      rootDirectory.set(rootDir)
+      reportFile.set(layout.buildDirectory.file("reports/xml-format.txt"))
+    }
+    plugins.withType<LifecycleBasePlugin> {
+      tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME) { dependsOn(xmlFormatCheck) }
     }
   }
 }
