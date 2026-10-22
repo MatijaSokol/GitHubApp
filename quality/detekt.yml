@@ -119,7 +119,7 @@ coroutines:
 TwitterCompose:
   CompositionLocalAllowlist:
     active: true
-    allowedCompositionLocals: LocalScreenType
+    allowedCompositionLocals: LocalShimmerColors,LocalNavigator,LocalNavigatorErrorMapper,LocalSharedTransitionScope
     # You can optionally define a list of CompositionLocals that are allowed here
     # allowedCompositionLocals: LocalSomething,LocalSomethingElse
   CompositionLocalNaming:

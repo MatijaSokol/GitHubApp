@@ -1,5 +1,3 @@
-@file:Suppress("CompositionLocalAllowlist")
-
 package com.matijasokol.githubapp.navigation
 
 import androidx.compose.runtime.Composable

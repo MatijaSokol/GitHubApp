@@ -1,5 +1,3 @@
-@file:Suppress("CompositionLocalAllowlist", "ModifierComposable")
-
 package com.matijasokol.coreui.components
 
 import androidx.compose.animation.SharedTransitionScope
@@ -11,6 +9,7 @@ import androidx.navigation3.ui.LocalNavAnimatedContentScope
 val LocalSharedTransitionScope =
     compositionLocalOf<SharedTransitionScope> { error("SharedTransitionScope not provided") }
 
+@Suppress("ModifierComposable")
 @Composable
 fun Modifier.withSharedElement(
     key: Any,
