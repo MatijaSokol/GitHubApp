@@ -91,7 +91,7 @@ class RepoListEndToEnd {
         hiltRule.inject()
 
         composeTestRule.activity.setContent {
-            GitHubAppTheme {
+            GitHubAppTheme(dynamicColor = false) {
                 AppContent(
                     navigator = navigator,
                     navigatorErrorMapper = navigationErrorMapper,

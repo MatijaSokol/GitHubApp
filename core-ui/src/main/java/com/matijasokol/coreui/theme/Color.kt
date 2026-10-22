@@ -27,3 +27,7 @@ internal val backgroundDark = Color(0xFF101513)
 internal val onBackgroundDark = Color(0xFFDFE4E0)
 internal val surfaceDark = Color(0xFF101513)
 internal val onSurfaceDark = Color(0xFFDFE4E0)
+
+// Shimmer placeholder gradient for the static palettes (see `LocalShimmerColors` in Theme.kt).
+internal val shimmerBase = Color(0xFFB8B5B5)
+internal val shimmerHighlight = Color(0xFF8F8B8B)

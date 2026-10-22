@@ -17,7 +17,7 @@ fun GitHubAppPreviewContent(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    GitHubAppTheme {
+    GitHubAppTheme(dynamicColor = false) {
         Surface(modifier = modifier) {
             AnimatedContent(Unit) {
                 SharedTransitionLayout {

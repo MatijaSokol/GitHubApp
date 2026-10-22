@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import com.matijasokol.coreui.theme.LocalShimmerColors
 
 @Suppress("ModifierComposable")
 @Composable
@@ -34,6 +34,8 @@ fun Modifier.shimmerEffect(
         label = SHIMMER_TRANSITION_LABEL,
     )
 
+    val shimmerColors = LocalShimmerColors.current
+
     return drawBehind {
         drawRect(
             brush = Brush.linearGradient(
@@ -44,11 +46,5 @@ fun Modifier.shimmerEffect(
         )
     }
 }
-
-private val shimmerColors = listOf(
-    Color(0xFFB8B5B5),
-    Color(0xFF8F8B8B),
-    Color(0xFFB8B5B5),
-)
 
 private const val SHIMMER_TRANSITION_LABEL = "shimmer"
