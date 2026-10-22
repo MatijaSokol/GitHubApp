@@ -90,10 +90,16 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 
 ### Compose Previews
 
-- Wrap previews in `GitHubAppPreviewContent` from `core-ui` so they receive the app theme and required composition locals.
+- Wrap previews in `GitHubAppPreviewContent` from `core-ui` so they receive the app theme and required composition locals. It renders `GitHubAppTheme(dynamicColor = false)`, so previews always show the static brand palettes.
 - Use a direct `@Preview` with a `PreviewParameterProvider` for screen state variants. Use the shared `GitHubAppDevicePreviews`, `GitHubAppThemePreviews`, and `GitHubAppLargeFontPreview` annotations for focused configuration checks; do not create a Cartesian product of states and configurations.
 - Keep preview functions private and suffix their names with `Preview`.
 - Keep deterministic preview fixtures in the owning feature. Do not initialize ViewModels, navigation, network access, or runtime services from previews.
+
+### Theming
+
+- `GitHubAppTheme` (`core-ui/.../theme/Theme.kt`) supports Material You dynamic color: with `dynamicColor = true` (the default) on Android 12+ (API 31) it uses `dynamicLightColorScheme` / `dynamicDarkColorScheme`; otherwise it uses the static `LightColorPalette` / `DarkColorPalette` built from `Color.kt`. Dark mode follows `isSystemInDarkTheme()`. Keep all theme logic in `Theme.kt`; `minSdk` stays 24, so use a runtime `Build.VERSION.SDK_INT` check.
+- Style UI with `MaterialTheme.colorScheme` roles, never hard-coded `Color(0x...)` values outside `core-ui/theme` (where `Color.kt` defines the static palettes and shimmer constants), so it follows the wallpaper. Colors that are not part of `ColorScheme` are provided by the theme (e.g. `LocalShimmerColors` for `Modifier.shimmerEffect`) with a static and a dynamic variant.
+- Compose UI and end-to-end tests render inside `GitHubAppTheme(dynamicColor = false)` so results don't depend on the emulator's wallpaper.
 
 ### Domain Layer
 

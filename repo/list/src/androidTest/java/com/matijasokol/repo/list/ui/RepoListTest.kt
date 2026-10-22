@@ -17,6 +17,7 @@ import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.test.core.app.ApplicationProvider
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
 import com.matijasokol.coreui.text.asString
+import com.matijasokol.coreui.theme.GitHubAppTheme
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.RepoSortType
@@ -38,17 +39,20 @@ class RepoListTest {
     private val testText = uiMapper.initialState(query).text
 
     // Workaround to provide required parameters due to shared transition animation
-    // Without this, test will fail. See SharedElement.kt for more details
+    // Without this, test will fail. See SharedElement.kt for more details.
+    // Static palettes keep results independent of the device wallpaper.
     @SuppressLint("UnusedContentLambdaTargetStateParameter")
     @Composable
     private fun FakeRootComposable(content: @Composable () -> Unit) {
-        AnimatedContent(Unit) {
-            SharedTransitionLayout {
-                CompositionLocalProvider(
-                    LocalSharedTransitionScope provides this,
-                    LocalNavAnimatedContentScope provides this@AnimatedContent,
-                ) {
-                    content()
+        GitHubAppTheme(dynamicColor = false) {
+            AnimatedContent(Unit) {
+                SharedTransitionLayout {
+                    CompositionLocalProvider(
+                        LocalSharedTransitionScope provides this,
+                        LocalNavAnimatedContentScope provides this@AnimatedContent,
+                    ) {
+                        content()
+                    }
                 }
             }
         }

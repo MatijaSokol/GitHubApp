@@ -26,6 +26,7 @@ fun Modifier.withSharedElement(
     }
 }
 
+@Suppress("ModifierComposable")
 @Composable
 fun Modifier.withSharedBounds(
     key: Any,

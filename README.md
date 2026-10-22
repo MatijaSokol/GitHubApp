@@ -13,7 +13,8 @@ forks, or last update date, open author profiles in the browser, and view reposi
 - Sort options for stars, forks, and update date.
 - Repository detail screen with author, topic, stats, language, description, and external repository/profile links.
 - Free and paid app modes. The free variant blocks the detail screen; the paid variant enables it.
-- Light and dark theme.
+- Light and dark theme that follows the system setting, with Material You dynamic color from the wallpaper on
+  Android 12+. Older versions use the static brand palettes.
 - Themed (monochrome) launcher icon on Android 13+ that follows the wallpaper colors when themed icons are enabled.
 - Shared element transitions between list and detail surfaces.
 - Predictive back gesture support.
@@ -487,6 +488,10 @@ Required repository secrets:
   focused configuration checks rather than combining every state and configuration. Keep preview functions private,
   suffix their names with `Preview`, and use deterministic feature-owned fixtures instead of ViewModels, navigation,
   network access, or runtime services.
+- `GitHubAppTheme` (`core-ui`) uses dynamic color on Android 12+ and the static palettes in `Color.kt` otherwise.
+  Style UI with `MaterialTheme.colorScheme` roles instead of hard-coded colors so it follows the wallpaper. Previews
+  (`GitHubAppPreviewContent`) and Compose UI / end-to-end tests use `GitHubAppTheme(dynamicColor = false)` so they don't
+  depend on the device wallpaper.
 - Domain modules should remain pure Kotlin/JVM and free of Android, datasource, and UI dependencies.
 
 ## Konsist Architecture Checks
