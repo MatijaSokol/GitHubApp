@@ -267,6 +267,38 @@ Mode behavior:
 - `free` uses `com.matijasokol.githubapp.free`, shows the app name `GitHub App Free`, and blocks repository details.
 - `paid` uses `com.matijasokol.githubapp`, shows the app name `GitHub App`, and enables repository details.
 
+### Debug launcher ribbon
+
+Debug builds of every flavor combination share one launcher icon, and `dev` and `prod` builds of the same mode share an
+application ID, so installing one replaces the other. To show which variant is installed, debug builds get a dark red
+ribbon across the bottom of the icon that names the flavor, e.g. `devFree` or `prodPaid`. Release builds keep the
+original icon.
+
+<table>
+  <tr>
+    <td align="center"><b>Release</b></td>
+    <td align="center"><b>devFreeDebug</b></td>
+    <td align="center"><b>devPaidDebug</b></td>
+    <td align="center"><b>prodFreeDebug</b></td>
+    <td align="center"><b>prodPaidDebug</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="previews/icon_release.png" width="96" alt="Release launcher icon without a ribbon"/></td>
+    <td align="center"><img src="previews/icon_dev_free_debug.png" width="96" alt="devFree debug launcher icon"/></td>
+    <td align="center"><img src="previews/icon_dev_paid_debug.png" width="96" alt="devPaid debug launcher icon"/></td>
+    <td align="center"><img src="previews/icon_prod_free_debug.png" width="96" alt="prodFree debug launcher icon"/></td>
+    <td align="center"><img src="previews/icon_prod_paid_debug.png" width="96" alt="prodPaid debug launcher icon"/></td>
+  </tr>
+</table>
+
+The images above are documentation only. They were rendered with the plugin's ribbon filter from the round
+`mipmap-xxxhdpi` icon. The build never reads them.
+
+- The ribbon comes from the [Easylauncher](https://github.com/usefulness/easylauncher-gradle-plugin) Gradle plugin,
+  configured in the `githubapp.easylauncher` convention plugin.
+- Icons are badged only at build time. The source artwork is never modified, and no badged images are committed.
+- The debug splash screen and the Android 13+ themed icon show the ribbon too.
+
 ## Build and Run
 
 Clone the repository and open it in Android Studio:
@@ -359,6 +391,7 @@ flowchart LR
     application --> buildtypes["githubapp.buildtypes"]
     application --> versioning["githubapp.versioning"]
     application --> quality["githubapp.quality"]
+    application --> easylauncher["githubapp.easylauncher"]
     library(["githubapp.android.library"]) --> quality
     jvm(["githubapp.jvm.library"]) --> quality
 ```

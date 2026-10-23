@@ -45,6 +45,8 @@ detekt = "1.23.8"
 detektCompose ="0.0.26"
 ktlint = "1.8.0"
 
+easylauncher = "6.4.1"
+
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 coreKtx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -121,6 +123,7 @@ sqldelight-gradlePlugin = { group = "app.cash.sqldelight", name = "gradle-plugin
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detekt-formatting-compose = { group = "com.twitter.compose.rules", name = "detekt", version.ref = "detektCompose" }
+easylauncher-gradlePlugin = { group = "com.project.starter", name = "easylauncher", version.ref = "easylauncher" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -132,6 +135,7 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+easylauncher = { id = "com.starter.easylauncher", version.ref = "easylauncher" }
 
 githubapp-application = { id = "githubapp.android.application", version = "unspecified" }
 githubapp-library = { id = "githubapp.android.library", version = "unspecified" }
@@ -143,6 +147,7 @@ githubapp-buildtypes = { id = "githubapp.buildtypes", version = "unspecified" }
 githubapp-sqldelight = { id = "githubapp.sqldelight", version = "unspecified" }
 githubapp-versioning = { id = "githubapp.versioning", version = "unspecified" }
 githubapp-quality = { id = "githubapp.quality", version = "unspecified" }
+githubapp-easylauncher = { id = "githubapp.easylauncher", version = "unspecified" }
 
 [bundles]
 ktor = [
