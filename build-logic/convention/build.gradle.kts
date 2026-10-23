@@ -23,6 +23,7 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.sqldelight.gradlePlugin)
     compileOnly(libs.detekt.gradlePlugin)
+    compileOnly(libs.easylauncher.gradlePlugin)
 
     // used for type safe access to version catalog
     compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
@@ -78,6 +79,10 @@ gradlePlugin {
         register("qualityPlugin") {
             id = "githubapp.quality"
             implementationClass = "QualityConventionPlugin"
+        }
+        register("easyLauncherPlugin") {
+            id = "githubapp.easylauncher"
+            implementationClass = "EasyLauncherConventionPlugin"
         }
     }
 }

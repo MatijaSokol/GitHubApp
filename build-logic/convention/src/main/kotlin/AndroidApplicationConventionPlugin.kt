@@ -23,6 +23,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
       apply(libs.plugins.githubapp.buildtypes)
       apply(libs.plugins.githubapp.versioning)
       apply(libs.plugins.githubapp.quality)
+      apply(libs.plugins.githubapp.easylauncher)
     }
   }
 

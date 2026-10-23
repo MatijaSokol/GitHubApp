@@ -134,6 +134,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - All build configuration goes through **convention plugins** in `build-logic/convention/`.
 - Dependency versions live in `gradle/libs.versions.toml`. Never hardcode versions in `build.gradle.kts`.
 - Apply convention plugins through their version-catalog aliases, e.g. `alias(libs.plugins.githubapp.library)`, `alias(libs.plugins.githubapp.library.compose)`, `alias(libs.plugins.githubapp.jvm.library)` (plugin IDs `githubapp.android.library`, `githubapp.android.library.compose`, `githubapp.jvm.library`). Each module's `plugins { }` block shows which convention plugins it applies.
+- The Easylauncher plugin is added by the `githubapp.easylauncher` convention plugin (`EasyLauncherConventionPlugin`, applied by `githubapp.android.application`). Debug variants get a bottom ribbon on the launcher icon labelled with the flavor name (`devFree`, `prodPaid`, ...), and release build types are explicitly disabled. Ribbon colors and sizes are private top-level constants in `EasyLauncherConventionPlugin.kt`. Icons are badged at build time into generated resources, so never commit badged icons or edit the source artwork for this.
 
 ## Testing Guidelines
 
