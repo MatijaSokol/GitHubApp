@@ -85,7 +85,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
   - `val state: StateFlow<*State>` (combined from multiple flows using `combine`)
   - `val actions: Flow<*Action>` (from `Channel.receiveAsFlow()`)
   - `fun onEvent(event: *Event)` as the single entry point for UI interactions.
-- **`*UiMapper`** — Separate class to map domain state to UI state, retaining resource-backed text as unresolved `UiText` (injected into ViewModel).
+- **`*UiMapper`** — Separate class to map domain state to UI state, retaining resource-backed text as unresolved `UiText` (injected into ViewModel). Expose one named function per message or action the ViewModel emits (e.g. `RepoListUiMapper.profileBrowserErrorMessage()`, `RepoDetailsUiMapper.repoBrowserErrorAction()`); never a generic `toAction(event)` that has to throw for events that produce no action.
 - Screen composables resolve `UiText` at the UI boundary. Child composables needing up to three text values should receive individual resolved strings; when more than three text arguments are required, pass the relevant text state/model directly. Do not pass the entire screen state.
 
 ### Compose Previews
