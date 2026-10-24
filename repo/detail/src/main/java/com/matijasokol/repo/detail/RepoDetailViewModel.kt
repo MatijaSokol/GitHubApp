@@ -58,8 +58,10 @@ class RepoDetailViewModel @AssistedInject constructor(
     fun onEvent(event: RepoDetailEvent) {
         when (event) {
             RepoDetailEvent.OnRetryClick -> viewModelScope.launch { fetchTrigger.send(Unit) }
-            RepoDetailEvent.OpenProfileWebError, RepoDetailEvent.OpenRepoWebError ->
-                viewModelScope.launch { _actions.send(repoDetailsUiMapper.toAction(event)) }
+            RepoDetailEvent.OpenProfileWebError ->
+                viewModelScope.launch { _actions.send(repoDetailsUiMapper.profileBrowserErrorAction()) }
+            RepoDetailEvent.OpenRepoWebError ->
+                viewModelScope.launch { _actions.send(repoDetailsUiMapper.repoBrowserErrorAction()) }
         }
     }
 }

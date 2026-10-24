@@ -70,14 +70,12 @@ class RepoDetailsUiMapper @Inject constructor() {
         profileSupportingText = profileSupportingText(repoFullName),
     )
 
-    fun toAction(event: RepoDetailEvent) = RepoDetailAction.ShowMessage(
-        message = when (event) {
-            RepoDetailEvent.OpenProfileWebError ->
-                UiText.StringResource(R.string.repo_detail_message_profile_browser_error)
-            RepoDetailEvent.OpenRepoWebError ->
-                UiText.StringResource(R.string.repo_detail_message_repo_browser_error)
-            RepoDetailEvent.OnRetryClick -> error("Retry does not produce a UI action")
-        },
+    fun profileBrowserErrorAction() = RepoDetailAction.ShowMessage(
+        message = UiText.StringResource(R.string.repo_detail_message_profile_browser_error),
+    )
+
+    fun repoBrowserErrorAction() = RepoDetailAction.ShowMessage(
+        message = UiText.StringResource(R.string.repo_detail_message_repo_browser_error),
     )
 
     private fun profileSupportingText(repoFullName: String) = UiText.StringResource(

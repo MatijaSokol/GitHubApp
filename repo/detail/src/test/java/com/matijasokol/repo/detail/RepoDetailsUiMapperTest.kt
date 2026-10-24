@@ -19,8 +19,8 @@ class RepoDetailsUiMapperTest {
     @Test
     fun `should MAP static and formatted text`() {
         val state = sut.loadingState(repoFullName = "JetBrains/kotlin", authorImageUrl = "image")
-        val profileAction = sut.toAction(RepoDetailEvent.OpenProfileWebError)
-        val repoAction = sut.toAction(RepoDetailEvent.OpenRepoWebError)
+        val profileAction = sut.profileBrowserErrorAction()
+        val repoAction = sut.repoBrowserErrorAction()
 
         state.profileSupportingText shouldBeEqualTo
             UiText.StringResource(R.string.repo_detail_profile_label, "JetBrains")
