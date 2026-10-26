@@ -60,8 +60,8 @@ jobs:
       - name: Upload free release APK
         uses: actions/upload-artifact@v7
         with:
-          name: app-prod-free-release.apk
-          path: app/build/outputs/apk/prodFree/release/app-prod-free-release.apk
+          name: GitHubApp-prod-free-release
+          path: app/build/outputs/apk/prodFree/release/*.apk
           if-no-files-found: warn
           retention-days: 2
 
@@ -80,8 +80,8 @@ jobs:
       - name: Upload paid release APK
         uses: actions/upload-artifact@v7
         with:
-          name: app-prod-paid-release.apk
-          path: app/build/outputs/apk/prodPaid/release/app-prod-paid-release.apk
+          name: GitHubApp-prod-paid-release
+          path: app/build/outputs/apk/prodPaid/release/*.apk
           if-no-files-found: warn
           retention-days: 2
 

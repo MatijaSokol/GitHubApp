@@ -460,6 +460,9 @@ The SQLDelight local database layer is present, but offline/local persistence be
 App version values live in `release/version.properties` and are read by the custom `githubapp.versioning`
 convention plugin.
 
+The version name is also part of every build output's file name: `<rootProject.name>-<versionName>-<flavors>-<buildType>`,
+e.g. `app/build/outputs/apk/prodFree/release/GitHubApp-1.3.0.1-prod-free-release.apk`.
+
 Available versioning tasks include:
 
 ```bash
@@ -475,22 +478,22 @@ Available versioning tasks include:
 
 All workflows run on `ubuntu-latest` and share the JDK 21 + Gradle setup in `.github/actions/setup-build`.
 
-| Workflow                                     | Runs on                                           | What it does                                                                                   |
-|----------------------------------------------|---------------------------------------------------|------------------------------------------------------------------------------------------------|
-| `pr_checks.yml`                              | PRs and pushes to `master`, `develop`, `release*` | Static analysis, release builds and tests (see below)                                          |
-| `claude.yml`                                 | `@claude` mention in an issue or PR               | Claude Code assistant                                                                          |
-| `claude-code-review.yml`                     | PR opened or updated                              | Automatic Claude review based on `AGENTS.md` (skips fork and Dependabot PRs)                   |
-| `distribute_release_*_prod_apk_artifact.yml` | Manual                                            | Builds the free/paid release APK with the version in its name and uploads its R8 `mapping.txt` |
-| `increment_version.yml`                      | Manual                                            | Bumps the app version and opens a PR into `develop`                                            |
+| Workflow                                   | Runs on                                           | What it does                                                                                  |
+|--------------------------------------------|---------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `pr_checks.yml`                            | PRs and pushes to `master`, `develop`, `release*` | Static analysis, release builds and tests (see below)                                         |
+| `claude.yml`                               | `@claude` mention in an issue or PR               | Claude Code assistant                                                                         |
+| `claude-code-review.yml`                   | PR opened or updated                              | Automatic Claude review based on `AGENTS.md` (skips fork and Dependabot PRs)                  |
+| `distribute_release_prod_apk_artifact.yml` | Manual (choose `free` or `paid`)                  | Builds the selected release APK with the version in its name and uploads its R8 `mapping.txt` |
+| `increment_version.yml`                    | Manual                                            | Bumps the app version and opens a PR into `develop`                                           |
 
 `pr_checks.yml` jobs run in parallel and upload their reports even when they fail:
 
-| Job               | Command                                                          | Artifact                                  |
-|-------------------|------------------------------------------------------------------|-------------------------------------------|
-| `static-analysis` | `./gradlew ktlintCheck detekt lint xmlFormatCheck --continue`    | `static-analysis-reports`                 |
-| `build-free`      | `./gradlew assembleProdFreeRelease`                              | `app-prod-free-release.apk` (kept 2 days) |
-| `build-paid`      | `./gradlew assembleProdPaidRelease`                              | `app-prod-paid-release.apk` (kept 2 days) |
-| `unit-test`       | `./gradlew test :build-logic:convention:test` (includes Konsist) | `unit-test-reports`                       |
+| Job               | Command                                                          | Artifact                                    |
+|-------------------|------------------------------------------------------------------|---------------------------------------------|
+| `static-analysis` | `./gradlew ktlintCheck detekt lint xmlFormatCheck --continue`    | `static-analysis-reports`                   |
+| `build-free`      | `./gradlew assembleProdFreeRelease`                              | `GitHubApp-prod-free-release` (kept 2 days) |
+| `build-paid`      | `./gradlew assembleProdPaidRelease`                              | `GitHubApp-prod-paid-release` (kept 2 days) |
+| `unit-test`       | `./gradlew test :build-logic:convention:test` (includes Konsist) | `unit-test-reports`                         |
 
 Android Lint fails only on issues missing from the module's `lint-baseline.xml`. Regenerate the baselines with
 `./gradlew updateLintBaseline` only when intentionally accepting existing issues.
