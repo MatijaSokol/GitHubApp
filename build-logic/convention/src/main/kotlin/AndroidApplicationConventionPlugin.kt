@@ -1,6 +1,7 @@
 import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.kotlin.dsl.configure
 import versioning.Versioning
 
@@ -10,6 +11,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
     with(project) {
       applyPlugins()
       extensions.configure<ApplicationExtension> { configureAndroid( this) }
+      configureArchivesName()
       configureKotlinAndroid()
     }
   }
@@ -24,6 +26,17 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
       apply(libs.plugins.githubapp.versioning)
       apply(libs.plugins.githubapp.quality)
       apply(libs.plugins.githubapp.easylauncher)
+    }
+  }
+
+  /**
+   * Output files are named `<AppName>-<versionName>-<flavors>-<buildType>`,
+   * e.g. `GitHubApp-1.3.0.1-prod-paid-release.apk`, so local and CI builds share one convention.
+   */
+  private fun Project.configureArchivesName() {
+    val versionName = Versioning(rootDir.path).readVersion().versionName
+    extensions.configure<BasePluginExtension> {
+      archivesName.set("${rootProject.name}-$versionName")
     }
   }
 

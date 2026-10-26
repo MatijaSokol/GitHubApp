@@ -1,0 +1,52 @@
+name: Distribute release prod APK as artifact
+run-name: Distribute release ${{ inputs.mode }} prod APK as artifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'App mode to build'
+        required: true
+        type: choice
+        options:
+          - free
+          - paid
+
+jobs:
+  distribute_release_build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUBAPP_STORE_PASSWORD: '${{ secrets.GITHUBAPP_STORE_PASSWORD }}'
+      GITHUBAPP_KEY_PASSWORD: '${{ secrets.GITHUBAPP_KEY_PASSWORD }}'
+      MODE: ${{ inputs.mode }}
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-build
+
+      - name: Set flavor
+        run: echo "FLAVOR=${MODE^}" >> "$GITHUB_ENV"
+
+      - name: Assemble
+        run: ./gradlew "assembleProd${FLAVOR}Release" --stacktrace
+
+      - name: Generate artifact name
+        id: name
+        run: |
+          version=$(./gradlew printVersionName --quiet --stacktrace)
+          echo "base=GitHubApp-${version}-prod-${MODE}-release" >> "$GITHUB_OUTPUT"
+
+      - name: Upload to artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.name.outputs.base }}
+          path: app/build/outputs/apk/prod${{ env.FLAVOR }}/release/*.apk
+          if-no-files-found: error
+
+      - name: Upload R8 mapping files
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.name.outputs.base }}-mapping
+          path: app/build/outputs/mapping/prod${{ env.FLAVOR }}Release/
+          if-no-files-found: error
+          retention-days: 90
