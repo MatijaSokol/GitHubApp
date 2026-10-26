@@ -318,6 +318,11 @@ export GITHUBAPP_STORE_PASSWORD=...
 export GITHUBAPP_KEY_PASSWORD=...
 ```
 
+Release builds run R8 with code minification, obfuscation and resource shrinking, configured in the
+`githubapp.buildtypes` convention plugin. `app/proguard-rules.pro` only adds rules that the libraries' bundled consumer
+rules don't cover, currently keeping line numbers (with source file names hidden) for crash reports. Each release
+build writes `app/build/outputs/mapping/<variant>/mapping.txt`; keep it to retrace obfuscated stack traces.
+
 Common Gradle commands:
 
 ```bash
@@ -470,13 +475,13 @@ Available versioning tasks include:
 
 All workflows run on `ubuntu-latest` and share the JDK 21 + Gradle setup in `.github/actions/setup-build`.
 
-| Workflow                                     | Runs on                                           | What it does                                                                 |
-|----------------------------------------------|---------------------------------------------------|------------------------------------------------------------------------------|
-| `pr_checks.yml`                              | PRs and pushes to `master`, `develop`, `release*` | Static analysis, release builds and tests (see below)                        |
-| `claude.yml`                                 | `@claude` mention in an issue or PR               | Claude Code assistant                                                        |
-| `claude-code-review.yml`                     | PR opened or updated                              | Automatic Claude review based on `AGENTS.md` (skips fork and Dependabot PRs) |
-| `distribute_release_*_prod_apk_artifact.yml` | Manual                                            | Builds the free/paid release APK with the version in its name                |
-| `increment_version.yml`                      | Manual                                            | Bumps the app version and opens a PR into `develop`                          |
+| Workflow                                     | Runs on                                           | What it does                                                                                   |
+|----------------------------------------------|---------------------------------------------------|------------------------------------------------------------------------------------------------|
+| `pr_checks.yml`                              | PRs and pushes to `master`, `develop`, `release*` | Static analysis, release builds and tests (see below)                                          |
+| `claude.yml`                                 | `@claude` mention in an issue or PR               | Claude Code assistant                                                                          |
+| `claude-code-review.yml`                     | PR opened or updated                              | Automatic Claude review based on `AGENTS.md` (skips fork and Dependabot PRs)                   |
+| `distribute_release_*_prod_apk_artifact.yml` | Manual                                            | Builds the free/paid release APK with the version in its name and uploads its R8 `mapping.txt` |
+| `increment_version.yml`                      | Manual                                            | Bumps the app version and opens a PR into `develop`                                            |
 
 `pr_checks.yml` jobs run in parallel and upload their reports even when they fail:
 

@@ -28,8 +28,9 @@ jobs:
         run: |
           version="${{ steps.version.outputs.version }}"
           transformed=${version//./-}
-          name="app-prod-paid-release-${transformed}.apk"
-          echo "name=$name" >> $GITHUB_OUTPUT
+          base="app-prod-paid-release-${transformed}"
+          echo "base=$base" >> $GITHUB_OUTPUT
+          echo "name=${base}.apk" >> $GITHUB_OUTPUT
 
       - name: Rename apk file
         run: |
@@ -41,3 +42,11 @@ jobs:
         with:
           name: ${{ steps.name.outputs.name }}
           path: app/build/outputs/apk/prodPaid/release/
+
+      - name: Upload R8 mapping files
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.name.outputs.base }}-mapping
+          path: app/build/outputs/mapping/prodPaidRelease/
+          if-no-files-found: error
+          retention-days: 90
