@@ -1,19 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Backup and device-transfer rules for Android 12+ (API 31+).
+
+    All app data is a re-downloadable cache of public GitHub data (the SQLDelight database), so it is
+    intentionally excluded from both cloud backup and device-to-device transfer. Restoring it would waste
+    the user's backup quota and could bring back stale or schema-incompatible cache data.
+
+    Keep in sync with backup_rules.xml (Android 11 and below). When a user preference store is added,
+    replace these domain-wide excludes with an <include> for only that file, in both files: excludes take
+    precedence over includes, so an <include> next to them backs up nothing.
+    See https://developer.android.com/identity/data/autobackup
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
     </device-transfer>
-    -->
 </data-extraction-rules>

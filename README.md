@@ -455,6 +455,12 @@ Debug builds log every GitHub API request and response, headers and bodies inclu
 
 The SQLDelight local database layer is present, but offline/local persistence behavior is still being built out.
 
+### Backup
+
+Local data is excluded from Auto Backup and device transfer (`app/src/main/res/xml/data_extraction_rules.xml`,
+`backup_rules.xml`): it's a re-downloadable cache, and a restored copy could be stale. Back up a file only once it holds
+data the user would miss, like settings or favorites.
+
 ## Versioning
 
 App version values live in `release/version.properties` and are read by the custom `githubapp.versioning`
