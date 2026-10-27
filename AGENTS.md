@@ -112,6 +112,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - Network calls use `safeNetworkCall {}` wrapper returning `Either<NetworkError, T>` (Arrow).
 - DTOs use `@Serializable` (Kotlinx Serialization) and are mapped to domain models via mapper functions.
 - Database operations use SQLDelight-generated APIs.
+- Local data is re-downloadable cache, so `app/src/main/res/xml/data_extraction_rules.xml` (Android 12+) and `backup_rules.xml` (Android 11 and below) exclude it from Auto Backup and device transfer; `android:allowBackup` stays `true`. If the app starts storing data the user would miss (settings, favorites), replace the excludes with an `<include>` for only that file, since excludes override includes. Never include the cache database, tokens, device IDs, or Keystore-encrypted data. The `device_*` (Direct Boot) domains are unused and not excluded.
 
 ### Dependency Injection
 
@@ -198,6 +199,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - ❌ Don't add dependencies directly; add them to `libs.versions.toml` first.
 - ❌ Don't use `GlobalScope` or unstructured coroutines.
 - ❌ Don't use wildcard imports.
+- ❌ Don't change only one of the backup rule files (`data_extraction_rules.xml`, `backup_rules.xml`); every `include`/`exclude` change goes into both.
 
 ## Useful Commands
 
