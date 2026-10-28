@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.javax.inject)
 
     testImplementation(projects.repo.datasourceTest)
+    testImplementation(testFixtures(projects.test))
     testImplementation(libs.ktor.client.mock)
     testImplementation(libs.bundles.test)
     testImplementation(platform(libs.junit.bom))

@@ -31,7 +31,9 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.matijasokol.core.dispatchers.AppDispatchers
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
+import com.matijasokol.coreui.dispatchers.LocalAppDispatchers
 import com.matijasokol.coreui.events.ObserveAsEvent
 import com.matijasokol.coreui.navigation.Destination
 import com.matijasokol.coreui.text.UiText
@@ -55,6 +57,7 @@ import kotlinx.coroutines.launch
 fun AppContent(
     navigator: Navigator,
     navigatorErrorMapper: NavigationErrorMapper,
+    appDispatchers: AppDispatchers,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -66,6 +69,7 @@ fun AppContent(
                 LocalSharedTransitionScope provides this,
                 LocalNavigator provides navigator,
                 LocalNavigatorErrorMapper provides navigatorErrorMapper,
+                LocalAppDispatchers provides appDispatchers,
             ) {
                 NavigationContent()
             }

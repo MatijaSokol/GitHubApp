@@ -13,6 +13,7 @@ dependencies {
     implementation(libs.arrow.coroutines)
 
     testImplementation(projects.repo.datasourceTest)
+    testImplementation(testFixtures(projects.test))
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.bundles.test)
     testRuntimeOnly(libs.junit.platform.launcher)

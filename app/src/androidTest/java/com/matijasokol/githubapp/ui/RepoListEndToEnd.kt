@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
+import com.matijasokol.core.dispatchers.AppDispatchers
 import com.matijasokol.coreui.theme.GitHubAppTheme
 import com.matijasokol.githubapp.MainActivity
 import com.matijasokol.githubapp.di.CacheModule
@@ -63,8 +64,9 @@ class RepoListEndToEnd {
 
         @Provides
         @Singleton
-        fun provideRepoService(): RepoService = RepoServiceFake.build(
+        fun provideRepoService(appDispatchers: AppDispatchers): RepoService = RepoServiceFake.build(
             type = RepoServiceResponseType.GoodData,
+            dispatcher = appDispatchers.io,
         )
 
         @Provides
@@ -86,6 +88,9 @@ class RepoListEndToEnd {
     @Inject
     lateinit var navigationErrorMapper: NavigationErrorMapper
 
+    @Inject
+    lateinit var appDispatchers: AppDispatchers
+
     @Before
     fun before() {
         hiltRule.inject()
@@ -95,6 +100,7 @@ class RepoListEndToEnd {
                 AppContent(
                     navigator = navigator,
                     navigatorErrorMapper = navigationErrorMapper,
+                    appDispatchers = appDispatchers,
                 )
             }
         }

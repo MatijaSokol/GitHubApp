@@ -172,6 +172,8 @@ flowchart TB
 - `AppBuildConfig` (from `core`) is provided in `app` (`BuildConfigModule`), because only `app` has a generated
   `BuildConfig`. Other modules inject it, e.g. `repo:datasource`'s `NetworkModule` turns on HTTP logging when
   `isDebug` is `true`.
+- `AppDispatchers` (from `core`) is provided in `app` (`DispatchersModule`), the only place that may use
+  `Dispatchers.*`. Composables read it from `LocalAppDispatchers`, which `AppContent` provides.
 - `RepoCache` is implemented and bound, but not yet used by any screen; offline/local persistence is work in progress.
 
 ## Presentation Pattern
@@ -556,7 +558,7 @@ class immutability, and wildcard imports.
 They also enforce test coverage and hygiene: every ViewModel and use case has a `<ClassUnderTest>Test` class with a
 class-level `sut` property, unit-test source sets use JUnit Jupiter instead of JUnit 4 (`androidTest` is exempt), and
 the codebase has no `m`-prefixed fields, no `android.util.Log` imports, no Timber imports outside `app`'s logging setup
-(log through `AppLogger` instead), and no empty `.kt` files.
+(log through `AppLogger` instead), no `Dispatchers.*` outside `app`'s `DispatchersModule`, and no empty `.kt` files.
 
 When adding or changing a rule, prefer a focused test class and avoid checks that duplicate ktlint or detekt unless
 Konsist adds project-specific value. Run `./gradlew konsist:test` locally, or `./gradlew test` to include Konsist with

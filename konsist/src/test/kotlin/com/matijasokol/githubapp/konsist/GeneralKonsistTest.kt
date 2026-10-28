@@ -45,6 +45,22 @@ class GeneralKonsistTest {
     }
 
     @Test
+    fun `kotlinx Dispatchers are imported only in DispatchersModule`() {
+        productionScope
+            .files
+            .filterNot { file -> file.path.normalizedPath().endsWith(DISPATCHERS_ALLOWED_FILE) }
+            .assertFalse(
+                additionalMessage = "kotlinx.coroutines.Dispatchers is not used directly; " +
+                    "app's di/DispatchersModule provides AppDispatchers (default, io, main, mainImmediate). " +
+                    "Inject AppDispatchers (in composables, read LocalAppDispatchers.current) instead.",
+            ) { file ->
+                file.imports.any { import ->
+                    import.name == DISPATCHERS_IMPORT || import.name.startsWith("$DISPATCHERS_IMPORT.")
+                }
+            }
+    }
+
+    @Test
     fun `no empty files allowed`() {
         projectScope
             .files
@@ -58,3 +74,5 @@ private const val TIMBER_PACKAGE = "timber."
 private const val TIMBER_ALLOWED_PATH = "/app/src/main/java/com/matijasokol/githubapp/logging/"
 private val BUILD_CONFIG_USAGE_REGEX = "\\bBuildConfig\\.".toRegex()
 private const val BUILD_CONFIG_ALLOWED_FILE = "/app/src/main/java/com/matijasokol/githubapp/di/BuildConfigModule.kt"
+private const val DISPATCHERS_IMPORT = "kotlinx.coroutines.Dispatchers"
+private const val DISPATCHERS_ALLOWED_FILE = "/app/src/main/java/com/matijasokol/githubapp/di/DispatchersModule.kt"

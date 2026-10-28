@@ -3,6 +3,8 @@ package com.matijasokol.repo.domain
 import com.matijasokol.core.domain.SortOrder
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
 import com.matijasokol.repo.domain.usecase.SortReposUseCase
+import com.matijasokol.test.coroutines.asAppDispatchers
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should be greater or equal to`
 import org.amshove.kluent.`should be less or equal to`
@@ -13,17 +15,19 @@ class SortReposUseCaseTest {
 
     private lateinit var sut: SortReposUseCase
 
+    private val testDispatcher = StandardTestDispatcher()
+
     private val repoList =
         serializeRepoResponseData(ClassLoader.getSystemResource("repo_list_valid.json").readText())
 
     @BeforeEach
     fun setUp() {
-        sut = SortReposUseCase()
+        sut = SortReposUseCase(appDispatchers = testDispatcher.asAppDispatchers())
     }
 
     @Test
     fun `previous stars count SHOULD BE LESS OR EQUAL than current when ascending order is applied`() =
-        runTest {
+        runTest(testDispatcher) {
             val result = sut(
                 repos = repoList,
                 repoSortType = RepoSortType.Stars(SortOrder.Ascending),
@@ -39,7 +43,7 @@ class SortReposUseCaseTest {
 
     @Test
     fun `previous forks count SHOULD BE GREATER OR EQUAL than current when descending order is applied`() =
-        runTest {
+        runTest(testDispatcher) {
             val result = sut(
                 repos = repoList,
                 repoSortType = RepoSortType.Forks(SortOrder.Descending),
