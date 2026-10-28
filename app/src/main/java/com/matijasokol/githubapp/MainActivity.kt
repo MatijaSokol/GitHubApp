@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.matijasokol.core.dispatchers.AppDispatchers
 import com.matijasokol.coreui.theme.GitHubAppTheme
 import com.matijasokol.githubapp.navigation.NavigationErrorMapper
 import com.matijasokol.githubapp.navigation.Navigator
@@ -21,6 +22,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigatorErrorMapper: NavigationErrorMapper
 
+    @Inject
+    lateinit var appDispatchers: AppDispatchers
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         enableEdgeToEdge()
@@ -29,7 +33,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             GitHubAppTheme {
-                AppContent(navigator, navigatorErrorMapper)
+                AppContent(
+                    navigator = navigator,
+                    navigatorErrorMapper = navigatorErrorMapper,
+                    appDispatchers = appDispatchers,
+                )
             }
         }
     }

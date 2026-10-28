@@ -7,6 +7,9 @@ import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
 import com.matijasokol.repo.domain.Paginator
 import com.matijasokol.repo.domain.usecase.SortReposUseCase
 import com.matijasokol.test.coroutines.MainDispatcherExtension
+import com.matijasokol.test.coroutines.asAppDispatchers
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.shouldBeEmpty
@@ -19,20 +22,9 @@ class RepoListViewModelTest {
 
     private lateinit var sut: RepoListViewModel
 
-    private val sortReposUseCase = SortReposUseCase()
-    private val repoListUiMapper = RepoListUiMapper()
-
     @Test
     fun `should RETURN REFRESH STATE when query is set`() = runTest {
-        sut = RepoListViewModel(
-            sortReposUseCase = sortReposUseCase,
-            paginator = BasicPaginator(
-                repoService = RepoServiceFake.build(
-                    RepoServiceResponseType.GoodData,
-                ),
-            ),
-            repoListUiMapper = repoListUiMapper,
-        )
+        sut = buildSut()
 
         sut.state.test {
             awaitItem().run {
@@ -45,15 +37,7 @@ class RepoListViewModelTest {
 
     @Test
     fun `should RETURN SUCCESS STATE when request was successful`() = runTest {
-        sut = RepoListViewModel(
-            sortReposUseCase = sortReposUseCase,
-            paginator = BasicPaginator(
-                repoService = RepoServiceFake.build(
-                    RepoServiceResponseType.GoodData,
-                ),
-            ),
-            repoListUiMapper = repoListUiMapper,
-        )
+        sut = buildSut()
 
         sut.state.test {
             awaitItem() // initial state
@@ -65,15 +49,7 @@ class RepoListViewModelTest {
 
     @Test
     fun `should RETURN EMPTY STATE when request returns no repositories`() = runTest {
-        sut = RepoListViewModel(
-            sortReposUseCase = sortReposUseCase,
-            paginator = BasicPaginator(
-                repoService = RepoServiceFake.build(
-                    RepoServiceResponseType.EmptyList,
-                ),
-            ),
-            repoListUiMapper = repoListUiMapper,
-        )
+        sut = buildSut(RepoServiceResponseType.EmptyList)
 
         sut.state.test {
             awaitItem() // initial state
@@ -87,15 +63,7 @@ class RepoListViewModelTest {
 
     @Test
     fun `should KEEP SUCCESS STATE when query is cleared`() = runTest {
-        sut = RepoListViewModel(
-            sortReposUseCase = sortReposUseCase,
-            paginator = BasicPaginator(
-                repoService = RepoServiceFake.build(
-                    RepoServiceResponseType.GoodData,
-                ),
-            ),
-            repoListUiMapper = repoListUiMapper,
-        )
+        sut = buildSut()
 
         sut.state.test {
             awaitItem() // initial state
@@ -114,15 +82,7 @@ class RepoListViewModelTest {
 
     @Test
     fun `should RETURN ERROR STATE when request fails`() = runTest {
-        sut = RepoListViewModel(
-            sortReposUseCase = sortReposUseCase,
-            paginator = BasicPaginator(
-                repoService = RepoServiceFake.build(
-                    RepoServiceResponseType.Http404,
-                ),
-            ),
-            repoListUiMapper = repoListUiMapper,
-        )
+        sut = buildSut(RepoServiceResponseType.Http404)
 
         sut.state.test {
             awaitItem() // initial state
@@ -137,15 +97,7 @@ class RepoListViewModelTest {
 
     @Test
     fun `should RETURN APPEND STATE when new page is requested`() = runTest {
-        sut = RepoListViewModel(
-            sortReposUseCase = sortReposUseCase,
-            paginator = BasicPaginator(
-                repoService = RepoServiceFake.build(
-                    RepoServiceResponseType.Http404,
-                ),
-            ),
-            repoListUiMapper = repoListUiMapper,
-        )
+        sut = buildSut(RepoServiceResponseType.Http404)
 
         sut.state.test {
             awaitItem() // initial state
@@ -164,15 +116,7 @@ class RepoListViewModelTest {
 
     @Test
     fun `should RETURN REFRESH STATE when retry is clicked after error is received`() = runTest {
-        sut = RepoListViewModel(
-            sortReposUseCase = sortReposUseCase,
-            paginator = BasicPaginator(
-                repoService = RepoServiceFake.build(
-                    RepoServiceResponseType.GoodData,
-                ),
-            ),
-            repoListUiMapper = repoListUiMapper,
-        )
+        sut = buildSut()
 
         sut.state.test {
             awaitItem() // initial state
@@ -184,5 +128,22 @@ class RepoListViewModelTest {
 
             awaitItem().loadState `should be` Paginator.LoadState.Append
         }
+    }
+
+    private fun TestScope.buildSut(
+        responseType: RepoServiceResponseType = RepoServiceResponseType.GoodData,
+    ): RepoListViewModel {
+        val testDispatcher = StandardTestDispatcher(testScheduler)
+
+        return RepoListViewModel(
+            sortReposUseCase = SortReposUseCase(appDispatchers = testDispatcher.asAppDispatchers()),
+            paginator = BasicPaginator(
+                repoService = RepoServiceFake.build(
+                    type = responseType,
+                    dispatcher = testDispatcher,
+                ),
+            ),
+            repoListUiMapper = RepoListUiMapper(),
+        )
     }
 }

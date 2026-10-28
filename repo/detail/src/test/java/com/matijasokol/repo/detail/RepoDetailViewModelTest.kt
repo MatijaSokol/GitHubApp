@@ -7,6 +7,8 @@ import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
 import com.matijasokol.repo.domain.usecase.GetRepoDetailsUseCase
 import com.matijasokol.test.coroutines.MainDispatcherExtension
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should be instance of`
 import org.amshove.kluent.shouldBeEqualTo
@@ -72,12 +74,15 @@ class RepoDetailViewModelTest {
         }
     }
 
-    private fun buildSut(
+    private fun TestScope.buildSut(
         responseType: RepoServiceResponseType = RepoServiceResponseType.GoodData,
     ) = RepoDetailViewModel(
         destination = destination,
         getRepoDetailsUseCase = GetRepoDetailsUseCase(
-            repoService = RepoServiceFake.build(responseType),
+            repoService = RepoServiceFake.build(
+                type = responseType,
+                dispatcher = StandardTestDispatcher(testScheduler),
+            ),
         ),
         repoDetailsUiMapper = repoDetailsUiMapper,
     )

@@ -16,6 +16,7 @@ import arrow.core.left
 import arrow.core.right
 import com.matijasokol.core.error.NetworkError
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
+import com.matijasokol.coreui.dispatchers.LocalAppDispatchers
 import com.matijasokol.coreui.text.asString
 import com.matijasokol.coreui.theme.GitHubAppTheme
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
@@ -23,6 +24,8 @@ import com.matijasokol.repo.detail.RepoDetail
 import com.matijasokol.repo.detail.RepoDetailState
 import com.matijasokol.repo.detail.RepoDetailsUiMapper
 import com.matijasokol.repo.detail.test.TAG_REPO_DETAIL_PROGRESS
+import com.matijasokol.test.coroutines.asAppDispatchers
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Rule
 import org.junit.Test
 
@@ -35,10 +38,12 @@ class RepoDetailTest {
     private val repoFullName = "JetBrains/kotlin"
     private val resources = ApplicationProvider.getApplicationContext<android.content.Context>().resources
     private val uiMapper = RepoDetailsUiMapper()
+    private val appDispatchers = UnconfinedTestDispatcher().asAppDispatchers()
 
     // Workaround to provide required parameters due to shared transition animation
     // Without this, test will fail. See SharedElement.kt for more details.
     // Static palettes keep results independent of the device wallpaper.
+    // Test dispatchers replace the app's, which AppContent provides in production.
     @SuppressLint("UnusedContentLambdaTargetStateParameter")
     @Composable
     private fun FakeRootComposable(content: @Composable () -> Unit) {
@@ -48,6 +53,7 @@ class RepoDetailTest {
                     CompositionLocalProvider(
                         LocalSharedTransitionScope provides this,
                         LocalNavAnimatedContentScope provides this@AnimatedContent,
+                        LocalAppDispatchers provides appDispatchers,
                     ) {
                         content()
                     }

@@ -5,6 +5,7 @@ import com.matijasokol.repo.datasourcetest.network.RepoServiceFake
 import com.matijasokol.repo.datasourcetest.network.RepoServiceResponseType
 import com.matijasokol.repo.domain.Paginator
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.shouldBeEmpty
@@ -21,6 +22,7 @@ class BasicPaginatorTest {
         sut = BasicPaginator(
             repoService = RepoServiceFake.build(
                 type = RepoServiceResponseType.GoodData,
+                dispatcher = StandardTestDispatcher(testScheduler),
             ),
         )
 
@@ -43,6 +45,7 @@ class BasicPaginatorTest {
         sut = BasicPaginator(
             repoService = RepoServiceFake.build(
                 type = RepoServiceResponseType.MalformedData,
+                dispatcher = StandardTestDispatcher(testScheduler),
             ),
         )
 
@@ -65,6 +68,7 @@ class BasicPaginatorTest {
         sut = BasicPaginator(
             repoService = RepoServiceFake.build(
                 type = RepoServiceResponseType.GoodData,
+                dispatcher = StandardTestDispatcher(testScheduler),
             ),
         )
 

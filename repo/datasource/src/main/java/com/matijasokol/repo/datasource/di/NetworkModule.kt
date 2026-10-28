@@ -1,6 +1,7 @@
 package com.matijasokol.repo.datasource.di
 
 import com.matijasokol.core.buildconfig.AppBuildConfig
+import com.matijasokol.core.dispatchers.AppDispatchers
 import com.matijasokol.core.logging.AppLogger
 import com.matijasokol.repo.datasource.network.NetworkLogger
 import com.matijasokol.repo.datasource.network.buildHttpClient
@@ -34,9 +35,11 @@ object NetworkModule {
         engine: HttpClientEngineFactory<*>,
         appBuildConfig: AppBuildConfig,
         appLogger: AppLogger,
+        appDispatchers: AppDispatchers,
     ): HttpClient = buildHttpClient(
         json = json,
         engine = engine,
         networkLogger = if (appBuildConfig.isDebug) NetworkLogger(appLogger) else null,
+        config = { engine { dispatcher = appDispatchers.io } },
     )
 }

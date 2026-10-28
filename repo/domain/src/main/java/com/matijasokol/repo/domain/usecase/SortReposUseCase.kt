@@ -1,18 +1,18 @@
 package com.matijasokol.repo.domain.usecase
 
+import com.matijasokol.core.dispatchers.AppDispatchers
 import com.matijasokol.core.domain.SortOrder
 import com.matijasokol.repo.domain.RepoSortType
 import com.matijasokol.repo.domain.model.Repo
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class SortReposUseCase @Inject constructor() {
+class SortReposUseCase @Inject constructor(private val appDispatchers: AppDispatchers) {
 
     suspend operator fun invoke(
         repos: List<Repo>,
         repoSortType: RepoSortType,
-    ): List<Repo> = withContext(Dispatchers.Default) {
+    ): List<Repo> = withContext(appDispatchers.default) {
         when (repoSortType) {
             is RepoSortType.Forks -> when (repoSortType.order) {
                 SortOrder.Ascending -> repos.sortedBy(Repo::forksCount)

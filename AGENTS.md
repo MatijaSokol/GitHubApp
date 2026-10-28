@@ -123,6 +123,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - ViewModels that need a Navigation 3 destination use `@HiltViewModel(assistedFactory = X.Factory::class)` + `@AssistedInject constructor(@Assisted destination: Destination.Foo, ...)` with a nested `@AssistedFactory interface Factory`, and are obtained in the nav entry via `hiltViewModel<X, X.Factory>(creationCallback = { it.create(key) })` (see `RepoDetailViewModel`). Do not use `SavedStateHandle` for navigation arguments.
 - Use cases and mappers use `@Inject constructor` directly (no module needed).
 - Build information (`isDebug`, `applicationId`, `buildType`, `flavor`, `versionName`, `versionCode`) is exposed as the `AppBuildConfig` data class in `core` (`com.matijasokol.core.buildconfig`), so pure Kotlin/JVM modules without a generated `BuildConfig` can use it too. Only `app` creates it, in `di/BuildConfigModule` from its generated `BuildConfig`. Inject `AppBuildConfig` instead of reading `BuildConfig` anywhere else.
+- Don't use `Dispatchers.*` directly; only `app`'s `di/DispatchersModule` may (enforced by Konsist). Inject `AppDispatchers` (`core`) and use `default`, `io`, `main` or `mainImmediate`. Composables read `LocalAppDispatchers.current` (`core-ui`), which `AppContent` provides. `viewModelScope` keeps its own main dispatcher.
 
 ### App Modes (free / paid)
 
@@ -146,6 +147,8 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - Use **MockK** for mocking dependencies when needed.
 - Use **fakes** (preferred over mocks) for data layer tests (`RepoServiceFake`, `RepoCacheFake`).
 - Coroutine/ViewModel tests use `runTest` with `@ExtendWith(MainDispatcherExtension::class)` from `com.matijasokol.test.coroutines` (the `test` module's test fixtures, consumed via `testImplementation(testFixtures(projects.test))`). It replaces `Dispatchers.Main` with a `StandardTestDispatcher` for each test. Reuse it instead of creating per-module copies.
+- Unit tests pass test dispatchers that share `runTest`'s scheduler, e.g. `StandardTestDispatcher(testScheduler).asAppDispatchers()` (`com.matijasokol.test.coroutines`). When `sut` is built in `@BeforeEach`, use a class-level `StandardTestDispatcher()` with `runTest(testDispatcher)` (see `SortReposUseCaseTest`).
+- `RepoServiceFake.build(type, dispatcher)`: unit tests pass `StandardTestDispatcher(testScheduler)` so requests run in virtual time; `RepoListEndToEnd` passes the injected `appDispatchers.io`. `Http404` returns a real 404 for both list and details. Don't fix flaky Turbine timeouts by raising the timeout.
 - Instrumented / Compose UI tests (`src/androidTest`) use **JUnit 4** (`org.junit.Test`, `org.junit.Rule`), not Jupiter, with `createComposeRule()` and test tags defined in `**/test/TestTags.kt`.
 - App-level end-to-end tests use `@HiltAndroidTest` + `HiltAndroidRule` (rule order 0), replace production modules with `@UninstallModules(...)` and a nested test `@Module` that provides fakes from `repo:datasource-test`, and run with `CustomTestRunner` (see `RepoListEndToEnd`).
 - Konsist architecture tests live in `konsist/src/test/kotlin/com/matijasokol/githubapp/konsist` and run with `./gradlew konsist:test`. They enforce:
@@ -158,7 +161,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
   - State and UI models use `ImmutableList` for exposed collections; data classes use only `val` properties.
   - `@Composable` functions live only in UI modules; string resources are resolved only through `UiText`; ViewModels and mappers do not touch Android resources.
   - Package names are lowercase and match file paths; no wildcard imports.
-  - No `m`-prefixed fields (`mFoo`), no `android.util.Log` imports, Timber imports only in `app`'s logging setup (`com/matijasokol/githubapp/logging/`), and no empty `.kt` files. Both logging rules fail with a message pointing to `AppLogger`.
+  - No `m`-prefixed fields (`mFoo`), no `android.util.Log` imports, Timber imports only in `app`'s logging setup (`com/matijasokol/githubapp/logging/`), and no empty `.kt` files. Both logging rules fail with a message pointing to `AppLogger`. `Dispatchers.*` is allowed only in `app`'s `di/DispatchersModule`.
   - Unit-test source sets (`src/test`, `src/testFree`, `src/testPaid`, `src/testFixtures`) use only JUnit 6 `org.junit.jupiter.api.Test`, never JUnit 4 `org.junit.Test`; instrumented `androidTest` is exempt.
 - `domain` tests build their inputs from domain models only and must not depend on `repo:datasource` or `repo:datasource-test`. Tests for datasource implementations (e.g. `BasicPaginatorTest`) live in `repo/datasource/src/test`.
 - Test file naming: `<ClassUnderTest>Test.kt`.

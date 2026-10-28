@@ -16,6 +16,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.test.core.app.ApplicationProvider
 import com.matijasokol.coreui.components.LocalSharedTransitionScope
+import com.matijasokol.coreui.dispatchers.LocalAppDispatchers
 import com.matijasokol.coreui.text.asString
 import com.matijasokol.coreui.theme.GitHubAppTheme
 import com.matijasokol.repo.datasourcetest.network.serializeRepoResponseData
@@ -25,6 +26,8 @@ import com.matijasokol.repo.list.RepoList
 import com.matijasokol.repo.list.RepoListUiMapper
 import com.matijasokol.repo.list.test.TAG_LOADING_INDICATOR
 import com.matijasokol.repo.list.test.TAG_REPO_LIST_ITEM
+import com.matijasokol.test.coroutines.asAppDispatchers
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Rule
 import org.junit.Test
 
@@ -36,11 +39,13 @@ class RepoListTest {
     private val query = "kotlin"
     private val resources = ApplicationProvider.getApplicationContext<android.content.Context>().resources
     private val uiMapper = RepoListUiMapper()
+    private val appDispatchers = UnconfinedTestDispatcher().asAppDispatchers()
     private val testText = uiMapper.initialState(query).text
 
     // Workaround to provide required parameters due to shared transition animation
     // Without this, test will fail. See SharedElement.kt for more details.
     // Static palettes keep results independent of the device wallpaper.
+    // Test dispatchers replace the app's, which AppContent provides in production.
     @SuppressLint("UnusedContentLambdaTargetStateParameter")
     @Composable
     private fun FakeRootComposable(content: @Composable () -> Unit) {
@@ -50,6 +55,7 @@ class RepoListTest {
                     CompositionLocalProvider(
                         LocalSharedTransitionScope provides this,
                         LocalNavAnimatedContentScope provides this@AnimatedContent,
+                        LocalAppDispatchers provides appDispatchers,
                     ) {
                         content()
                     }

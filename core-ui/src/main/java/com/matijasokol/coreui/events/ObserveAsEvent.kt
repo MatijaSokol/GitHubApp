@@ -5,7 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.Dispatchers
+import com.matijasokol.coreui.dispatchers.LocalAppDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
@@ -17,10 +17,11 @@ fun <T> ObserveAsEvent(
     onEvent: suspend (T) -> Unit,
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
+    val mainImmediateDispatcher = LocalAppDispatchers.current.mainImmediate
 
-    LaunchedEffect(lifecycleOwner, flow, key1, key2) {
+    LaunchedEffect(lifecycleOwner, mainImmediateDispatcher, flow, key1, key2) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            withContext(Dispatchers.Main.immediate) {
+            withContext(mainImmediateDispatcher) {
                 flow.collect(onEvent)
             }
         }

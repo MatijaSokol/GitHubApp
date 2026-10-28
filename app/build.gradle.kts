@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.splash)
 
     implementation(libs.arrow.core)
+    implementation(libs.kotlinx.coroutines)
 
     implementation(libs.timber)
 

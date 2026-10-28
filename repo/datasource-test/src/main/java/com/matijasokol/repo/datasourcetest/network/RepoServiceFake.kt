@@ -16,6 +16,7 @@ import io.ktor.http.fullPath
 import io.ktor.http.headersOf
 import io.ktor.http.hostWithPort
 import io.ktor.http.withCharset
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.serialization.json.Json
 
 object RepoServiceFake {
@@ -26,14 +27,21 @@ object RepoServiceFake {
     private const val BASE_LIST_URL_TEST = "https://$BASE_URL/search/repositories?q=kotlin&per_page=30&page="
     private const val BASE_DETAILS_URL_TEST = "https://$BASE_URL/repos/JetBrains/kotlin"
 
+    /**
+     * @param dispatcher dispatcher requests run on. Unit tests pass `StandardTestDispatcher(testScheduler)`
+     * so requests run in virtual time.
+     */
     fun build(
         type: RepoServiceResponseType,
+        dispatcher: CoroutineDispatcher,
     ): RepoService {
         val fakeClient = buildHttpClient(
             json = Json { ignoreUnknownKeys = true },
             engine = MockEngine,
             config = {
                 engine {
+                    this.dispatcher = dispatcher
+
                     addHandler { request ->
                         val url = request.url.toString()
 
@@ -62,28 +70,28 @@ private fun MockRequestHandleScope.handleRepoListRequest(
     return when (type) {
         is RepoServiceResponseType.EmptyList -> {
             respond(
-                this::class.java.getResource("/repo_list_empty.json").readText(),
+                content = this::class.java.getResource("/repo_list_empty.json").readText(),
                 status = HttpStatusCode.OK,
                 headers = responseHeaders,
             )
         }
         is RepoServiceResponseType.MalformedData -> {
             respond(
-                this::class.java.getResource("/repo_list_malformed.json").readText(),
+                content = this::class.java.getResource("/repo_list_malformed.json").readText(),
                 status = HttpStatusCode.OK,
                 headers = responseHeaders,
             )
         }
         is RepoServiceResponseType.GoodData -> {
             respond(
-                this::class.java.getResource("/repo_list_valid.json").readText(),
+                content = this::class.java.getResource("/repo_list_valid.json").readText(),
                 status = HttpStatusCode.OK,
                 headers = responseHeaders,
             )
         }
         is RepoServiceResponseType.Http404 -> {
             respond(
-                this::class.java.getResource("/repo_list_invalid.json").readText(),
+                content = this::class.java.getResource("/repo_list_invalid.json").readText(),
                 status = HttpStatusCode.NotFound,
                 headers = responseHeaders,
             )
@@ -102,11 +110,18 @@ private fun MockRequestHandleScope.handleRepoDetailsRequest(
     return when (type) {
         is RepoServiceResponseType.GoodData -> {
             respond(
-                this::class.java.getResource("/jetbrains_kotlin_details.json").readText(),
+                content = this::class.java.getResource("/jetbrains_kotlin_details.json").readText(),
                 status = HttpStatusCode.OK,
                 headers = responseHeaders,
             )
         }
-        else -> throw NotImplementedError("Only GoodData case is implemented.")
+        is RepoServiceResponseType.Http404 -> {
+            respond(
+                content = this::class.java.getResource("/repo_details_not_found.json").readText(),
+                status = HttpStatusCode.NotFound,
+                headers = responseHeaders,
+            )
+        }
+        else -> throw NotImplementedError("Only GoodData and Http404 cases are implemented.")
     }
 }
