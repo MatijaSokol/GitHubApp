@@ -37,7 +37,7 @@ ktor = "3.6.0"
 hilt = "2.60.1"
 javaxInject = "1"
 
-arrow = "2.2.3"
+arrow = "2.3.0.1"
 
 timber = "5.0.1"
 
