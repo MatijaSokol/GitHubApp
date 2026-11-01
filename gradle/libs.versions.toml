@@ -31,7 +31,7 @@ material3 = "1.4.0"
 splash = "1.2.0"
 backdrop = "2.0.1"
 
-sqldelight = "2.4.0"
+sqldelight = "2.4.1"
 ktor = "3.6.0"
 
 hilt = "2.60.1"
