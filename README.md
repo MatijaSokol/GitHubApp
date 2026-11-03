@@ -1,5 +1,11 @@
 # GitHub App
 
+[![PR checks](https://github.com/MatijaSokol/GitHubApp/actions/workflows/pr_checks.yml/badge.svg?branch=develop)](https://github.com/MatijaSokol/GitHubApp/actions/workflows/pr_checks.yml?query=branch%3Adevelop)
+[![Kotlin](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FMatijaSokol%2FGitHubApp%2Fdevelop%2Fgradle%2Flibs.versions.toml&query=%24.versions.kotlin&label=Kotlin&color=7F52FF&logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Min SDK](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FMatijaSokol%2FGitHubApp%2Fdevelop%2Fgradle%2Flibs.versions.toml&query=%24.versions.minSdk&label=Min%20SDK&color=3DDC84&logo=android&logoColor=white)](gradle/libs.versions.toml)
+[![Target SDK](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FMatijaSokol%2FGitHubApp%2Fdevelop%2Fgradle%2Flibs.versions.toml&query=%24.versions.targetSdk&label=Target%20SDK&color=3DDC84&logo=android&logoColor=white)](gradle/libs.versions.toml)
+[![Release](https://img.shields.io/github/v/release/MatijaSokol/GitHubApp?label=Release&display_name=release)](https://github.com/MatijaSokol/GitHubApp/releases/latest)
+
 GitHub App is a Kotlin Android application for searching and browsing GitHub repositories. It is built with
 Jetpack Compose, Navigation 3, Hilt, Ktor, SQLDelight, and a clean multi-module architecture.
 
