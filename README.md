@@ -31,27 +31,35 @@ forks, or last update date, open author profiles in the browser, and view reposi
 
 <table width="100%">
   <tr>
-    <td width="50%" align="center"><b>List screen (light)</b></td>
-    <td width="50%" align="center"><b>Details screen (light)</b></td>
+    <td width="33%" align="center"><b>List screen (light)</b></td>
+    <td width="33%" align="center"><b>Details screen (light)</b></td>
+    <td width="33%" align="center"><b>Shared element transition (light)</b></td>
   </tr>
   <tr>
-    <td width="50%" align="center">
-      <img src="previews/screenshot_list_light.png" alt="Repository list screen in light theme"/>
+    <td width="33%" align="center">
+      <img src="previews/screenshot_list_light.png" width="240" alt="Repository list screen in light theme"/>
     </td>
-    <td width="50%" align="center">
-      <img src="previews/screenshot_details_light.png" alt="Repository detail screen in light theme"/>
+    <td width="33%" align="center">
+      <img src="previews/screenshot_details_light.png" width="240" alt="Repository detail screen in light theme"/>
+    </td>
+    <td width="33%" align="center">
+      <img src="previews/shared_element_transition_light.gif" width="240" alt="Shared element transition from the repository list to the detail screen and back in light theme"/>
     </td>
   </tr>
   <tr>
-    <td width="50%" align="center"><b>List screen (dark)</b></td>
-    <td width="50%" align="center"><b>Details screen (dark)</b></td>
+    <td width="33%" align="center"><b>List screen (dark)</b></td>
+    <td width="33%" align="center"><b>Details screen (dark)</b></td>
+    <td width="33%" align="center"><b>Shared element transition (dark)</b></td>
   </tr>
   <tr>
-    <td width="50%" align="center">
-      <img src="previews/screenshot_list_dark.png" alt="Repository list screen in dark theme"/>
+    <td width="33%" align="center">
+      <img src="previews/screenshot_list_dark.png" width="240" alt="Repository list screen in dark theme"/>
     </td>
-    <td width="50%" align="center">
-      <img src="previews/screenshot_details_dark.png" alt="Repository detail screen in dark theme"/>
+    <td width="33%" align="center">
+      <img src="previews/screenshot_details_dark.png" width="240" alt="Repository detail screen in dark theme"/>
+    </td>
+    <td width="33%" align="center">
+      <img src="previews/shared_element_transition_dark.gif" width="240" alt="Shared element transition from the repository list to the detail screen and back in dark theme"/>
     </td>
   </tr>
 </table>
