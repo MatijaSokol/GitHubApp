@@ -7,6 +7,7 @@ import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.attributes.Bundling
+import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.tasks.JavaExec
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
@@ -33,6 +34,8 @@ class QualityConventionPlugin : Plugin<Project> {
 
     extensions.configure<DetektExtension> {
       config.setFrom(files("$rootDir/quality/detekt.yml"))
+      // Detekt defaults to src/main and src/test only; scan every source set (flavors, androidTest, testFixtures, ...).
+      source.setFrom(kotlinSources())
     }
 
     tasks.withType(Detekt::class.java).configureEach {
@@ -52,34 +55,38 @@ class QualityConventionPlugin : Plugin<Project> {
   private fun Project.configureKtlint() {
     val ktlintConfiguration = configurations.create("ktlint")
 
-    val inputFiles = fileTree("src") { include("src/**/*.kt") }
-    val outputDir = layout.buildDirectory.dir("reports")
+    val inputFiles = kotlinSources()
+    val reportFile = layout.buildDirectory.file("reports/ktlint.html")
 
     tasks.register<JavaExec>("ktlintCheck") {
         inputs.files(inputFiles)
-        outputs.dir(outputDir)
+        inputs.file(rootProject.file(".editorconfig"))
+        outputs.file(reportFile)
 
         group = "Verification"
         description = "Check Kotlin code style."
         mainClass.set("com.pinterest.ktlint.Main")
         classpath = ktlintConfiguration
-        args = listOf(
-            "src/**/*.kt",
-            "--reporter=plain",
-            "--reporter=html,output=${outputDir.get().asFile.absolutePath}/ktlint.html",
-        )
+        args = buildList {
+            KOTLIN_GLOBS.forEach { add("src/$it") }
+            add("--reporter=plain")
+            add("--reporter=html,output=${reportFile.get().asFile.absolutePath}")
+        }
     }
 
+    // No outputs declared on purpose: ktlintFormat rewrites its own inputs, so it should run every time it's invoked.
     tasks.register<JavaExec>("ktlintFormat") {
       inputs.files(inputFiles)
-      outputs.dir(outputDir)
 
       group = "Formatting"
       description = "Fix Kotlin code style deviations."
       mainClass.set("com.pinterest.ktlint.Main")
       classpath = ktlintConfiguration
       jvmArgs = listOf("--add-opens=java.base/java.lang=ALL-UNNAMED")
-      args = listOf("-F", "src/**/*.kt")
+      args = buildList {
+        add("-F")
+        KOTLIN_GLOBS.forEach { add("src/$it") }
+      }
     }
 
     dependencies {
@@ -113,5 +120,13 @@ class QualityConventionPlugin : Plugin<Project> {
       tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME) { dependsOn(xmlFormatCheck) }
     }
   }
+
+  /** Every Kotlin file and script in every source set of the module. `include` patterns are relative to `src`. */
+  private fun Project.kotlinSources(): ConfigurableFileTree = fileTree("src") { include(KOTLIN_GLOBS) }
 }
 
+/**
+ * Kotlin files and scripts in every source set, relative to a module's `src` directory. `*.kts` keeps the scope of
+ * Detekt's and ktlint's defaults, which also cover scripts.
+ */
+private val KOTLIN_GLOBS = listOf("**/*.kt", "**/*.kts")
