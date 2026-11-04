@@ -80,6 +80,7 @@ repo/                    Empty container project for the repository feature (`:r
   detail/                Repository detail screen, ViewModel, UI tests
 konsist/                 Project-wide Konsist architecture and naming tests
 test/                    Shared test fixtures
+quality/                 detekt.yml, plus the `:quality` project that runs ktlint and detekt on build-logic
 build-logic/             Gradle convention plugins, quality setup, versioning tasks
 ```
 
@@ -99,7 +100,8 @@ The build setup behind these modules is described in [Gradle Configuration](#gra
 ### Module Dependency Graph
 
 Production `implementation` dependencies between Gradle modules, as declared in each module's `build.gradle.kts`.
-Test-support modules (`repo:datasource-test`, `test`, `konsist`) are left out, as they are in the Konsist layer rule.
+Test-support modules (`repo:datasource-test`, `test`, `konsist`) and the `quality` project (static analysis for
+`build-logic`, no sources or dependencies) are left out, as they are in the Konsist layer rule.
 Arrows point from the consumer to the dependency. Shapes mark the module type: stadium = Android application,
 rectangle = Android library, hexagon = pure Kotlin/JVM library.
 
@@ -365,8 +367,11 @@ Common Gradle commands:
 ./gradlew app:connectedDevPaidDebugAndroidTest
 ./gradlew repo:list:connectedDebugAndroidTest repo:detail:connectedDebugAndroidTest
 
-# Static analysis and formatting checks
+# Static analysis and formatting checks (all modules and the build-logic included build)
 ./gradlew ktlintCheck detekt
+
+# Static analysis for build-logic only (run by the :quality project)
+./gradlew :quality:ktlintCheck :quality:detekt
 
 # XML formatting check (indentation in multiples of 4, a tab counts as 4; no trailing whitespace; newline at end of file)
 ./gradlew xmlFormatCheck
@@ -380,7 +385,7 @@ Common Gradle commands:
 # Regenerate the Android Lint baselines
 ./gradlew updateLintBaseline
 
-# Format Kotlin sources
+# Format Kotlin sources (all modules and build-logic)
 ./gradlew ktlintFormat
 
 # Generate Compose compiler stability reports/metrics (output: <module>/build/compose_metrics)
@@ -430,6 +435,11 @@ flowchart LR
 - **`xmlFormatCheck`** (task in [`quality/`](build-logic/convention/src/main/kotlin/quality)): checks XML under the
   module's `src/` for indentation in multiples of 4 (a tab counts as 4), trailing whitespace and a final newline, and
   writes `build/reports/xml-format.txt`. It is wired into `check` wherever the module has one.
+
+`build-logic` can't apply its own convention plugin, so the `:quality` project
+([`quality/build.gradle.kts`](quality/build.gradle.kts)) applies `githubapp.quality` to the `build-logic` sources through
+`githubappQuality { kotlinSources.setFrom(...) }`. The usual `ktlintCheck`, `ktlintFormat` and `detekt` commands cover it
+too, with reports in `quality/build/reports`.
 
 ### Type-Safe Project Accessors
 
@@ -519,6 +529,9 @@ All workflows run on `ubuntu-latest` and share the JDK 21 + Gradle setup in `.gi
 | `build-free`      | `./gradlew assembleProdFreeRelease`                              | `GitHubApp-prod-free-release` (kept 2 days) |
 | `build-paid`      | `./gradlew assembleProdPaidRelease`                              | `GitHubApp-prod-paid-release` (kept 2 days) |
 | `unit-test`       | `./gradlew test :build-logic:convention:test` (includes Konsist) | `unit-test-reports`                         |
+
+`static-analysis` also runs ktlint and Detekt for `build-logic` (through the `:quality` project's `ktlintCheck` and
+`detekt` tasks), and its reports are part of `static-analysis-reports`.
 
 Android Lint fails only on issues missing from the module's `lint-baseline.xml`. Regenerate the baselines with
 `./gradlew updateLintBaseline` only when intentionally accepting existing issues.

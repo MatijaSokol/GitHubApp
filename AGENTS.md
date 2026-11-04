@@ -30,6 +30,7 @@ GitHubApp/
 │   └── detail/          → Repository detail screen (UI + ViewModel)
 ├── konsist/             → Project-wide architecture and naming rules (Konsist tests)
 ├── test/                → Shared test fixtures
+├── quality/             → detekt.yml and the `:quality` project that runs ktlint/detekt on build-logic (no sources)
 └── build-logic/         → Gradle convention plugins
 ```
 
@@ -72,6 +73,7 @@ GitHubApp/
 - Keep functions small and single-purpose.
 - Code style is defined in `.editorconfig` (ktlint) and `quality/detekt.yml` (detekt + Compose rules). Key rules: 4-space indent, max line length **120** (detekt allows 150 — follow 120), trailing commas on declarations and call sites, a blank line after the class header, and multiline class signatures when there are 2+ parameters.
 - Run `./gradlew ktlintFormat` to auto-fix style before `./gradlew ktlintCheck detekt`.
+- The same rules apply to `build-logic` (convention plugin sources, tests, `build-logic/convention/build.gradle.kts` and `build-logic/settings.gradle.kts`). It is an included build and can't apply `githubapp.quality` itself, so the `:quality` project (`quality/build.gradle.kts`) applies it with `githubappQuality { kotlinSources.setFrom(...) }` pointing at the `build-logic` files; the usual `ktlintCheck`, `ktlintFormat` and `detekt` commands cover it, or run `./gradlew :quality:ktlintCheck :quality:detekt` for build-logic only. Don't apply `githubapp.*` plugins in the root `build.gradle.kts`: it puts build-logic on the root classpath and breaks the modules' versioned plugin aliases.
 - XML files are checked by `./gradlew xmlFormatCheck` (`build-logic/convention/src/main/kotlin/quality/`): indentation width must be a multiple of 4 (spaces or tabs; a tab counts as 4 spaces), no trailing whitespace, and a newline at end of file. Text inside multi-line `<!-- -->` comments is not indentation-checked.
 
 ### Presentation Layer (MVI Pattern)
@@ -189,7 +191,7 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 - ✅ Use `ImmutableList` for list properties in state classes.
 - ✅ Write unit tests for ViewModels and use cases.
 - ✅ Use `combine` to derive state from multiple flows.
-- ✅ Run `./gradlew konsist:test`, `./gradlew detekt`, `./gradlew ktlintCheck`, `./gradlew xmlFormatCheck`, and `./gradlew lint` before submitting changes.
+- ✅ Run `./gradlew konsist:test`, `./gradlew detekt`, `./gradlew ktlintCheck`, `./gradlew xmlFormatCheck`, and `./gradlew lint` before submitting changes (`detekt` and `ktlintCheck` also cover `build-logic`; when changing build-logic, also run `./gradlew :build-logic:convention:test`).
 
 ### Don't
 
@@ -229,14 +231,17 @@ Each feature screen follows a strict **MVI** (Model-View-Intent) pattern:
 ./gradlew app:connectedDevPaidDebugAndroidTest
 ./gradlew repo:list:connectedDebugAndroidTest repo:detail:connectedDebugAndroidTest
 
-# Run detekt static analysis
+# Run detekt static analysis (all modules and build-logic)
 ./gradlew detekt
 
-# Run ktlint check
+# Run ktlint check (all modules and build-logic)
 ./gradlew ktlintCheck
 
-# Run ktlint format
+# Run ktlint format (all modules and build-logic)
 ./gradlew ktlintFormat
+
+# Run ktlint and detekt for build-logic only
+./gradlew :quality:ktlintCheck :quality:detekt
 
 # Check XML formatting
 ./gradlew xmlFormatCheck
