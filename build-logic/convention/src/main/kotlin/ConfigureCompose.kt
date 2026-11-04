@@ -7,38 +7,42 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * Configure Compose-specific options
  */
 internal fun Project.configureAndroidCompose() {
-  dependencies {
-    val bom = libs.compose.bom
-    implementation(platform(bom))
-    implementation(libs.bundles.compose)
-    debugImplementation(libs.bundles.compose.debug)
-    androidTestImplementation(platform(bom))
-  }
-
-  tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-      freeCompilerArgs.addAll(listOf(
-        "-opt-in=androidx.compose.animation.ExperimentalSharedTransitionApi",
-        "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-        "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-        "-opt-in=androidx.compose.runtime.ExperimentalComposeApi",
-        "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
-        "-opt-in=coil3.annotation.ExperimentalCoilApi",
-      ))
-
-      // generates compose metrics files
-      // run with ./gradlew :[modulename]:assembleRelease -Pgithubapp.enableComposeCompilerReports=true
-      if (findProperty("githubapp.enableComposeCompilerReports") == "true") {
-        // ../[modulename]/build/compose_metrics
-        val dir = "${layout.buildDirectory.get()}/compose_metrics"
-
-        freeCompilerArgs.addAll(listOf(
-          "-P",
-          "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$dir",
-          "-P",
-          "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$dir",
-        ))
-      }
+    dependencies {
+        val bom = libs.compose.bom
+        implementation(platform(bom))
+        implementation(libs.bundles.compose)
+        debugImplementation(libs.bundles.compose.debug)
+        androidTestImplementation(platform(bom))
     }
-  }
+
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            freeCompilerArgs.addAll(
+                listOf(
+                    "-opt-in=androidx.compose.animation.ExperimentalSharedTransitionApi",
+                    "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                    "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+                    "-opt-in=androidx.compose.runtime.ExperimentalComposeApi",
+                    "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
+                    "-opt-in=coil3.annotation.ExperimentalCoilApi",
+                ),
+            )
+
+            // generates compose metrics files
+            // run with ./gradlew :[modulename]:assembleRelease -Pgithubapp.enableComposeCompilerReports=true
+            if (findProperty("githubapp.enableComposeCompilerReports") == "true") {
+                // ../[modulename]/build/compose_metrics
+                val dir = "${layout.buildDirectory.get()}/compose_metrics"
+
+                freeCompilerArgs.addAll(
+                    listOf(
+                        "-P",
+                        "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$dir",
+                        "-P",
+                        "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$dir",
+                    ),
+                )
+            }
+        }
+    }
 }

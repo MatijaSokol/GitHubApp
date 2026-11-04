@@ -28,49 +28,49 @@ import java.io.File
 @CacheableTask
 abstract class XmlFormatCheckTask : DefaultTask() {
 
-  @get:InputFiles
-  @get:SkipWhenEmpty
-  @get:IgnoreEmptyDirectories
-  @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val sources: ConfigurableFileCollection
+    @get:InputFiles
+    @get:SkipWhenEmpty
+    @get:IgnoreEmptyDirectories
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val sources: ConfigurableFileCollection
 
-  /** The rules to apply. `githubapp.quality` sets a default [XmlFormatChecker] as the convention. */
-  @get:Nested
-  abstract val checker: Property<XmlFormatChecker>
+    /** The rules to apply. `githubapp.quality` sets a default [XmlFormatChecker] as the convention. */
+    @get:Nested
+    abstract val checker: Property<XmlFormatChecker>
 
-  /** Violations in [reportFile] are reported relative to this directory. */
-  @get:Internal
-  abstract val rootDirectory: DirectoryProperty
+    /** Violations in [reportFile] are reported relative to this directory. */
+    @get:Internal
+    abstract val rootDirectory: DirectoryProperty
 
-  @get:OutputFile
-  abstract val reportFile: RegularFileProperty
+    @get:OutputFile
+    abstract val reportFile: RegularFileProperty
 
-  @TaskAction
-  fun check() {
-    val root = rootDirectory.get().asFile
-    val checker = checker.get()
-    val violations = sources.files.sorted().flatMap { file ->
-      checker.check(file.readText()).map { file to it }
+    @TaskAction
+    fun check() {
+        val root = rootDirectory.get().asFile
+        val checker = checker.get()
+        val violations = sources.files.sorted().flatMap { file ->
+            checker.check(file.readText()).map { file to it }
+        }
+
+        val report = reportFile.get().asFile
+        report.parentFile.mkdirs()
+        report.writeText(
+            violations.joinToString(separator = "") { (file, violation) ->
+                "${file.relativeTo(root).invariantSeparatorsPath}:${violation.line}: ${violation.message}\n"
+            },
+        )
+
+        if (violations.isNotEmpty()) {
+            throw GradleException(
+                "Found ${violations.size} XML formatting violation(s):\n" +
+                    violations.joinToString("\n") { (file, violation) ->
+                        "${file.fileUri()}:${violation.line}: ${violation.message}"
+                    } +
+                    "\nReport: ${report.fileUri()}",
+            )
+        }
     }
-
-    val report = reportFile.get().asFile
-    report.parentFile.mkdirs()
-    report.writeText(
-      violations.joinToString(separator = "") { (file, violation) ->
-        "${file.relativeTo(root).invariantSeparatorsPath}:${violation.line}: ${violation.message}\n"
-      },
-    )
-
-    if (violations.isNotEmpty()) {
-      throw GradleException(
-        "Found ${violations.size} XML formatting violation(s):\n" +
-          violations.joinToString("\n") { (file, violation) ->
-            "${file.fileUri()}:${violation.line}: ${violation.message}"
-          } +
-          "\nReport: ${report.fileUri()}",
-      )
-    }
-  }
 }
 
 /** `file:///absolute/path`, which terminals and the IDE console show as a link (`File.toURI` gives `file:/`). */

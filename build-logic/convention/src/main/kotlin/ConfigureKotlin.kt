@@ -19,86 +19,88 @@ private val jvmTargetValue = JvmTarget.JVM_21
  * Depending on the presence of ApplicationExtension or LibraryExtension, it will configure the appropriate options
  */
 internal fun Project.configureKotlinAndroid() {
-  val applicationExtension = runCatching { project.extensions.getByType<ApplicationExtension>() }.getOrNull()
-  val libraryExtension = runCatching { project.extensions.getByType<LibraryExtension>() }.getOrNull()
+    val applicationExtension = runCatching { project.extensions.getByType<ApplicationExtension>() }.getOrNull()
+    val libraryExtension = runCatching { project.extensions.getByType<LibraryExtension>() }.getOrNull()
 
-  when {
-    applicationExtension != null -> configureKotlinAndroid(applicationExtension)
-    libraryExtension != null -> configureKotlinAndroid(libraryExtension)
-    else -> error("Neither ApplicationExtension nor LibraryExtension found on project ${project.name}")
-  }
+    when {
+        applicationExtension != null -> configureKotlinAndroid(applicationExtension)
+        libraryExtension != null -> configureKotlinAndroid(libraryExtension)
+        else -> error("Neither ApplicationExtension nor LibraryExtension found on project ${project.name}")
+    }
 
-  tasks.withType<Test> {
-    useJUnitPlatform()
-  }
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
 
-  configureKotlin()
+    configureKotlin()
 }
 
 /**
  * Configure base Kotlin with Android options for application modules
  */
 private fun Project.configureKotlinAndroid(applicationExtension: ApplicationExtension) {
-  applicationExtension.apply {
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    applicationExtension.apply {
+        compileSdk = libs.versions.compileSdk.get().toInt()
 
-    defaultConfig {
-      minSdk = libs.versions.minSdk.get().toInt()
-    }
+        defaultConfig {
+            minSdk = libs.versions.minSdk.get().toInt()
+        }
 
-    compileOptions {
-      sourceCompatibility = javaVersion
-      targetCompatibility = javaVersion
+        compileOptions {
+            sourceCompatibility = javaVersion
+            targetCompatibility = javaVersion
+        }
     }
-  }
 }
 
 /**
  * Configure base Kotlin with Android options for library modules
  */
 private fun Project.configureKotlinAndroid(libraryExtension: LibraryExtension) {
-  libraryExtension.apply {
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    libraryExtension.apply {
+        compileSdk = libs.versions.compileSdk.get().toInt()
 
-    defaultConfig {
-      minSdk = libs.versions.minSdk.get().toInt()
-    }
+        defaultConfig {
+            minSdk = libs.versions.minSdk.get().toInt()
+        }
 
-    compileOptions {
-      sourceCompatibility = javaVersion
-      targetCompatibility = javaVersion
+        compileOptions {
+            sourceCompatibility = javaVersion
+            targetCompatibility = javaVersion
+        }
     }
-  }
 }
 
 /**
  * Configure base Kotlin options for JVM (non-Android)
  */
 internal fun Project.configureKotlinJvm() {
-  extensions.configure<JavaPluginExtension> {
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-  }
+    extensions.configure<JavaPluginExtension> {
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
+    }
 
-  tasks.withType<Test> {
-      useJUnitPlatform()
-  }
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
 
-  configureKotlin()
+    configureKotlin()
 }
 
 /**
  * Configure base Kotlin options
  */
 private fun Project.configureKotlin() {
-  tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-      jvmTarget.set(jvmTargetValue)
-      freeCompilerArgs.addAll(listOf(
-        "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-        "-opt-in=kotlinx.coroutines.FlowPreview",
-        "-Xreturn-value-checker=full",
-      ))
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(jvmTargetValue)
+            freeCompilerArgs.addAll(
+                listOf(
+                    "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                    "-opt-in=kotlinx.coroutines.FlowPreview",
+                    "-Xreturn-value-checker=full",
+                ),
+            )
+        }
     }
-  }
 }

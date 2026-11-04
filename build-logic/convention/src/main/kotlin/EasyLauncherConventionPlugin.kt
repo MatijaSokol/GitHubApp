@@ -12,39 +12,39 @@ import org.gradle.kotlin.dsl.getByType
  */
 class EasyLauncherConventionPlugin : Plugin<Project> {
 
-  override fun apply(project: Project) {
-    with(project) {
-      pluginManager.apply(libs.plugins.easylauncher)
+    override fun apply(project: Project) {
+        with(project) {
+            pluginManager.apply(libs.plugins.easylauncher)
 
-      val easyLauncher = extensions.getByType<EasyLauncherExtension>()
-      easyLauncher.buildTypes.register(RELEASE_BUILD_TYPE) {
-        enable(false)
-      }
+            val easyLauncher = extensions.getByType<EasyLauncherExtension>()
+            easyLauncher.buildTypes.register(RELEASE_BUILD_TYPE) {
+                enable(false)
+            }
 
-      extensions.configure<ApplicationAndroidComponentsExtension> {
-        // Easylauncher reads its `variants` container in its own onVariants callback, which runs after
-        // beforeVariants, so registering the per-variant ribbon here is early enough.
-        beforeVariants(selector().withBuildType(DEBUG_BUILD_TYPE)) { variantBuilder ->
-          val label = ribbonLabel(flavorName = variantBuilder.flavorName, variantName = variantBuilder.name)
-          easyLauncher.variants.register(variantBuilder.name) {
-            filters(debugRibbonFilter(label))
-          }
+            extensions.configure<ApplicationAndroidComponentsExtension> {
+                // Easylauncher reads its `variants` container in its own onVariants callback, which runs after
+                // beforeVariants, so registering the per-variant ribbon here is early enough.
+                beforeVariants(selector().withBuildType(DEBUG_BUILD_TYPE)) { variantBuilder ->
+                    val label = ribbonLabel(flavorName = variantBuilder.flavorName, variantName = variantBuilder.name)
+                    easyLauncher.variants.register(variantBuilder.name) {
+                        filters(debugRibbonFilter(label))
+                    }
+                }
+            }
         }
-      }
     }
-  }
 
-  private fun ribbonLabel(flavorName: String?, variantName: String): String =
-    flavorName?.takeIf { it.isNotEmpty() } ?: variantName
+    private fun ribbonLabel(flavorName: String?, variantName: String): String =
+        flavorName?.takeIf { it.isNotEmpty() } ?: variantName
 
-  private fun debugRibbonFilter(label: String): ChromeLikeFilter = ChromeLikeFilter(
-    label = label,
-    ribbonColor = RIBBON_COLOR,
-    labelColor = LABEL_COLOR,
-    overlayHeight = OVERLAY_HEIGHT,
-    gravity = ChromeLikeFilter.Gravity.BOTTOM,
-    textSizeRatio = TEXT_SIZE_RATIO,
-  )
+    private fun debugRibbonFilter(label: String): ChromeLikeFilter = ChromeLikeFilter(
+        label = label,
+        ribbonColor = RIBBON_COLOR,
+        labelColor = LABEL_COLOR,
+        overlayHeight = OVERLAY_HEIGHT,
+        gravity = ChromeLikeFilter.Gravity.BOTTOM,
+        textSizeRatio = TEXT_SIZE_RATIO,
+    )
 }
 
 private const val DEBUG_BUILD_TYPE = "debug"
