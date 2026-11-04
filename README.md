@@ -420,8 +420,11 @@ flowchart LR
 `githubapp.quality` applies the static analysis and formatting checks to every module that uses it:
 
 - **Detekt**, configured with `quality/detekt.yml`, plus the `detekt-formatting` and Compose rule sets; HTML, TXT and
-  XML reports
-- **ktlint**: `ktlintCheck` (with an HTML report in `build/reports/ktlint.html`) and `ktlintFormat`
+  XML reports. It analyses Kotlin files and scripts (`*.kt`, `*.kts`) in every source set under the module's `src/`
+  (flavors, flavor tests, `androidTest`, `testFixtures`); test-only rule excludes match any `src/test*` or
+  `src/androidTest*` folder
+- **ktlint**: covers the same `*.kt`/`*.kts` files; `ktlintCheck` (with an HTML report in `build/reports/ktlint.html`)
+  and `ktlintFormat`
 - **Android Lint**, configured through [`ConfigureLint.kt`](build-logic/convention/src/main/kotlin/ConfigureLint.kt)
   in application and library modules
 - **`xmlFormatCheck`** (task in [`quality/`](build-logic/convention/src/main/kotlin/quality)): checks XML under the
